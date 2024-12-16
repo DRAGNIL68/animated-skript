@@ -3,7 +3,7 @@ version: '1.0-alpha'
 main: net.outmoded.modelengine.ModelEngine
 api-version: '1.21'
 commands:
-  sprocket_engine:
+  model_engine:
     description: Insert Funny Text Here
-    usage: /sprocket_engine [arg]
-    permission: sprocket_engine
+    usage: /model_engine [arg]
+    permission: model_engine

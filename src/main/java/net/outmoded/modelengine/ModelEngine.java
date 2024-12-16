@@ -13,11 +13,11 @@ public final class ModelEngine extends JavaPlugin {
         Config.load();
         ModelManager.loadModelConfigs();
 
-        getCommand("sprocket_engine").setExecutor(new Commands());
-        getCommand("sprocket_engine").setTabCompleter(new CommandsTabCompleat());
+        getCommand("model_engine").setExecutor(new Commands());
+        getCommand("model_engine").setTabCompleter(new CommandsTabCompleat());
 
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Sprocket Engine Loaded | Version 1.0-alpha | Made by DRAGNIL68");
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: Sprocket Engine Is In Early Alpha And My Do Damage ONLY use on test servers");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Model Engine Loaded | Version 1.0-alpha | Made by DRAGNIL68");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: Model Engine Is In Early Alpha And My Do Damage ONLY use on test servers");
 
 
 

@@ -15,7 +15,7 @@ public class CommandsTabCompleat implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("sprocket_engine"))
+        if (!sender.hasPermission("model_engine"))
             return null;
 
         if (args.length == 1){

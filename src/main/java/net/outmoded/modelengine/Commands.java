@@ -18,7 +18,7 @@ public class Commands implements CommandExecutor {
 
             if (args.length == 1) {
 
-                if (!sender.hasPermission("sprocket_engine")) {
+                if (!sender.hasPermission("model_engine")) {
                     sender.sendMessage(ChatColor.RED + "Type /animation help for list of commands");
                     return true;
                 }
@@ -44,7 +44,7 @@ public class Commands implements CommandExecutor {
                 } else if (Objects.equals(args[0], "help")) {
 
 
-                    sender.sendMessage("/sprocket_engine list_active_models|list_loaded_models|reload ||2 args|| spawn filename_with_no.json ||3 args|| play_animation activeModelUuid(in console) animationName");
+                    sender.sendMessage("/model_engine list_active_models|list_loaded_models|reload ||2 args|| spawn filename_with_no.json ||3 args|| play_animation activeModelUuid(in console) animationName");
                     return true;
 
                 } else if (Objects.equals(args[0], "reload")) {
@@ -56,7 +56,7 @@ public class Commands implements CommandExecutor {
                     return true;
 
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Type /animation help for list of commands");
+                    sender.sendMessage(ChatColor.RED + "Type /model_engine help for list of commands");
                     return true;
                 }
 
