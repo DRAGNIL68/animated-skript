@@ -1,4 +1,4 @@
-name: modelengine
+name: outmoded-model-engine
 version: '1.0-alpha'
 main: net.outmoded.modelengine.ModelEngine
 api-version: '1.21'

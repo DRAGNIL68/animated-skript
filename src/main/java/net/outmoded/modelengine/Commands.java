@@ -5,13 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import static net.outmoded.modelengine.ModelManager.*;
-import static org.bukkit.Bukkit.getServer;
 
 public class Commands implements CommandExecutor {
 
