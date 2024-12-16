@@ -1,0 +1,9 @@
+name: modelengine
+version: '1.0-alpha'
+main: net.outmoded.modelengine.ModelEngine
+api-version: '1.21'
+commands:
+  sprocket_engine:
+    description: Insert Funny Text Here
+    usage: /sprocket_engine [arg]
+    permission: sprocket_engine
