@@ -1,5 +1,6 @@
-package net.outmoded.modelengine;
+package net.outmoded.modelengine.commands;
 
+import net.outmoded.modelengine.ModelManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.*;

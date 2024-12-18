@@ -2,6 +2,10 @@ package net.outmoded.modelengine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.outmoded.modelengine.events.OnModelRemovedEvent;
+import net.outmoded.modelengine.events.OnModelSpawnedEvent;
+import net.outmoded.modelengine.events.OnReloadEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -27,16 +31,25 @@ public class ModelManager {
     public static void spawnNewModel(String modelType, Location location){
         try{
             if (loadedModelExists(modelType)) {
-
-                location.setPitch(0);
-                location.setYaw(0);
-
                 String uuid = String.valueOf(UUID.randomUUID());
-                ModelClass newModel = new ModelClass(location, modelType, uuid);
-                activeModels.put(uuid, newModel);
-                if (Config.debugMode())
-                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
 
+                OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType);
+                Bukkit.getPluginManager().callEvent(event);
+
+                if (!event.isCancelled()) {
+
+                    location.setPitch(0);
+                    location.setYaw(0);
+
+
+                    ModelClass newModel = new ModelClass(location, modelType, uuid);
+                    activeModels.put(uuid, newModel);
+
+
+                    if (Config.debugMode())
+                        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
+
+                }
             }
 
 
@@ -111,6 +124,9 @@ public class ModelManager {
     } // returns a reference of the requested JsonNode
 
     public static void reloadAllActiveModels() {
+
+
+
         for (ModelClass model : activeModels.values()) {
             model.loadConfig();
             model.loadAnimations();
@@ -119,52 +135,63 @@ public class ModelManager {
     }
 
 
-    public static boolean deleteActiveModel(String name) {
-        if (!activeModels.containsKey(name)){
-            return false;
+    public static void deleteActiveModel(String uuid) {
+        if (!activeModels.containsKey(uuid)){
+            return;
         }
-        ModelClass model = activeModels.get(name);
-        model.deleteModelNodes();
-        activeModels.remove(name);
-        return true;
+        ModelClass model = activeModels.get(uuid);
+        OnModelRemovedEvent event = new OnModelRemovedEvent(uuid, model.modelType);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (!event.isCancelled()) {
+            model.deleteModelNodes();
+            activeModels.remove(uuid);
+
+        }
+
+
     } // deletes an active model TODO: need way to remove loaded model
 
     public static void loadModelConfigs() { // loads json configs for models into memory
+        OnReloadEvent event = new OnReloadEvent();
 
-        loadedModels.clear();
+        Bukkit.getPluginManager().callEvent(event);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        File dataFolder = ModelEngine.getInstance().getDataFolder();
+        if (!event.isCancelled()) {
+            loadedModels.clear();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            File dataFolder = ModelEngine.getInstance().getDataFolder();
 
 
-        File contentsFolder = new File(ModelEngine.getInstance().getDataFolder(), "contents");
+            File contentsFolder = new File(ModelEngine.getInstance().getDataFolder(), "contents");
 
 
+            try {
+                File[] listedFiles = contentsFolder.listFiles();
+                int errors = 0;
+                if (listedFiles != null) {
+                    for (File modelfile : listedFiles) {
+                        JsonNode modelFileAsJsonNode = objectMapper.readTree(modelfile);
+                        if (!loadedModels.containsKey(modelfile.getName())) {
+                            int lastJsonIndex = modelfile.getName().lastIndexOf(".json");
+                            loadedModels.put(modelfile.getName().substring(0, lastJsonIndex), modelFileAsJsonNode);
+                            if (debugMode())
+                                getServer().getConsoleSender().sendMessage(ChatColor.RED + "(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex));
 
-        try {
-            File[] listedFiles = contentsFolder.listFiles();
-            int errors = 0;
-            if (listedFiles != null) {
-                for (File modelfile : listedFiles) {
-                    JsonNode modelFileAsJsonNode = objectMapper.readTree(modelfile);
-                    if (!loadedModels.containsKey(modelfile.getName())){
-                        int lastJsonIndex = modelfile.getName().lastIndexOf(".json");
-                        loadedModels.put(modelfile.getName().substring(0, lastJsonIndex), modelFileAsJsonNode);
-                        if (debugMode())
-                            getServer().getConsoleSender().sendMessage(ChatColor.RED + "(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex));
+                        } else {
+                            errors++;
+                            int lastJsonIndex = modelfile.getName().lastIndexOf(".json");
+                            getServer().getConsoleSender().sendMessage(ChatColor.RED + "Model Already Has The Name " + modelfile.getName().substring(0, lastJsonIndex)); // this can never happen
 
-                    }else{
-                        errors++;
-                        int lastJsonIndex = modelfile.getName().lastIndexOf(".json");
-                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "Model Already Has The Name " + modelfile.getName().substring(0, lastJsonIndex)); // this can never happen
+                        }
 
                     }
-
+                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Finished Loading Models with " + ChatColor.RED + errors + ChatColor.GREEN + " Error(s)");
                 }
-                getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Finished Loading Models with " + ChatColor.RED + errors + ChatColor.GREEN +" Error(s)");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

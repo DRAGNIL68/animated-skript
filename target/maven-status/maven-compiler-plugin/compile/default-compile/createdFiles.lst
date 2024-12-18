@@ -1,7 +1,10 @@
-net\outmoded\modelengine\CommandsTabCompleat.class
+net\outmoded\modelengine\api\OnModelRemovedEvent.class
+net\outmoded\modelengine\api\OnModelSpawnedEvent.class
 net\outmoded\modelengine\ModelManager.class
-net\outmoded\modelengine\Commands.class
 net\outmoded\modelengine\Config.class
+net\outmoded\modelengine\commands\CommandsTabCompleat.class
 net\outmoded\modelengine\ModelClass.class
 net\outmoded\modelengine\ModelEngine.class
+net\outmoded\modelengine\testcalss4.class
+net\outmoded\modelengine\commands\Commands.class
 net\outmoded\modelengine\ModelEngine$1.class

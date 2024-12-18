@@ -2,6 +2,8 @@ package net.outmoded.modelengine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.outmoded.modelengine.events.OnModelEndAnimationEvent;
+import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
 import org.bukkit.*;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
@@ -134,6 +136,7 @@ public class ModelClass { // TODO: destroy this shit code
                     // TODO: NOTE Blockbench North is Minecraft's South should fix at some point ¯\_(ツ)_/¯
                     //display.teleport(origin.clone().add(posAsVector));
                     display.setInterpolationDelay(1);
+                    display.setPersistent(false);
                     display.setTransformation(
                             new Transformation(
                                     new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
@@ -168,27 +171,36 @@ public class ModelClass { // TODO: destroy this shit code
         if (name == null) {
             return;
         }
+
+
+
+
         if (loadedAnimations.containsKey(name)){
 
-            //sets the ani
-            JsonNode animation = loadedAnimations.get(name);
-            if (animation != null){
+            OnModelStartAnimationEvent event = new OnModelStartAnimationEvent(uuid, modelType, name);
+            Bukkit.getPluginManager().callEvent(event);
 
-                currentAnimationName = name;
-                frames = animation.get("frames");
-                loopDelay = animation.get("loop_delay").asInt();
-                maxFrameTime = animation.get("duration").asInt();
+            if (!event.isCancelled()) {
 
-                if (Objects.equals(animation.get("loop_mode").asText(), "loop")){
-                    loopMode = true;
-                }else{
-                    loopMode = false;
+
+                //sets the animation
+                JsonNode animation = loadedAnimations.get(name);
+                if (animation != null) {
+
+                    currentAnimationName = name;
+                    frames = animation.get("frames");
+                    loopDelay = animation.get("loop_delay").asInt();
+                    maxFrameTime = animation.get("duration").asInt();
+
+                    if (Objects.equals(animation.get("loop_mode").asText(), "loop")) {
+                        loopMode = true;
+                    } else {
+                        loopMode = false;
+                    }
+
+                    if (debugMode())
+                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + currentAnimationName + " LoopMode: " + loopMode + " AnimationTimeInTicks: " + animation.get("duration").asInt());
                 }
-
-                if (debugMode())
-                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + currentAnimationName + " LoopMode: " + loopMode + " AnimationTimeInTicks: " + animation.get("duration").asInt());
-
-
             }
 
         }
@@ -288,11 +300,7 @@ public class ModelClass { // TODO: destroy this shit code
 
         if (currentFrameTime >= maxFrameTime){
             if (!loopMode) {
-                currentAnimationName = null;
-                frames = null;
-                currentFrameTime = 0; // in ticks 1T = 0.05S | 0.05 x 20 = 1S
-                loopDelay = 0;
-                maxFrameTime = 0;
+                resetAnimation();
             }
             else{
                 currentFrameTime = 0;
@@ -317,12 +325,17 @@ public class ModelClass { // TODO: destroy this shit code
     };
 
     public void resetAnimation(){
+
+        OnModelEndAnimationEvent event = new OnModelEndAnimationEvent(uuid, modelType, currentAnimationName, loopMode);
+        Bukkit.getPluginManager().callEvent(event);
+
         currentAnimationName = null;
         frames = null;
         currentFrameTime = 0; // in ticks 1T = 0.05S | 0.05 x 20 = 1S
         loopDelay = 0;
         maxFrameTime = 0;
         loopMode = false;
+
 
     }
 
