@@ -2,6 +2,7 @@ name: outmoded-model-engine
 version: '1.0-alpha'
 main: net.outmoded.modelengine.ModelEngine
 api-version: '1.21'
+author: DRAGNIL68
 commands:
   model_engine:
     description: Insert Funny Text Here

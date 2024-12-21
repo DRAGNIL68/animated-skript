@@ -8,7 +8,7 @@ import java.io.File;
 import static org.bukkit.Bukkit.getServer;
 
 public class Config {
-    private static boolean debug = false;
+    private static boolean debug = true;
 
 
     private final static Config configInstance = new Config();

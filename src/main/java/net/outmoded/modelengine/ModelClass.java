@@ -2,12 +2,16 @@ package net.outmoded.modelengine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import net.outmoded.modelengine.events.OnModelEndAnimationEvent;
 import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
 import org.bukkit.*;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
@@ -83,6 +87,8 @@ public class ModelClass { // TODO: destroy this shit code
         }
     }
 
+
+    // TODO: this method is to long: brake it down into smaller parts
     public void spawnModelNodes(){
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode root = config.get("nodes");
@@ -128,14 +134,59 @@ public class ModelClass { // TODO: destroy this shit code
                         itemDisplay.setItemStack(new ItemStack(material));
                         display = itemDisplay;
                     }
+                    else if (displayType.equals("text_display")) {
+
+                        String text = node.get("text").asText();
+                        String align = node.get("align").asText().toUpperCase();
+                        boolean shadow = node.get("shadow").asBoolean();
+                        boolean seeThrough = node.get("see_through").asBoolean();
+
+                        TextDisplay textDisplay = origin.getWorld().spawn(origin, TextDisplay.class);
+
+                        textDisplay.setText(text);
+                        textDisplay.setShadowed(shadow);
+                        textDisplay.setSeeThrough(seeThrough);
+                        textDisplay.setAlignment(TextDisplay.TextAlignment.valueOf(align));
+
+                        display = textDisplay;
+                    }
                     else {
-                        // error goes here
+                        throw new RuntimeException("Corrupted node in json file: " + modelType + ".json node: " + node.get("uuid"));
+                    }
+
+                    if (node.has("config")) {
+
+                        if (node.get("config").has("override_brightness")) {
+                            boolean overrideBrightness = node.get("config").get("override_brightness").asBoolean();
+
+                            if (overrideBrightness) {
+
+                                if (node.get("config").has("brightness_override")) {
+                                    Integer brightnessOverride = node.get("config").get("brightness_override").asInt();
+                                    Display.Brightness brightness = new Display.Brightness(brightnessOverride, brightnessOverride);
+                                    display.setBrightness(brightness);
+                                }
+                            }
+                        }
+
+                        if (node.get("config").has("shadow_radius")) {
+                            display.setShadowRadius(node.get("config").get("shadow_radius").asInt());
+                        }
+
+                        if (node.get("config").has("name")) {
+                            String name = node.get("config").get("name").asText();
+                            //display.customName(name);
+                        }
+
+                        if (node.get("config").has("custom_name_visible")) {
+                            display.setCustomNameVisible(node.get("config").get("name").asBoolean());
+                        }
                     }
 
                     Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]); // fuck math
                     // TODO: NOTE Blockbench North is Minecraft's South should fix at some point ¯\_(ツ)_/¯
                     //display.teleport(origin.clone().add(posAsVector));
-                    display.setInterpolationDelay(1);
+                    display.setTeleportDuration(50);
                     display.setPersistent(false);
                     display.setTransformation(
                             new Transformation(
