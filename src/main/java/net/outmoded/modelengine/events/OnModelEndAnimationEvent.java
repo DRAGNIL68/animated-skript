@@ -2,6 +2,7 @@ package net.outmoded.modelengine.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public final class OnModelEndAnimationEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
@@ -35,7 +36,7 @@ public final class OnModelEndAnimationEvent extends Event{
         return loopMode;
     }
 
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
