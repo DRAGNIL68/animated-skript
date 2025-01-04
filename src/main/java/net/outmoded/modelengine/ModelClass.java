@@ -2,6 +2,10 @@ package net.outmoded.modelengine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.modelengine.events.OnModelEndAnimationEvent;
 import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
 import org.bukkit.*;
@@ -178,6 +182,19 @@ public class ModelClass { // TODO: destroy this shit code
                         if (node.get("config").has("custom_name_visible")) {
                             display.setCustomNameVisible(node.get("config").get("name").asBoolean());
                         }
+
+                        if (node.get("config").has("glowing")) {
+                            display.setGlowing(node.get("config").get("glowing").asBoolean());
+                        }
+
+                        if (node.get("config").has("glow_color")) {
+                            String hexCode = node.get("config").get("glow_color").asText();
+
+                            TextColor glowColor = TextColor.fromHexString(hexCode);
+
+                            //display.setGlowColorOverride();
+                        }
+
                     }
 
                     Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]); // fuck math

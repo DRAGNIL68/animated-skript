@@ -26,6 +26,7 @@ public class Config {
         configFile = new File(ModelEngine.getInstance().getDataFolder(), "config.yml");
 
         File contentsFolder = new File(ModelEngine.getInstance().getDataFolder(), "contents");
+        File outputFolder = new File(ModelEngine.getInstance().getDataFolder(), "output");
 
         if (!configFile.exists())
             ModelEngine.getInstance().saveResource("config.yml", false);
@@ -33,6 +34,10 @@ public class Config {
         if (!contentsFolder.exists()){
             contentsFolder.mkdir();
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Created Contents Folder");
+
+        }
+        if (!outputFolder.exists()){
+            outputFolder.mkdir();
 
         }
 
