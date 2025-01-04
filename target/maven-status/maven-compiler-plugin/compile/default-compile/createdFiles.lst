@@ -7,6 +7,7 @@ net\outmoded\modelengine\ModelEngine$1.class
 net\outmoded\modelengine\ModelManager.class
 net\outmoded\modelengine\events\OnModelEndAnimationEvent.class
 net\outmoded\modelengine\events\OnModelRemovedEvent.class
+net\outmoded\modelengine\pack\PackBuilder.class
 net\outmoded\modelengine\ModelEngine.class
 net\outmoded\modelengine\commands\Commands.class
 net\outmoded\modelengine\events\OnModelSpawnedEvent.class
