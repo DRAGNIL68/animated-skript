@@ -18,9 +18,9 @@ import static net.outmoded.modelengine.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
 
 public class ModelManager {
-    private final static Map<String, JsonNode> loadedModels = new HashMap<>(); // stores all model types I.e there configs: key = file name
+    private final static Map<String, JsonNode> loadedModels = new HashMap<>(); // stores all model types I.e. there configs: key = file name
     private final static Map<String, ModelClass> activeModels = new HashMap<>(); // stores all models that are active on the server
-    private final static ModelManager modelManager = new ModelManager();
+    //private final static ModelManager modelManager = new ModelManager();
 
 
     private ModelManager(){
