@@ -9,10 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.modelengine.events.OnModelEndAnimationEvent;
 import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
 import org.bukkit.*;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
@@ -32,7 +29,7 @@ public class ModelClass { // TODO: destroy this shit code
     private final Map<String, JsonNode> loadedAnimations = new HashMap<>();
 
     public final String modelType;
-    private Location origin;
+    private ItemDisplay origin;
     private JsonNode config;
     private String alias; // not used
     private String uuid;
@@ -49,7 +46,8 @@ public class ModelClass { // TODO: destroy this shit code
     ModelClass(Location location, String modelType, String uuid) {
         this.modelType = modelType;
         this.uuid = uuid;
-        origin = location;
+        origin = location.getWorld().spawn(location, ItemDisplay.class);
+        origin.setPersistent(false);
         config = ModelManager.getLoadedModel(modelType);
         loadAnimations();
         spawnModelNodes();
@@ -102,7 +100,7 @@ public class ModelClass { // TODO: destroy this shit code
 
 
                     Float[] posAsArray = objectMapper.treeToValue(defaultTransform.get("pos"), Float[].class);
-                    Integer[] scaleAsArray = objectMapper.treeToValue(defaultTransform.get("scale"), Integer[].class); // "scale": [1, 1, 1]
+                    Float[] scaleAsArray = objectMapper.treeToValue(defaultTransform.get("scale"), Float[].class); // "scale": [1, 1, 1]
                     Float[] translationAsArray = objectMapper.treeToValue(decomposed.get("translation"), Float[].class); // "translation": [0, 0, 0]
                     Float[] left_rotationAsArray = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
                     String uuid = node.get("uuid").asText();
@@ -117,21 +115,21 @@ public class ModelClass { // TODO: destroy this shit code
                     if (displayType.equals("struct")) {
 
 
-                        ItemDisplay itemDisplay = origin.getWorld().spawn(origin, ItemDisplay.class);
+                        ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
                         itemDisplay.setItemStack(new ItemStack(Material.SKELETON_SKULL));
                         display = itemDisplay;
                     }
                     else if (displayType.equals("block_display")) {
 
                         Material material = Material.valueOf(node.get("block").asText().replace("minecraft:", "").toUpperCase());
-                        BlockDisplay blockDisplay = origin.getWorld().spawn(origin, BlockDisplay.class);
+                        BlockDisplay blockDisplay = origin.getWorld().spawn(origin.getLocation(), BlockDisplay.class);
                         blockDisplay.setBlock(material.createBlockData());
                         display = blockDisplay;
                     }
                     else if (displayType.equals("item_display")) {
 
                         Material material = Material.valueOf(node.get("item").asText().replace("minecraft:", "").toUpperCase());
-                        ItemDisplay itemDisplay = origin.getWorld().spawn(origin, ItemDisplay.class);
+                        ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
                         itemDisplay.setItemStack(new ItemStack(material));
                         display = itemDisplay;
                     }
@@ -142,7 +140,7 @@ public class ModelClass { // TODO: destroy this shit code
                         boolean shadow = node.get("shadow").asBoolean();
                         boolean seeThrough = node.get("see_through").asBoolean();
 
-                        TextDisplay textDisplay = origin.getWorld().spawn(origin, TextDisplay.class);
+                        TextDisplay textDisplay = origin.getWorld().spawn(origin.getLocation(), TextDisplay.class);
 
                         textDisplay.setText(text);
                         textDisplay.setShadowed(shadow);
@@ -150,6 +148,15 @@ public class ModelClass { // TODO: destroy this shit code
                         textDisplay.setAlignment(TextDisplay.TextAlignment.valueOf(align));
 
                         display = textDisplay;
+                    }
+                    else if(displayType.equals("camera")){
+
+                        ItemDisplay ItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+
+                        display = ItemDisplay;
+
+                        Display.Brightness brightness = new Display.Brightness(100, 100);
+                        display.setBrightness(brightness);
                     }
                     else {
                         throw new RuntimeException("Corrupted node in json file: " + modelType + ".json node: " + node.get("uuid"));
@@ -175,12 +182,16 @@ public class ModelClass { // TODO: destroy this shit code
                         }
 
                         if (node.get("config").has("name")) {
-                            String name = node.get("config").get("name").asText();
-                            //display.customName(name);
-                        }
 
                         if (node.get("config").has("custom_name_visible")) {
-                            display.setCustomNameVisible(node.get("config").get("name").asBoolean());
+                            display.setCustomNameVisible(node.get("config").get("custom_name").asBoolean());
+                        }
+                            if (node.get("config").has("custom_name")){
+
+                                String name = node.get("config").get("name").asText();
+                                display.setCustomName(name);
+                            }
+
                         }
 
                         if (node.get("config").has("glowing")) {
@@ -195,12 +206,24 @@ public class ModelClass { // TODO: destroy this shit code
                             //display.setGlowColorOverride();
                         }
 
+                        if (node.get("config").has("invisible")) {
+                            Boolean isInvisible = node.get("config").get("invisible").asBoolean();
+
+                            if (!displayType.equals("camera")){
+                                display.setVisibleByDefault(isInvisible);
+                            }
+
+                        }
+
                     }
 
+
+
+
                     Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]); // fuck math
-                    // TODO: NOTE Blockbench North is Minecraft's South should fix at some point ¯\_(ツ)_/¯
+                    // TODO: NOTE Blockbench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯
                     //display.teleport(origin.clone().add(posAsVector));
-                    display.setTeleportDuration(50);
+                    //display.setTeleportDuration(50);
                     display.setPersistent(false);
                     display.setTransformation(
                             new Transformation(
@@ -214,6 +237,7 @@ public class ModelClass { // TODO: destroy this shit code
 
                     activeNodes.put(uuid, display);
 
+                    origin.addPassenger(display);
                     if (debugMode())
                         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Spawning Node: " + uuid + " Of Model: " + this.uuid);
 
@@ -289,12 +313,12 @@ public class ModelClass { // TODO: destroy this shit code
                     JsonNode decomposed = defaultTransform.get("decomposed");
 
                     Float[] posAsArray = objectMapper.treeToValue(defaultTransform.get("pos"), Float[].class);
-                    Integer[] scaleAsArray = objectMapper.treeToValue(defaultTransform.get("scale"), Integer[].class); // "scale": [1, 1, 1]
+                    Float[] scaleAsArray = objectMapper.treeToValue(defaultTransform.get("scale"), Float[].class); // "scale": [1, 1, 1]
                     Float[] translationAsArray = objectMapper.treeToValue(decomposed.get("translation"), Float[].class); // "translation": [0, 0, 0]
                     Float[] left_rotationAsArray = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
 
 
-                    display.teleport(origin);
+                    //display.teleport(origin);
                     Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]);
 
                     display.setTransformation(
@@ -336,14 +360,14 @@ public class ModelClass { // TODO: destroy this shit code
 
 
                                 Float[] posAsArray = objectMapper.treeToValue(node.get("pos"), Float[].class);
-                                Integer[] scaleAsArray = objectMapper.treeToValue(node.get("scale"), Integer[].class); // "scale": [1, 1, 1]
+                                Float[] scaleAsArray = objectMapper.treeToValue(node.get("scale"), Float[].class); // "scale": [1, 1, 1]
                                 Float[] translationAsArray = objectMapper.treeToValue(decomposed.get("translation"), Float[].class); // "translation": [0, 0, 0]
                                 Float[] left_rotationAsArray = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
                                 Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]);
 
 
 
-                                display.teleport(origin);
+                                //display.teleport(origin);
                                 display.setTransformation(
                                         new Transformation(
                                                 new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
@@ -376,8 +400,12 @@ public class ModelClass { // TODO: destroy this shit code
 
     }
 
-    public void setOrigin(Location location){
-        location = location;
+    public void setOriginLocation(Location location){
+        origin.teleport(location);
+    };
+
+    public Location getOriginLocation(){
+        return origin.getLocation();
     };
 
     public String[] getAnimations(){
