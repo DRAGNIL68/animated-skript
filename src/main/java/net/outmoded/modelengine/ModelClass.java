@@ -151,9 +151,9 @@ public class ModelClass { // TODO: destroy this shit code
                     }
                     else if(displayType.equals("camera")){
 
-                        ItemDisplay ItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
-
-                        display = ItemDisplay;
+                        ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                        itemDisplay.setItemStack(new ItemStack(Material.WITHER_SKELETON_SKULL));
+                        display = itemDisplay;
 
                         Display.Brightness brightness = new Display.Brightness(100, 100);
                         display.setBrightness(brightness);
@@ -218,7 +218,8 @@ public class ModelClass { // TODO: destroy this shit code
                     }
 
 
-
+                    display.setInterpolationDelay(0);
+                    display.setInterpolationDuration(1);
 
                     Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]); // fuck math
                     // TODO: NOTE Blockbench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯

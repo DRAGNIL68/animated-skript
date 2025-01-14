@@ -2,6 +2,7 @@ net\outmoded\modelengine\events\OnModelStartAnimationEvent.class
 net\outmoded\modelengine\pack\jsonObjects\WritableObject.class
 net\outmoded\modelengine\Config.class
 net\outmoded\modelengine\pack\jsonObjects\NonWritableObject.class
+net\outmoded\skript\test.class
 net\outmoded\modelengine\pack\Namespace.class
 net\outmoded\modelengine\commands\CommandsTabCompleat.class
 net\outmoded\modelengine\pack\PackUtils.class
