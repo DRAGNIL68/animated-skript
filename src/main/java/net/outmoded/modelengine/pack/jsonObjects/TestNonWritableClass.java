@@ -1,6 +1,6 @@
 package net.outmoded.modelengine.pack.jsonObjects;
 
-public class TestNonWritableClass extends NonWritableObject {
+public class TestNonWritableClass extends NonWritable {
 
 
     private final String name;

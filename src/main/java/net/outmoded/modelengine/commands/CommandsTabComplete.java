@@ -1,17 +1,16 @@
 package net.outmoded.modelengine.commands;
 
 
-import net.outmoded.modelengine.ModelClass;
-import net.outmoded.modelengine.ModelManager;
+import net.outmoded.modelengine.models.ModelClass;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import java.util.*;
 
-import static net.outmoded.modelengine.ModelManager.*;
+import static net.outmoded.modelengine.models.ModelManager.*;
 
-public class CommandsTabCompleat implements TabCompleter {
+public class CommandsTabComplete implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
@@ -27,24 +26,48 @@ public class CommandsTabCompleat implements TabCompleter {
                 return Arrays.asList(getAllLoadedModelsKeys());
             }
             else if(args[0].equals("play_animation")){
-                return Arrays.asList(getAllActiveModelsUuids());
+                return Arrays.asList(getAllActiveModelsUuidsAsString());
             }
             else if(args[0].equals("remove")){
-                return Arrays.asList(getAllActiveModelsUuids());
+                return Arrays.asList(getAllActiveModelsUuidsAsString());
+            }
+            else {
+                return new ArrayList<>();
             }
         }
         if (args.length == 3){
 
+
             if (args[0].equals("play_animation")){
-                ModelClass model = getActiveModel(args[1]);
-                if (model == null)
+                UUID uuid;
+
+                if (args[1] == null)
                     return Collections.emptyList();
 
+                uuid = UUID.fromString(args[1]);
 
+                sender.sendMessage(args[1]);
+
+                if (!activeModelExists(uuid)){
+
+                    return Collections.emptyList();
+                }
+
+                ModelClass model = getActiveModel(uuid);
+
+                if (model == null) {
+                    return Collections.emptyList();
+                }
+
+                if (model.getAnimations().length == 0) {
+                    return Collections.emptyList();
+                }
                 return Arrays.asList(model.getAnimations());
-
             }
+
+
         }
+
 
         return new ArrayList<>();
     }

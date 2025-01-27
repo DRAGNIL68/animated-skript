@@ -3,7 +3,7 @@ package net.outmoded.modelengine.pack.jsonObjects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TestWritableJsonObject extends WritableObject {
+public class TestWritableJson extends Writable {
     @JsonIgnore
     private int num;
 
@@ -12,7 +12,8 @@ public class TestWritableJsonObject extends WritableObject {
     @JsonProperty("renamedField")
     private String frog;
 
-    public TestWritableJsonObject(String frog){
+    public TestWritableJson(String frog){
+        super(frog + ".txt");
         this.frog = frog;
         testNonWritableClass = new TestNonWritableClass(frog);
     }

@@ -13,7 +13,7 @@ public class Config {
 
     private final static Config configInstance = new Config();
 
-    private Config(){ // contructor makes it private
+    private Config(){ // constructor makes it private
 
     }
 
@@ -45,18 +45,20 @@ public class Config {
         configYml = new YamlConfiguration();
         configYml.options().parseComments(true);
 
-        debug = Boolean.valueOf(configYml.getString("debug"));
+
+
 
 
         try{
             configYml.load(configFile);
-            File[] listedfiles = contentsFolder.listFiles();
-            if (listedfiles != null){
-                for (File modelfile : listedfiles) {
+            File[] listedFiles = contentsFolder.listFiles();
+            if (listedFiles != null){
+                for (File modelfile : listedFiles) {
 
                 }
             }
 
+            debug = Boolean.valueOf(configYml.getString("debug"));
 
 
         } catch (Exception e) {

@@ -4,18 +4,20 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import java.util.UUID;
+
 public final class OnModelRemovedEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
-    private String uuid;
+    private UUID uuid;
     private String modelType;
 
-    public OnModelRemovedEvent(String model, String type) {
-        uuid = model;
+    public OnModelRemovedEvent(UUID uuid, String type) {
+        this.uuid = uuid;
         modelType = type;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 

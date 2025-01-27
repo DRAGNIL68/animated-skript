@@ -1,6 +1,16 @@
 package net.outmoded.modelengine.pack;
 
 
+import net.outmoded.modelengine.pack.jsonObjects.Writable;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
+import static org.bukkit.Bukkit.getServer;
+
 public class Namespace {
 
     private final String namespace;
@@ -10,25 +20,33 @@ public class Namespace {
     public Namespace(String namespace, ResourcePack resourcePack) {
         this.namespace = namespace;
         this.resourcePack = resourcePack;
-        namespacePath = "/assets/" + namespace;
+        namespacePath = "assets/" + namespace + "/";
         resourcePack.registerNamespace(this);
     }
 
 
-    public String getNamespacePath() {
+    public String getNamespacePathAsString() {
         return namespacePath;
+    }
+
+    public Path getNamespacePath() {
+        return Paths.get(namespacePath);
     }
 
     public String getNamespaceAsString() {
         return namespace;
     }
 
-    public void createPath(String path){
-        resourcePack.createPath(namespacePath + path);
+    public void writeJsonObject(Writable object, String namespaceWritePath){
+        resourcePack.writeJsonObject(object, namespacePath + namespaceWritePath);
     }
 
-    public void createGenericFile(String fileName, String filePath, String contents ){
-        resourcePack.createGenericFile(fileName,namespacePath + filePath, contents);
+    public void createGenericFile(String fileName, String  namespaceFilePath, String contents){
+        resourcePack.createGenericFile(fileName,namespacePath + namespaceFilePath, contents);
+    }
+
+    public void copyFileFromDisk(String filePath, String  namespaceOutputPath) {
+        resourcePack.copyFileFromDisk(filePath, namespacePath + namespaceOutputPath);
     }
 
 }

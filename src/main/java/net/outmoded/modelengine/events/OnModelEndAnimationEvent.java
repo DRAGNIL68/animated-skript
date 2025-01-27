@@ -4,23 +4,25 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public final class OnModelEndAnimationEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
-    private String uuid;
+    private UUID uuid;
     private String modelType;
     private String animation;
     private boolean loopMode;
 
-    public OnModelEndAnimationEvent(String model, String type, String animationName, boolean loopMode) {
-        uuid = model;
+    public OnModelEndAnimationEvent(UUID uuid, String type, String animationName, boolean loopMode) {
+        this.uuid = uuid;
         modelType = type;
         animation = animationName;
         this.loopMode = loopMode;
 
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 

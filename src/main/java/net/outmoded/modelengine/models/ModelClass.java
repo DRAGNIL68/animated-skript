@@ -1,16 +1,17 @@
-package net.outmoded.modelengine;
+package net.outmoded.modelengine.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.outmoded.modelengine.Config;
+import net.outmoded.modelengine.ModelEngine;
 import net.outmoded.modelengine.events.OnModelEndAnimationEvent;
 import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.joml.AxisAngle4f;
@@ -27,12 +28,13 @@ import static org.bukkit.Bukkit.getServer;
 public class ModelClass { // TODO: destroy this shit code
     private final Map<String, Display> activeNodes = new HashMap<>();
     private final Map<String, JsonNode> loadedAnimations = new HashMap<>();
+    private final Map<String, String> loadedTextures = new HashMap<>();
 
-    public final String modelType;
+    private final String modelType;
     private ItemDisplay origin;
     private JsonNode config;
     private String alias; // not used
-    private String uuid;
+    private UUID uuid;
 
     //current animation info
     String currentAnimationName = null;
@@ -43,7 +45,7 @@ public class ModelClass { // TODO: destroy this shit code
     Boolean isActive = false;
     Boolean loopMode = false;
 
-    ModelClass(Location location, String modelType, String uuid) {
+    ModelClass(Location location, String modelType, UUID uuid) {
         this.modelType = modelType;
         this.uuid = uuid;
         origin = location.getWorld().spawn(location, ItemDisplay.class);
@@ -52,6 +54,8 @@ public class ModelClass { // TODO: destroy this shit code
         loadAnimations();
         spawnModelNodes();
     }
+
+
 
     public void loadAnimations(){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -62,7 +66,7 @@ public class ModelClass { // TODO: destroy this shit code
             JsonNode nodes = root.path("animations");
 
             nodes.forEach(loopedAnimation -> {
-                String name = loopedAnimation.get("name").asText(); // uuid of animation
+                String name = loopedAnimation.get("name").asText(); // name of animation
                 loadedAnimations.put(name, loopedAnimation);
 
             });
@@ -81,6 +85,7 @@ public class ModelClass { // TODO: destroy this shit code
 
 
         }
+
         catch (Exception e){
             e.printStackTrace();
         }
@@ -116,13 +121,30 @@ public class ModelClass { // TODO: destroy this shit code
 
 
                         ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
-                        itemDisplay.setItemStack(new ItemStack(Material.SKELETON_SKULL));
+
+                        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+                        itemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
+
+
+                        if (Config.debugMode()) {
+                            itemDisplay.setItemStack(new ItemStack(Material.SKELETON_SKULL));
+                            itemDisplay.setGlowing(true);
+                            itemDisplay.setVisibleByDefault(true);
+
+
+                        }
                         display = itemDisplay;
+
+
                     }
                     else if (displayType.equals("block_display")) {
 
                         Material material = Material.valueOf(node.get("block").asText().replace("minecraft:", "").toUpperCase());
                         BlockDisplay blockDisplay = origin.getWorld().spawn(origin.getLocation(), BlockDisplay.class);
+
+                        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+                        blockDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "block_display");
+
                         blockDisplay.setBlock(material.createBlockData());
                         display = blockDisplay;
                     }
@@ -130,6 +152,10 @@ public class ModelClass { // TODO: destroy this shit code
 
                         Material material = Material.valueOf(node.get("item").asText().replace("minecraft:", "").toUpperCase());
                         ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+
+                        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+                        itemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "item_display");
+
                         itemDisplay.setItemStack(new ItemStack(material));
                         display = itemDisplay;
                     }
@@ -142,6 +168,10 @@ public class ModelClass { // TODO: destroy this shit code
 
                         TextDisplay textDisplay = origin.getWorld().spawn(origin.getLocation(), TextDisplay.class);
 
+                        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+                        textDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "text_display");
+
+                        textDisplay.setText(text);
                         textDisplay.setText(text);
                         textDisplay.setShadowed(shadow);
                         textDisplay.setSeeThrough(seeThrough);
@@ -153,6 +183,10 @@ public class ModelClass { // TODO: destroy this shit code
 
                         ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
                         itemDisplay.setItemStack(new ItemStack(Material.WITHER_SKELETON_SKULL));
+
+                        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+                        itemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "camera");
+
                         display = itemDisplay;
 
                         Display.Brightness brightness = new Display.Brightness(100, 100);
@@ -234,6 +268,19 @@ public class ModelClass { // TODO: destroy this shit code
                                     new AxisAngle4f() // no right rotation
                             )
                     );
+                    if (Config.debugMode()) {
+                        if (displayType.equals("struct")) {
+                            display.setTransformation(
+                                    new Transformation(
+                                            new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
+                                            new AxisAngle4f().set(quaternion), // left rot
+                                            new Vector3f(0.2F, 0.2F, 0.2F), // scale
+                                            new AxisAngle4f() // no right rotation
+                                    )
+                            );
+                        }
+                    }
+
                     display.setCustomName(uuid);
 
                     activeNodes.put(uuid, display);
@@ -277,6 +324,8 @@ public class ModelClass { // TODO: destroy this shit code
                 JsonNode animation = loadedAnimations.get(name);
                 if (animation != null) {
 
+                    resetAnimation();
+
                     currentAnimationName = name;
                     frames = animation.get("frames");
                     loopDelay = animation.get("loop_delay").asInt();
@@ -308,7 +357,13 @@ public class ModelClass { // TODO: destroy this shit code
             ObjectMapper objectMapper = new ObjectMapper();
             config.get("nodes").forEach(node -> {
                 try {
+
                     Display display = activeNodes.get(node.get("uuid").asText());
+
+                    NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+                    PersistentDataContainer container = display.getPersistentDataContainer();
+                    String nodeType = container.get(key, PersistentDataType.STRING);
+
 
                     JsonNode defaultTransform = node.get("default_transform");
                     JsonNode decomposed = defaultTransform.get("decomposed");
@@ -330,6 +385,15 @@ public class ModelClass { // TODO: destroy this shit code
                                     new AxisAngle4f() // no right rotation
                             )
                     );
+                    if (nodeType.equals("struct")) {
+                        new Transformation(
+                                new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
+                                new AxisAngle4f().set(quaternion) , // left rot
+                                new Vector3f(0.2F, 0.2F, 0.2F), // scale
+                                new AxisAngle4f() // no right rotation
+                        );
+                    }
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -339,7 +403,6 @@ public class ModelClass { // TODO: destroy this shit code
 
         else {
             frames.forEach(data -> {
-
 
                 if (currentFrameTime == (Math.round(data.get("time").asDouble() * 20))) {
                     Iterator<String> itr = data.get("node_transforms").fieldNames(); // gets list of all nodes in frame
@@ -353,6 +416,10 @@ public class ModelClass { // TODO: destroy this shit code
 
                         Display display = activeNodes.get(key_field);
                         JsonNode decomposed = node.get("decomposed");
+
+                        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+                        PersistentDataContainer container = display.getPersistentDataContainer();
+                        String nodeType = container.get(key, PersistentDataType.STRING);
 
                         ObjectMapper objectMapper = new ObjectMapper();
                         try {
@@ -369,14 +436,26 @@ public class ModelClass { // TODO: destroy this shit code
 
 
                                 //display.teleport(origin);
-                                display.setTransformation(
+                                if (nodeType.equals("struct")) {
+                                    display.setTransformation(
+                                            new Transformation(
+                                                    new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
+                                                    new AxisAngle4f(quaternion), // left rot
+                                                    new Vector3f(0.2F, 0.2F, 0.2F), // scale
+                                                    new AxisAngle4f() // no right rotation
+                                            )
+                                    );
+                                }
+                                else {
+                                    display.setTransformation(
                                         new Transformation(
                                                 new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
-                                                new AxisAngle4f(quaternion), // left rot
+                                                new AxisAngle4f().set(quaternion), // left rot
                                                 new Vector3f(scaleAsArray[0], scaleAsArray[1], scaleAsArray[2]), // scale
                                                 new AxisAngle4f() // no right rotation
                                         )
-                                );
+                                    );
+                                }
 
                             }
 
@@ -409,13 +488,30 @@ public class ModelClass { // TODO: destroy this shit code
         return origin.getLocation();
     };
 
+    public ItemDisplay getOrigin(){
+        return origin;
+    };
+
+    public String getModelType(){
+        return modelType;
+    };
+
+    public UUID getUuid(){
+        return uuid;
+    };
+
+    public String getCurrentAnimation(){
+        return currentAnimationName;
+    };
+
     public String[] getAnimations(){
-       String[] animationUuids = new String[loadedAnimations.size()];
+       String[] animationNames = new String[loadedAnimations.size()];
+        Integer count = 0;
        for (String key : loadedAnimations.keySet()) {
-           Integer count = 0;
-           animationUuids[count] = key;
+           animationNames[count] = key;
+           count++;
        }
-       return animationUuids;
+       return animationNames;
     };
 
     public void resetAnimation(){
@@ -431,6 +527,6 @@ public class ModelClass { // TODO: destroy this shit code
         loopMode = false;
 
 
-    }
+    };
 
 }

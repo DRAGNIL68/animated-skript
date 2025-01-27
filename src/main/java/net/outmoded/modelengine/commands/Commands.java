@@ -1,15 +1,18 @@
 package net.outmoded.modelengine.commands;
 
-import net.outmoded.modelengine.ModelManager;
+import net.outmoded.modelengine.models.ModelManager;
+import net.outmoded.modelengine.models.ModelPersistence;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.UUID;
 
-import static net.outmoded.modelengine.ModelManager.*;
+import static net.outmoded.modelengine.models.ModelManager.*;
 
 public class Commands implements CommandExecutor {
 
@@ -26,19 +29,11 @@ public class Commands implements CommandExecutor {
 
                 if (Objects.equals(args[0], "list_loaded_models")) {
 
-
-                    if (ModelManager.getAllLoadedModelsKeys() == null){
-                        return true;
-                    }
                     sender.sendMessage(ChatColor.GREEN + "Models Loaded:" + Arrays.toString(ModelManager.getAllLoadedModelsKeys()));
                     return true;
 
                 } else if (Objects.equals(args[0], "list_active_models")) {
 
-
-                    if (ModelManager.getAllLoadedModelsKeys() == null){
-                        return true;
-                    }
                     sender.sendMessage(ChatColor.GREEN + "Models Active:" + Arrays.toString(ModelManager.getAllActiveModelsUuids()));
                     return true;
 
@@ -53,6 +48,12 @@ public class Commands implements CommandExecutor {
 
                     ModelManager.loadModelConfigs();
                     ModelManager.reloadAllActiveModels();
+
+                    try {
+                        ModelPersistence.saveModels();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     sender.sendMessage(ChatColor.GREEN + "Reloaded All Models");
                     return true;
 
@@ -88,23 +89,24 @@ public class Commands implements CommandExecutor {
                     }
                     Location location = ((Player) sender).getLocation();
 
-                    ModelManager.getActiveModel(args[1]);
+                    ModelManager.getActiveModel(UUID.fromString(args[1]));
                     sender.sendMessage("Removed Model: " + args[1]);
                     return true;
                 }
 
             } else if (args.length == 3) {
 
+
                 if (Objects.equals(args[0], "play_animation")) {
 
 
-                    if (activeModelExists(args[1])) {
-                        if (getActiveModel(args[1]) == null) {
+                    if (activeModelExists(UUID.fromString(args[1]))) {
+                        if (getActiveModel(UUID.fromString(args[1])) == null) {
                             sender.sendMessage(ChatColor.RED + "Model Dose Not Exist");
                             return true;
                         }
 
-                        getActiveModel(args[1]).playAnimation(args[2]);
+                        getActiveModel(UUID.fromString(args[1])).playAnimation(args[2]);
                         return true;
                     }
                 }
