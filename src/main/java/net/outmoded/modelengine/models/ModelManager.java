@@ -216,7 +216,7 @@ public class ModelManager {
             String textureName = texture.get("name").asText();
             String textureSrc = texture.get("src").asText().replace("data:image/png;base64,", "");
 
-            resourcePack.base64ToTexture(textureName, animatedSkript.getNamespacePathAsString() + "textures/" + modelName + "/", textureSrc);
+            resourcePack.base64ToTexture(textureName, animatedSkript.getNamespacePathAsString() + "textures/item/" + modelName + "/", textureSrc);
             //resourcePack.base64ToTexture("frog.png", "assets/", textureSrc);
 
         });
@@ -277,7 +277,7 @@ public class ModelManager {
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            resourcePack = new ResourcePack("cool_pack");
+            resourcePack = new ResourcePack("animated-skript");
 
             animatedSkript = new Namespace("animated-skript", resourcePack); // <- creates new namespace
 
@@ -303,7 +303,7 @@ public class ModelManager {
 
                             loadModelTexture(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
                             loadModelData(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
-                            resourcePack.writeJsonObject(new McMeta("Animated-Skript", 42), "");
+                            resourcePack.writeJsonObject(new McMeta("§3Animated-Skript", 42), "");
                             if (debugMode())
                                 getServer().getConsoleSender().sendMessage(ChatColor.RED + "(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex));
 
@@ -317,7 +317,8 @@ public class ModelManager {
                     }
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Finished Loading Models with " + ChatColor.RED + errors + ChatColor.GREEN + " Error(s)");
                 }
-                resourcePack.build("plugins/" + resourcePack.getName() + ".zip");
+                resourcePack.build(ModelEngine.getInstance().getDataFolder().getPath() + "/output/" + resourcePack.getName() + ".zip");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -39,9 +39,9 @@ public class ResourcePack {
 
     }
 
-    public void copyFileFromDisk(String filePath, String outputPath) {
+    public void copyFileFromDisk(String filePath, String pastePath) {
         try {
-            Path directory = fileSystem.getPath(outputPath);
+            Path directory = fileSystem.getPath(pastePath);
             Path path = Paths.get(filePath);
             if (!Files.exists(directory)) {
                 Files.createDirectories(directory);
@@ -149,9 +149,9 @@ public class ResourcePack {
 
     }
 
-    public void build(String outputPath) {
+    public void build(String outputFilePath) {
         try {
-            ZipFileUtil zipFileUtil = new ZipFileUtil(outputPath, fileSystem);
+            ZipFileUtil zipFileUtil = new ZipFileUtil(outputFilePath, fileSystem);
             zipFileUtil.addToZip("");
             //zipFileTest.addToZip("pack.mcmeta");
             if (!hasFile("pack.mcmeta")){

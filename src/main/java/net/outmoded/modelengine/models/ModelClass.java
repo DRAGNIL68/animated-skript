@@ -10,6 +10,7 @@ import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
@@ -28,13 +29,14 @@ import static org.bukkit.Bukkit.getServer;
 public class ModelClass { // TODO: destroy this shit code
     private final Map<String, Display> activeNodes = new HashMap<>();
     private final Map<String, JsonNode> loadedAnimations = new HashMap<>();
-    private final Map<String, String> loadedTextures = new HashMap<>();
+    private final Map<String, String> loadedVariants = new HashMap<>();
 
     private final String modelType;
     private ItemDisplay origin;
     private JsonNode config;
     private String alias; // not used
     private UUID uuid;
+    private String activeVeriant = "default";
 
     //current animation info
     String currentAnimationName = null;
@@ -56,6 +58,24 @@ public class ModelClass { // TODO: destroy this shit code
     }
 
 
+    public void loadVariants(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try{
+            resetAnimation();
+            JsonNode root = config;
+
+            JsonNode variants = root.path("variants");
+
+            variants.forEach(variant -> {
+                String name = variant.get("name").asText(); // name of animation
+                loadedVariants.put(name, variant.get("uuid").asText());
+
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     public void loadAnimations(){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -115,29 +135,57 @@ public class ModelClass { // TODO: destroy this shit code
                     Vector posAsVector = new Vector(posAsArray[0], posAsArray[1], posAsArray[2]);
                     Location posAsLoc = new Location(origin.getWorld(), posAsArray[0], posAsArray[1], posAsArray[2]);
 
-                    String displayType = node.get("type").asText();
+                    String nodeType = node.get("type").asText();
 
-                    if (displayType.equals("struct")) {
+                    if (nodeType.equals("struct")) {
 
 
+
+                        ItemStack itemStack = new ItemStack(Material.SKELETON_SKULL);
                         ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                        itemDisplay.setVisibleByDefault(false);
+                        itemDisplay.setItemStack(itemStack);
+
+
 
                         NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
                         itemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
 
-
                         if (Config.debugMode()) {
-                            itemDisplay.setItemStack(new ItemStack(Material.SKELETON_SKULL));
                             itemDisplay.setGlowing(true);
                             itemDisplay.setVisibleByDefault(true);
 
-
                         }
+
+
+
                         display = itemDisplay;
 
 
                     }
-                    else if (displayType.equals("block_display")) {
+                    else if (nodeType.equals("bone")) {
+
+
+
+                        ItemStack itemStack = new ItemStack(Material.SKELETON_SKULL);
+                        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+
+
+                        NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + activeVeriant + "/" + uuid);
+                        ItemMeta meta = itemStack.getItemMeta();
+                        meta.setItemModel(modelKey);
+                        itemStack.setItemMeta(meta);
+
+                        ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+
+                        itemDisplay.setItemStack(itemStack);
+                        itemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "bone");
+
+                        display = itemDisplay;
+
+
+                    }
+                    else if (nodeType.equals("block_display")) {
 
                         Material material = Material.valueOf(node.get("block").asText().replace("minecraft:", "").toUpperCase());
                         BlockDisplay blockDisplay = origin.getWorld().spawn(origin.getLocation(), BlockDisplay.class);
@@ -148,7 +196,7 @@ public class ModelClass { // TODO: destroy this shit code
                         blockDisplay.setBlock(material.createBlockData());
                         display = blockDisplay;
                     }
-                    else if (displayType.equals("item_display")) {
+                    else if (nodeType.equals("item_display")) {
 
                         Material material = Material.valueOf(node.get("item").asText().replace("minecraft:", "").toUpperCase());
                         ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
@@ -159,7 +207,7 @@ public class ModelClass { // TODO: destroy this shit code
                         itemDisplay.setItemStack(new ItemStack(material));
                         display = itemDisplay;
                     }
-                    else if (displayType.equals("text_display")) {
+                    else if (nodeType.equals("text_display")) {
 
                         String text = node.get("text").asText();
                         String align = node.get("align").asText().toUpperCase();
@@ -177,9 +225,14 @@ public class ModelClass { // TODO: destroy this shit code
                         textDisplay.setSeeThrough(seeThrough);
                         textDisplay.setAlignment(TextDisplay.TextAlignment.valueOf(align));
 
+                        if (node.get("config").has("billboard")){
+                            textDisplay.setBillboard(Display.Billboard.valueOf(node.get("config").get("billboard").asText().toUpperCase()));
+
+                        }
+
                         display = textDisplay;
                     }
-                    else if(displayType.equals("camera")){
+                    else if(nodeType.equals("camera")){
 
                         ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
                         itemDisplay.setItemStack(new ItemStack(Material.WITHER_SKELETON_SKULL));
@@ -243,7 +296,7 @@ public class ModelClass { // TODO: destroy this shit code
                         if (node.get("config").has("invisible")) {
                             Boolean isInvisible = node.get("config").get("invisible").asBoolean();
 
-                            if (!displayType.equals("camera")){
+                            if (!nodeType.equals("camera")){
                                 display.setVisibleByDefault(isInvisible);
                             }
 
@@ -269,7 +322,7 @@ public class ModelClass { // TODO: destroy this shit code
                             )
                     );
                     if (Config.debugMode()) {
-                        if (displayType.equals("struct")) {
+                        if (nodeType.equals("struct")) {
                             display.setTransformation(
                                     new Transformation(
                                             new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
@@ -528,5 +581,25 @@ public class ModelClass { // TODO: destroy this shit code
 
 
     };
+
+    public void setVariant(String variantKey) {
+        if (loadedVariants.containsKey(variantKey)){
+            activeVeriant = variantKey;
+        }
+    }
+
+    public String[] getAllVariants() {
+        String[] variants = new String[loadedVariants.size()];
+        Integer count = 0;
+        for (String key : loadedAnimations.keySet()) {
+            variants[count] = key;
+            count++;
+        }
+        return variants;
+    }
+
+    public boolean hasVariant(String variantKey) {
+        return loadedVariants.containsKey(variantKey);
+    }
 
 }

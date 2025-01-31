@@ -16,6 +16,7 @@ public class test {
         Namespace animatedSkript = new Namespace("animated-skript", resourcePack); // <- creates new namespace
 
         animatedSkript.createGenericFile("frog.txt", "frog", "ogg"); // generic file
+        // animatedSkript.createGenericFile("frog/frog.txt", "ogg");
 
         animatedSkript.copyFileFromDisk("plugins/packtest/katana.json", "models/item/katana.json"); // copy file from the disk to th texture pack
         animatedSkript.copyFileFromDisk("plugins/packtest/katana.png", "textures/item/katana.png");
