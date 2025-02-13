@@ -3,6 +3,7 @@ package net.outmoded.modelengine.events;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public final class OnModelRemovedEvent extends Event implements Cancellable {
         return modelType;
     }
 
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 

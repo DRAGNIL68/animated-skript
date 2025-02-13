@@ -1,5 +1,6 @@
 package net.outmoded.modelengine.commands;
 
+import net.outmoded.modelengine.Config;
 import net.outmoded.modelengine.models.ModelManager;
 import net.outmoded.modelengine.models.ModelPersistence;
 import org.bukkit.ChatColor;
@@ -45,7 +46,7 @@ public class Commands implements CommandExecutor {
 
                 } else if (Objects.equals(args[0], "reload")) {
 
-
+                    Config.load();
                     ModelManager.loadModelConfigs();
                     ModelManager.reloadAllActiveModels();
 

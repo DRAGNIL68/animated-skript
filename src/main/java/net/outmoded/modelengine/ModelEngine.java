@@ -34,6 +34,9 @@ public final class ModelEngine extends JavaPlugin {
         test.runPack();
 
         // Skript stuff
+        /*
+
+
         addon = Skript.registerAddon(this);
         try {
             //This will register all our syntax for us. Explained below
@@ -42,7 +45,7 @@ public final class ModelEngine extends JavaPlugin {
             e.printStackTrace();
         }
         Bukkit.getLogger().info("[ExampleAddon] has been enabled!");
-
+        */
         // End of Skript Stuff
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
@@ -62,9 +65,9 @@ public final class ModelEngine extends JavaPlugin {
         return getPlugin(ModelEngine.class);
     }
 
-    public SkriptAddon getAddonInstance() {
-        return addon;
-    }
+    //public SkriptAddon getAddonInstance() {
+        //return addon;
+    //}
 }
 
 

@@ -214,6 +214,7 @@ public class ModelManager {
         JsonNode textures = model.get("textures");
         textures.forEach(texture -> {
             String textureName = texture.get("name").asText();
+
             String textureSrc = texture.get("src").asText().replace("data:image/png;base64,", "");
 
             resourcePack.base64ToTexture(textureName, animatedSkript.getNamespacePathAsString() + "textures/item/" + modelName + "/", textureSrc);

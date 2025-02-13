@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
-import org.bukkit.util.Vector;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -36,7 +35,7 @@ public class ModelClass { // TODO: destroy this shit code
     private JsonNode config;
     private String alias; // not used
     private UUID uuid;
-    private String activeVeriant = "default";
+    private String activeVariant = "default";
 
     //current animation info
     String currentAnimationName = null;
@@ -82,7 +81,7 @@ public class ModelClass { // TODO: destroy this shit code
         try{
             resetAnimation();
             JsonNode root = config;
-
+            loadedAnimations.clear();
             JsonNode nodes = root.path("animations");
 
             nodes.forEach(loopedAnimation -> {
@@ -123,8 +122,6 @@ public class ModelClass { // TODO: destroy this shit code
                     JsonNode defaultTransform = node.get("default_transform");
                     JsonNode decomposed = defaultTransform.get("decomposed");
 
-
-                    Float[] posAsArray = objectMapper.treeToValue(defaultTransform.get("pos"), Float[].class);
                     Float[] scaleAsArray = objectMapper.treeToValue(defaultTransform.get("scale"), Float[].class); // "scale": [1, 1, 1]
                     Float[] translationAsArray = objectMapper.treeToValue(decomposed.get("translation"), Float[].class); // "translation": [0, 0, 0]
                     Float[] left_rotationAsArray = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
@@ -132,8 +129,6 @@ public class ModelClass { // TODO: destroy this shit code
 
                     Display display = null;
 
-                    Vector posAsVector = new Vector(posAsArray[0], posAsArray[1], posAsArray[2]);
-                    Location posAsLoc = new Location(origin.getWorld(), posAsArray[0], posAsArray[1], posAsArray[2]);
 
                     String nodeType = node.get("type").asText();
 
@@ -171,7 +166,7 @@ public class ModelClass { // TODO: destroy this shit code
                         NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
 
 
-                        NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + activeVeriant + "/" + uuid);
+                        NamespacedKey  modelKey = new NamespacedKey("animated-skript", modelType + "/" + activeVariant + "/" + uuid);
                         ItemMeta meta = itemStack.getItemMeta();
                         meta.setItemModel(modelKey);
                         itemStack.setItemMeta(meta);
@@ -305,7 +300,7 @@ public class ModelClass { // TODO: destroy this shit code
                     }
 
 
-                    display.setInterpolationDelay(0);
+                    display.setInterpolationDelay(-1);
                     display.setInterpolationDuration(1);
 
                     Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]); // fuck math
@@ -313,6 +308,9 @@ public class ModelClass { // TODO: destroy this shit code
                     //display.teleport(origin.clone().add(posAsVector));
                     //display.setTeleportDuration(50);
                     display.setPersistent(false);
+
+
+
                     display.setTransformation(
                             new Transformation(
                                     new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
@@ -332,6 +330,20 @@ public class ModelClass { // TODO: destroy this shit code
                                     )
                             );
                         }
+                    }
+
+                    if (nodeType.equals("bone")) {
+                        AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
+                        quaternion.mul(new Quaternionf(additionalRotation));
+
+                        display.setTransformation(
+                                new Transformation(
+                                        new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
+                                        new AxisAngle4f().set(quaternion), // left rot
+                                        new Vector3f(scaleAsArray[0], scaleAsArray[1], scaleAsArray[2]), // scale
+                                        new AxisAngle4f() // no right rotation
+                                )
+                        );
                     }
 
                     display.setCustomName(uuid);
@@ -430,6 +442,7 @@ public class ModelClass { // TODO: destroy this shit code
                     //display.teleport(origin);
                     Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]);
 
+
                     display.setTransformation(
                             new Transformation(
                                     new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
@@ -444,6 +457,20 @@ public class ModelClass { // TODO: destroy this shit code
                                 new AxisAngle4f().set(quaternion) , // left rot
                                 new Vector3f(0.2F, 0.2F, 0.2F), // scale
                                 new AxisAngle4f() // no right rotation
+                        );
+                    }
+
+                    if (nodeType.equals("bone")) {
+                        AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
+                        quaternion.mul(new Quaternionf(additionalRotation));
+
+                        display.setTransformation(
+                                new Transformation(
+                                        new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
+                                        new AxisAngle4f().set(quaternion), // left rot
+                                        new Vector3f(scaleAsArray[0], scaleAsArray[1], scaleAsArray[2]), // scale
+                                        new AxisAngle4f() // no right rotation
+                                )
                         );
                     }
 
@@ -487,7 +514,6 @@ public class ModelClass { // TODO: destroy this shit code
                                 Quaternionf quaternion = new Quaternionf(left_rotationAsArray[0], left_rotationAsArray[1], left_rotationAsArray[2], left_rotationAsArray[3]);
 
 
-
                                 //display.teleport(origin);
                                 if (nodeType.equals("struct")) {
                                     display.setTransformation(
@@ -507,6 +533,20 @@ public class ModelClass { // TODO: destroy this shit code
                                                 new Vector3f(scaleAsArray[0], scaleAsArray[1], scaleAsArray[2]), // scale
                                                 new AxisAngle4f() // no right rotation
                                         )
+                                    );
+                                }
+
+                                if (nodeType.equals("bone")) {
+                                    AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
+                                    quaternion.mul(new Quaternionf(additionalRotation));
+
+                                    display.setTransformation(
+                                            new Transformation(
+                                                    new Vector3f(translationAsArray[0], translationAsArray[1], translationAsArray[2]), // translation
+                                                    new AxisAngle4f().set(quaternion), // left rot
+                                                    new Vector3f(scaleAsArray[0], scaleAsArray[1], scaleAsArray[2]), // scale
+                                                    new AxisAngle4f() // no right rotation
+                                            )
                                     );
                                 }
 
@@ -584,7 +624,7 @@ public class ModelClass { // TODO: destroy this shit code
 
     public void setVariant(String variantKey) {
         if (loadedVariants.containsKey(variantKey)){
-            activeVeriant = variantKey;
+            activeVariant = variantKey;
         }
     }
 
