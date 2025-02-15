@@ -27,25 +27,25 @@ public final class ModelEngine extends JavaPlugin {
         getCommand("model_engine").setExecutor(new Commands());
         getCommand("model_engine").setTabCompleter(new CommandsTabComplete());
 
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Model Engine Loaded | Version 1.0-alpha | Made by DRAGNIL68");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Model Engine] Loaded | Version 1.0-alpha | Made by DRAGNIL68");
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: Model Engine Is In Early Alpha And My Do Damage ONLY use on test servers");
 
 
         test.runPack();
 
         // Skript stuff
-        /*
+
 
 
         addon = Skript.registerAddon(this);
         try {
             //This will register all our syntax for us. Explained below
-            addon.loadClasses("me.limeglass.addon", "elements");
+            addon.loadClasses("net.outmoded.modelengine", "skript");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Bukkit.getLogger().info("[ExampleAddon] has been enabled!");
-        */
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Model Engine] | Skript Syntax Loaded!");
+
         // End of Skript Stuff
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
@@ -65,9 +65,9 @@ public final class ModelEngine extends JavaPlugin {
         return getPlugin(ModelEngine.class);
     }
 
-    //public SkriptAddon getAddonInstance() {
-        //return addon;
-    //}
+    public SkriptAddon getAddonInstance() {
+        return addon;
+    }
 }
 
 

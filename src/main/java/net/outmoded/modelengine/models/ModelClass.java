@@ -31,20 +31,19 @@ public class ModelClass { // TODO: destroy this shit code
     private final Map<String, String> loadedVariants = new HashMap<>();
 
     private final String modelType;
-    private ItemDisplay origin;
+    private final ItemDisplay origin;
     private JsonNode config;
-    private String alias; // not used
-    private UUID uuid;
+    private final UUID uuid;
     private String activeVariant = "default";
 
     //current animation info
-    String currentAnimationName = null;
-    JsonNode frames = null;
-    Integer currentFrameTime = 0; // in ticks 1T = 0.05S | 0.05 x 20 = 1S
-    Integer maxFrameTime = 0;
-    Integer loopDelay = 0; // in ticks does not need converting
-    Boolean isActive = false;
-    Boolean loopMode = false;
+    private String currentAnimationName = null;
+    private JsonNode frames = null;
+    private Integer currentFrameTime = 0; // in ticks 1T = 0.05S | 0.05 x 20 = 1S
+    private Integer maxFrameTime = 0;
+    private Integer loopDelay = 0; // in ticks does not need converting
+    private Boolean isActive = false;
+    private Boolean loopMode = false;
 
     ModelClass(Location location, String modelType, UUID uuid) {
         this.modelType = modelType;

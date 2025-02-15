@@ -23,5 +23,9 @@ C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\
 C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\pack\ResourcePack.java
 C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\pack\ResourcePackManager.java
 C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\pack\ZipFileUtil.java
+C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\skript\ActiveModel.java
+C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\skript\CondModelExists.java
+C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\skript\ExprGetActiveModels.java
+C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\skript\ExprLoadedModels.java
+C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\skript\Test.java
 C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\modelengine\test.java
-C:\Users\linga\IdeaProjects\model-engine\src\main\java\net\outmoded\skript\test.java
