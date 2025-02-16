@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.outmoded</groupId>
-    <artifactId>modelengine</artifactId>
+    <artifactId>animated-skript</artifactId>
     <version>1.2-alpha</version>
     <packaging>jar</packaging>
 
-    <name>modelengine</name>
+    <name>animated-skript</name>
 
     <properties>
         <java.version>21</java.version>
