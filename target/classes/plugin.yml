@@ -1,4 +1,4 @@
-name: outmoded-model-engine
+name: animated-skript
 version: '1.2-alpha'
 main: net.outmoded.modelengine.ModelEngine
 api-version: '1.21'
