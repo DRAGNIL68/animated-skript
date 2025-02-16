@@ -4,7 +4,7 @@ main: net.outmoded.modelengine.ModelEngine
 api-version: '1.21'
 author: DRAGNIL68
 commands:
-  model_engine:
+  animated-skript:
     description: Insert Funny Text Here
-    usage: /model_engine [arg]
-    permission: model_engine
+    usage: /animated-skript help
+    permission: animated-skript

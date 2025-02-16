@@ -1,5 +1,7 @@
 package net.outmoded.modelengine;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -33,7 +35,15 @@ public class Config {
 
         if (!contentsFolder.exists()){
             contentsFolder.mkdir();
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Created Contents Folder");
+            final Component logo = MiniMessage.miniMessage().deserialize(
+                    "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
+            );
+
+            final Component text = MiniMessage.miniMessage().deserialize(
+                    "<color:#0dff1d>Created Contents Folder</green>"
+            );
+
+            getServer().getConsoleSender().sendMessage(logo.append(text));
 
         }
         if (!outputFolder.exists()){

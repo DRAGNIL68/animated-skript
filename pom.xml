@@ -6,7 +6,7 @@
 
     <groupId>net.outmoded</groupId>
     <artifactId>modelengine</artifactId>
-    <version>1.0-alpha</version>
+    <version>1.2-alpha</version>
     <packaging>jar</packaging>
 
     <name>modelengine</name>

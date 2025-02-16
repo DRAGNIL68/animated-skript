@@ -3,6 +3,8 @@ package net.outmoded.modelengine.models;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.modelengine.Config;
 import net.outmoded.modelengine.ModelEngine;
 import net.outmoded.modelengine.events.OnModelRemovedEvent;
@@ -291,7 +293,9 @@ public class ModelManager {
 
 
             File contentsFolder = new File(ModelEngine.getInstance().getDataFolder(), "contents");
-
+            final Component logo = MiniMessage.miniMessage().deserialize(
+                    "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
+            );
 
             try {
                 File[] listedFiles = contentsFolder.listFiles();
@@ -307,8 +311,15 @@ public class ModelManager {
                             loadModelTexture(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
                             loadModelData(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
                             resourcePack.writeJsonObject(new McMeta("§3Animated-Skript", 42), "");
-                            if (debugMode())
-                                getServer().getConsoleSender().sendMessage(ChatColor.RED + "(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex));
+                            if (debugMode()){
+                                final Component debug = MiniMessage.miniMessage().deserialize(
+                                        "<dark_red>(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex)
+                                );
+                                getServer().getConsoleSender().sendMessage(logo.append(debug));
+
+
+                            }
+
 
                         } else {
                             errors++;
@@ -318,7 +329,12 @@ public class ModelManager {
                         }
 
                     }
-                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Finished Loading Models with " + ChatColor.RED + errors + ChatColor.GREEN + " Error(s)");
+
+                    final Component text = MiniMessage.miniMessage().deserialize(
+                            "<color:#0dff1d>Finished Loading Models with</color> <dark_red>" + errors + " <color:#0dff1d>Error(s)</color>"
+                    );
+
+                    getServer().getConsoleSender().sendMessage(logo.append(text));
                 }
                 resourcePack.build(ModelEngine.getInstance().getDataFolder().getPath() + "/output/" + resourcePack.getName() + ".zip");
 
