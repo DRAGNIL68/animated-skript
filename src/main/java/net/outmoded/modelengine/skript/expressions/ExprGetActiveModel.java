@@ -6,11 +6,14 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.modelengine.models.ModelClass;
 import net.outmoded.modelengine.models.ModelManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
+
+import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
 /*
@@ -56,18 +59,18 @@ import static org.bukkit.Bukkit.getServer;
  */
 
 
-public class ExprLoadedModels extends SimpleExpression<String> {
+public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
 
     static {
-        Skript.registerExpression(ExprLoadedModels.class, String.class, ExpressionType.COMBINED, "[animated-skript] all [the] (:loaded-models|active-models)");
+        Skript.registerExpression(ExprGetActiveModel.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-model %-string%");
     }
 
-    private boolean type; // if true = loaded-models | if false = active-models
+    private Expression<String> text; // if true = loaded-models | if false = active-models
 
     @Override
-    public Class<? extends String> getReturnType() {
+    public Class<? extends ModelClass> getReturnType() {
         //1
-        return String.class;
+        return ModelClass.class;
     }
 
     @Override
@@ -78,11 +81,12 @@ public class ExprLoadedModels extends SimpleExpression<String> {
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        type = parser.hasTag("loaded-models");
-        if (!type)
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "!true");
+        text = (Expression<String>) exprs[0];
 
-        return true;
+
+
+
+        return false;
     }
 
     @Override
@@ -93,14 +97,23 @@ public class ExprLoadedModels extends SimpleExpression<String> {
 
     @Override
     @Nullable
-    protected String[] get(Event event) {
-        if (type) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "sent");
-            return ModelManager.getAllLoadedModelsKeys(); // true
-        }
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "not sent");
-        return ModelManager.getAllActiveModelsUuidsAsString(); // false
+    protected ModelClass[] get(Event event) {
+        String uuidAsString = text.toString().replace("\"", "");
 
+        UUID uuid = null;
+
+        try {
+            uuid = UUID.fromString(uuidAsString);
+
+        }catch (IllegalArgumentException e){
+            return null;
+
+        }
+
+        if (ModelManager.activeModelExists(uuid))
+            return new ModelClass[] {ModelManager.getActiveModel(uuid)};
+
+        return null;
     }
 }
 

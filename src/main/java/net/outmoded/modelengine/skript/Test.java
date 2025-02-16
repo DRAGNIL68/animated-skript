@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 /*
 
 
-   %active-model% = skript type for ModelClass
+   %activemodel% = skript type for ModelClass - done
 
    Expressions return info
    Effects don't return anything
@@ -21,50 +21,51 @@ import javax.annotation.Nullable;
 
    MODELMANAGER:
         EXPRESSIONS:
-            [animated-skript] all [the] (loaded-models|active-models): String[] - Expression
-            [animated-skript] (loaded-model|active-model) %string% exits : Bool - Expression
+            [animated-skript] all [the] (loaded-models|active-models): String[] - Expression - DONE
 
-            [animated-skript] [get] [the] active-model "String -> UUID": ModelClass - Expression
-            [animated-skript] [get] %active-model%'s/s location: location - Expression
+
+            [animated-skript] [get] [the] active-model "String -> UUID": ModelClass - Expression - DONE
+            [animated-skript] [get] %activemodel%'s/s location: location - Expression - DONE
+
+            [animated-skript] [get] last spawned active-model: %active-model% - Expression - DONE
 
         EFFECTS:
-            [animated-skript] spawn [the] loaded-model %string%: null - Effect
-            [animated-skript] remove [the] active model "String -> UUID": null - Effect
+            [animated-skript] spawn [the] loaded-model %string% at [the] %location%: null - Effect - DONE
+            [animated-skript] remove [the] active-model %activemodel%: null - Effect - DONE
 
-            [animated-skript] reload (model-configs||active-models): null - Effect
+            [animated-skript] reload (model-configs|active-models): null - Effect - DONE
             [animated-skript] (teleport||tp) %active-model%: null - Effect
 
         CONDITIONS:
-            [animated-skript] active-model %string% (exits|dose not exits|doesn't exits)
-
+            [animated-skript] (loaded-model|active-model) %string% exits - DONE
 
    MODELCLASS:
         EXPRESSIONS:
-            [animated-skript] get model type: string - Expression
-            [animated-skript] get uuid: Uuid - Expression
-            [animated-skript] get active variant: string - Expression
+            [animated-skript] [get] %activemodel%('s|s) model type: string - Expression - DONE
+            [animated-skript] [get] %activemodel%('s|s) uuid: Uuid - Expression - DONE
+            [animated-skript] [get] %activemodel%('s|s) active variant: string - Expression - CANT DO
 
-            [animated-skript] get all [the] variants: string list - Expression
+            [animated-skript] get all [the] variants: string list - Expression - CANT DO
 
         EFFECTS:
             [animated-skript] set [the] active variant %string%
-            [animated-skript] reset active variant
+            [animated-skript] reset [the] active variant
 
 
 
        NODES:
             EXPRESSIONS:
-                    [animated-skript] [get] [the||all] nodes of %active-model%: Display[] - Expression
-                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID": Display - Expression
+                    [animated-skript] [get] [the||all] nodes of %active-model%: Display[] - Expression - CANT DO
+                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID": Display - Expression - CANT DO
 
        ANIMATION:
             EXPRESSIONS:
-                [animated-skript] [get] [all] %active-model%s / 's animations: String[] - Expression
-                [animated-skript] active-model has animation: Bool - Expression
+                [animated-skript] [get] [all] %active-model%('s|s) animations: String[] - Expression - DONE
+                [animated-skript] %activemodel% has animation %string%: Bool - Condition
 
             EFFECTS:
-                [animated-skript] (play|stop) animation %string% of [the] %active-model% "String -> UUID": null - Effect
-                [animated-skript] stop all animations of [the] active-model "String -> UUID": null - Effect
+                [animated-skript] (play|stop) animation %string% of %activemodel% "String -> UUID": null - Effect - DONE
+                [animated-skript] stop all animations of %activemodel% "String -> UUID": null - Effect - DONE
 
 
        UNIMPLEMENTED:

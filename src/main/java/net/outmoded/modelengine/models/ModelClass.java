@@ -36,6 +36,7 @@ public class ModelClass { // TODO: destroy this shit code
     private final UUID uuid;
     private String activeVariant = "default";
 
+
     //current animation info
     private String currentAnimationName = null;
     private JsonNode frames = null;
@@ -620,6 +621,10 @@ public class ModelClass { // TODO: destroy this shit code
 
 
     };
+
+    public boolean hasAnimation(String key){
+        return loadedAnimations.containsKey(key);
+    }
 
     public void setVariant(String variantKey) {
         if (loadedVariants.containsKey(variantKey)){

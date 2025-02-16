@@ -6,13 +6,13 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import net.outmoded.modelengine.models.ModelClass;
 import net.outmoded.modelengine.models.ModelManager;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-import java.util.UUID;
+import static org.bukkit.Bukkit.getServer;
 /*
 
    Expressions return info
@@ -56,34 +56,33 @@ import java.util.UUID;
  */
 
 
-public class ExprGetActiveModels extends SimpleExpression<ModelClass> {
+public class ExprGetAllModels extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModels.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-model %string%");
+        Skript.registerExpression(ExprGetAllModels.class, String.class, ExpressionType.COMBINED, "[animated-skript] all [the] (:loaded-models|active-models)");
     }
 
-    private Expression<String> text; // if true = loaded-models | if false = active-models
+    private boolean type; // if true = loaded-models | if false = active-models
 
     @Override
-    public Class<? extends ModelClass> getReturnType() {
+    public Class<? extends String> getReturnType() {
         //1
-        return ModelClass.class;
+        return String.class;
     }
 
     @Override
     public boolean isSingle() {
         //2
-        return true;
+        return false;
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        text = (Expression<String>) exprs[0];
+        type = parser.hasTag("loaded-models");
+        if (!type)
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "!true");
 
-
-
-
-        return false;
+        return true;
     }
 
     @Override
@@ -94,11 +93,14 @@ public class ExprGetActiveModels extends SimpleExpression<ModelClass> {
 
     @Override
     @Nullable
-    protected ModelClass[] get(Event event) {
-        if (ModelManager.activeModelExists(UUID.fromString(text.toString())))
-            return new ModelClass[] {ModelManager.getActiveModel(UUID.fromString(text.toString()))}; // false
+    protected String[] get(Event event) {
+        if (type) {
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "sent");
+            return ModelManager.getAllLoadedModelsKeys(); // true
+        }
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "not sent");
+        return ModelManager.getAllActiveModelsUuidsAsString(); // false
 
-        return null;
     }
 }
 

@@ -50,11 +50,9 @@ public class Commands implements CommandExecutor {
                     ModelManager.loadModelConfigs();
                     ModelManager.reloadAllActiveModels();
 
-                    try {
-                        ModelPersistence.saveModels();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+
+                    ModelPersistence.saveModels();
+
                     sender.sendMessage(ChatColor.GREEN + "Reloaded All Models");
                     return true;
 

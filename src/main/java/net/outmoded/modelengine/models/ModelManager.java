@@ -12,6 +12,7 @@ import net.outmoded.modelengine.pack.Namespace;
 import net.outmoded.modelengine.pack.ResourcePack;
 import net.outmoded.modelengine.pack.jsonObjects.McMeta;
 import net.outmoded.modelengine.pack.jsonObjects.Model;
+import net.outmoded.modelengine.skript.SkriptManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -53,7 +54,7 @@ public class ModelManager {
 
                     ModelClass newModel = new ModelClass(location, modelType, uuid);
                     activeModels.put(uuid, newModel);
-
+                    SkriptManager.setLastSpawnedModelClass(newModel);
 
                     if (Config.debugMode())
                         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
@@ -73,6 +74,7 @@ public class ModelManager {
     }
     public static void spawnNewModel(String modelType, Location location, UUID uuid){ // this one lets you set the uuid of the model
         try{
+
             if (loadedModelExists(modelType)) {
 
 
@@ -87,7 +89,7 @@ public class ModelManager {
 
                     ModelClass newModel = new ModelClass(location, modelType, uuid);
                     activeModels.put(uuid, newModel);
-
+                    SkriptManager.setLastSpawnedModelClass(newModel);
 
                     if (Config.debugMode())
                         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
@@ -189,7 +191,7 @@ public class ModelManager {
     }
 
 
-    public static void deleteActiveModel(UUID uuid) {
+    public static void removeActiveModel(UUID uuid) {
         if (!activeModels.containsKey(uuid)){
             return;
         }

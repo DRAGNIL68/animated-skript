@@ -36,7 +36,7 @@ public class CondModelExists extends Condition {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "Model Exits: " + type;
+        return "";
     }
 
     @Override

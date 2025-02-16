@@ -23,7 +23,7 @@ public class ModelPersistence implements Listener {
 
     }
 
-    public static void saveModels() throws IOException {
+    public static void saveModels() {
         try {
             FileJsonObject fileJsonObject = new FileJsonObject();
 
