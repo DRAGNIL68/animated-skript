@@ -18,12 +18,14 @@ import net.outmoded.modelengine.skript.SkriptManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Warning;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static net.outmoded.modelengine.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
@@ -33,9 +35,19 @@ public class ModelManager {
     private final static Map<UUID, ModelClass> activeModels = new HashMap<>(); // stores all models that are active on the server
     private static ResourcePack resourcePack;
     private static Namespace animatedSkript;
+    private static int errorCount = 0;
 
-    private ModelManager(){
 
+    public static void increaseErrorCount(){
+        errorCount++;
+    }
+
+    public static void resetErrorCount(){
+        errorCount = 0;
+    }
+
+    public static int getErrorCount(){
+        return errorCount;
     }
 
 
@@ -182,7 +194,7 @@ public class ModelManager {
     } // returns a reference of the requested JsonNode
 
     public static void reloadAllActiveModels() {
-
+        resetErrorCount();
 
 
         for (ModelClass model : activeModels.values()) {
@@ -210,34 +222,49 @@ public class ModelManager {
 
     } // deletes an active model TODO: need way to remove loaded model
 
-    public static void loadModelTexture (JsonNode model, String modelName){
+    public static void loadModelTextures(JsonNode model, String modelName){
         if (model.get("textures") == null){
             return;
         }
-
         JsonNode textures = model.get("textures");
-        textures.forEach(texture -> {
+
+        for (JsonNode texture : textures) {
             String textureName = texture.get("name").asText();
+            if (Pattern.compile("[^a-zA-Z0-9_]").matcher(textureName).find()){
+                final Component logo = MiniMessage.miniMessage().deserialize(
+                        "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
+                );
+
+                final Component warning = MiniMessage.miniMessage().deserialize(
+                        "<red>texture names cannot contain special characters like: &,-,[,{ etc"
+                );
+                getServer().getConsoleSender().sendMessage(logo.append(warning));
+                increaseErrorCount();
+
+            }
+
 
             String textureSrc = texture.get("src").asText().replace("data:image/png;base64,", "");
 
             resourcePack.base64ToTexture(textureName, animatedSkript.getNamespacePathAsString() + "textures/item/" + modelName + "/", textureSrc);
             //resourcePack.base64ToTexture("frog.png", "assets/", textureSrc);
 
-        });
+        }
 
 
     }
 
-    public static void loadModelData (JsonNode model, String modelName){ // terrible name, loads 3d model from json file
-        if (model.get("textures") == null){
+    public static void loadModelData(JsonNode model, String modelName){ // terrible name, loads 3d model from json file
+        if (model.get("variants") == null){
             return;
         }
+
 
         JsonNode variants = model.get("variants");
         variants.forEach(variant -> {
 
             JsonNode models = variant.get("models");
+
             models.forEach(modelUuid -> {
                 JsonNode textures = modelUuid.get("model").get("textures");
 
@@ -282,6 +309,7 @@ public class ModelManager {
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
+            resetErrorCount();
             resourcePack = new ResourcePack("animated-skript");
 
             animatedSkript = new Namespace("animated-skript", resourcePack); // <- creates new namespace
@@ -308,7 +336,7 @@ public class ModelManager {
                             int lastJsonIndex = modelfile.getName().lastIndexOf(".json");
                             loadedModels.put(modelfile.getName().substring(0, lastJsonIndex), modelFileAsJsonNode);
 
-                            loadModelTexture(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
+                            loadModelTextures(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
                             loadModelData(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
                             resourcePack.writeJsonObject(new McMeta("§3Animated-Skript", 42), "");
                             if (debugMode()){
@@ -331,7 +359,7 @@ public class ModelManager {
                     }
 
                     final Component text = MiniMessage.miniMessage().deserialize(
-                            "<color:#0dff1d>Finished Loading Models with</color> <dark_red>" + errors + " <color:#0dff1d>Error(s)</color>"
+                            "<color:#0dff1d>Finished Loading Models with</color> <dark_red>" + getErrorCount() + " <color:#0dff1d>Error(s)</color>"
                     );
 
                     getServer().getConsoleSender().sendMessage(logo.append(text));
