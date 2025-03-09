@@ -22,7 +22,7 @@
             [animated-skript] remove [the] active-model %activemodel%: null - Effect - DONE
 
             [animated-skript] reload (model-configs|active-models): null - Effect - DONE
-            [animated-skript] (teleport||tp) %active-model%: null - Effect
+            [animated-skript] (teleport||tp) %active-model%: null - Effect TODO
 
         CONDITIONS:
             [animated-skript] (loaded-model|active-model) %string% exits - DONE
@@ -31,9 +31,9 @@
         EXPRESSIONS:
             [animated-skript] [get] %activemodel%('s|s) model type: string - Expression - DONE
             [animated-skript] [get] %activemodel%('s|s) uuid: Uuid - Expression - DONE
-            [animated-skript] [get] %activemodel%('s|s) active variant: string - Expression - CANT DO
+            [animated-skript] [get] %activemodel%('s|s) active variant: string - Expression - CANT DO TODO
 
-            [animated-skript] get all [the] variants: string list - Expression - CANT DO
+            [animated-skript] get all [the] variants: string list - Expression - CANT DO TODO
 
         EFFECTS:
             [animated-skript] set [the] active variant %string%
@@ -43,13 +43,13 @@
 
        NODES:
             EXPRESSIONS:
-                    [animated-skript] [get] [the||all] nodes of %active-model%: Display[] - Expression - CANT DO
-                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID": Display - Expression - CANT DO
+                    [animated-skript] [get] [the||all] nodes of %active-model%: Display[] - Expression - CANT DO TODO
+                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID": Display - Expression - CANT DO TODO
 
        ANIMATION:
             EXPRESSIONS:
                 [animated-skript] [get] [all] %active-model%('s|s) animations: String[] - Expression - DONE
-                [animated-skript] %activemodel% has animation %string%: Bool - Condition
+                [animated-skript] %activemodel% has animation %string%: Bool - Condition TODO
 
             EFFECTS:
                 [animated-skript] (play|stop) animation %string% of %activemodel% "String -> UUID": null - Effect - DONE
@@ -57,9 +57,9 @@
 
 
        UNIMPLEMENTED:
-       [animated-skript] pause animation %number% of [the] active-model "String -> UUID": null - Effect
-       [animated-skript] resume animation %number% of [the] active-model "String -> UUID": null - Effect
-       [animated-skript] %active-model%'s/s scale: Vector - Expression
+       [animated-skript] pause animation %number% of [the] active-model "String -> UUID": null - Effect TODO
+       [animated-skript] resume animation %number% of [the] active-model "String -> UUID": null - Effect TODO
+       [animated-skript] %active-model%'s/s scale: Int - Expression TODO
 
 
 
