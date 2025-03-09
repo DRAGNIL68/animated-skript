@@ -1,5 +1,6 @@
 package net.outmoded.modelengine.models;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.kyori.adventure.text.format.TextColor;
@@ -20,6 +21,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 
+import java.io.DataInput;
 import java.util.*;
 
 
@@ -124,9 +126,13 @@ public class ModelClass { // TODO: destroy this shit code
                 JsonNode defaultTransform = node.get("default_transform");
                 JsonNode decomposed = defaultTransform.get("decomposed");
 
+                
+                
                 Float[] scaleAsArray = objectMapper.treeToValue(defaultTransform.get("scale"), Float[].class); // "scale": [1, 1, 1]
                 Float[] translationAsArray = objectMapper.treeToValue(decomposed.get("translation"), Float[].class); // "translation": [0, 0, 0]
                 Float[] left_rotationAsArray = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
+
+
                 String uuid = node.get("uuid").asText();
 
                 Display display = null;
