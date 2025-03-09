@@ -22,7 +22,7 @@
             [animated-skript] remove [the] active-model %activemodel%: null - Effect - DONE
 
             [animated-skript] reload (model-configs|active-models): null - Effect - DONE
-            [animated-skript] (teleport||tp) %active-model%: null - Effect TODO
+            [animated-skript] (teleport||tp) %active-model%: null - Effect - DONE
 
         CONDITIONS:
             [animated-skript] (loaded-model|active-model) %string% exits - DONE
@@ -43,13 +43,13 @@
 
        NODES:
             EXPRESSIONS:
-                    [animated-skript] [get] [the||all] nodes of %active-model%: Display[] - Expression - CANT DO TODO
-                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID": Display - Expression - CANT DO TODO
+                    [animated-skript] [get] [the||all] nodes of %active-model%: Display[] - Expression - DONE
+                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID": Display - Expression - DONE
 
        ANIMATION:
             EXPRESSIONS:
                 [animated-skript] [get] [all] %active-model%('s|s) animations: String[] - Expression - DONE
-                [animated-skript] %activemodel% has animation %string%: Bool - Condition TODO
+                [animated-skript] %activemodel% has animation %string%: Bool - Condition - DONE
 
             EFFECTS:
                 [animated-skript] (play|stop) animation %string% of %activemodel% "String -> UUID": null - Effect - DONE
@@ -57,16 +57,19 @@
 
 
        UNIMPLEMENTED:
-       [animated-skript] pause animation %number% of [the] active-model "String -> UUID": null - Effect TODO
-       [animated-skript] resume animation %number% of [the] active-model "String -> UUID": null - Effect TODO
-       [animated-skript] %active-model%'s/s scale: Int - Expression TODO
+       [animated-skript] (:pause||unpause||resume) animation of [the] %active-model% "String -> UUID": null - Effect - DONE
+       [animated-skript] %active-model%'s/s scale: Int - Expression TODO i don't have a clue in hell how to do this or if my system even allows it
 
 
 
    EVENTS:
    [animated-skript] on model spawn: Event
    [animated-skript] on model remove: Event
-   [animated-skript] on animation start: Event
-   [animated-skript] on animation stop: Event
-   [animated-skript] on reload (model-configs||active-models) : Event
+   [animated-skript] on animation started: Event
+   [animated-skript] on animation stopped: Event
+   [animated-skript] on animation frame changed: Event
+   [animated-skript] on animation paused: Event
+   [animated-skript] on animation (unpaused||resumed): Event
+   [animated-skript] on animation ended: Event
+   [animated-skript] on reload : Event
  */

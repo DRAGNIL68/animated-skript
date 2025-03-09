@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.kyori.adventure.text.format.TextColor;
 import net.outmoded.modelengine.Config;
 import net.outmoded.modelengine.ModelEngine;
-import net.outmoded.modelengine.events.OnModelEndAnimationEvent;
-import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
+import net.outmoded.modelengine.events.*;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -120,6 +119,7 @@ public class ModelClass { // TODO: destroy this shit code
         JsonNode root = config.get("nodes");
 
         NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+
         for (JsonNode node : root) {
             try {
 
@@ -631,6 +631,55 @@ public class ModelClass { // TODO: destroy this shit code
 
     };
 
+    public void pauseCurrentAnimation(Boolean bool){
+
+
+        if (!bool){
+            OnModelPauseAnimationEvent event = new OnModelPauseAnimationEvent(uuid, modelType, currentAnimationName, loopMode);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                isActive = !bool;
+
+            }
+
+        }
+        else{
+
+            OnModelUnpauseAnimationEvent event = new OnModelUnpauseAnimationEvent(uuid, modelType, currentAnimationName, loopMode);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                isActive = !bool;
+
+            }
+        }
+    };
+
+    public Boolean getIsCurrentAnimationPaused(){
+        return isActive;
+    }
+
+    public void setCurrentAnimationFrame(int ticks){
+
+
+        if (ticks > maxFrameTime){
+            ticks = maxFrameTime;
+        }
+
+        OnModelFrameSetAnimationEvent event = new OnModelFrameSetAnimationEvent(uuid, modelType, currentAnimationName, loopMode, currentFrameTime, ticks, maxFrameTime );
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (!event.isCancelled()) {
+            currentFrameTime = ticks;
+
+        }
+    }
+
+    public int getCurrentAnimationLength(){ // returns max frame time
+        return maxFrameTime;
+    }
+
 
     public boolean hasAnimation(String key){
         return loadedAnimations.containsKey(key);
@@ -640,6 +689,8 @@ public class ModelClass { // TODO: destroy this shit code
     public String getActiveVariant(){
         return activeVariant;
     };
+
+
 
     public void setVariant(String variantKey) {
         if (loadedVariants.containsKey(variantKey)){
