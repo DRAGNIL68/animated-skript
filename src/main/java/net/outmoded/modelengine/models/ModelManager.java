@@ -230,13 +230,13 @@ public class ModelManager {
 
         for (JsonNode texture : textures) {
             String textureName = texture.get("name").asText();
-            if (Pattern.compile("[^a-zA-Z0-9_]").matcher(textureName).find()){
+            if (Pattern.compile("[^a-zA-Z0-9_]").matcher(textureName.replace(".png", "")).find()){
                 final Component logo = MiniMessage.miniMessage().deserialize(
                         "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
                 );
 
                 final Component warning = MiniMessage.miniMessage().deserialize(
-                        "<red>texture names cannot contain special characters like: &,-,[,{ etc"
+                        "<red>texture names cannot contain special characters ("+modelName+")"
                 );
                 getServer().getConsoleSender().sendMessage(logo.append(warning));
                 increaseErrorCount();

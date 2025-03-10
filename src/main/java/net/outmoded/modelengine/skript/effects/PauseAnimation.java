@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public class PauseAnimation extends Effect {
 
     static {
-        Skript.registerEffect(PauseAnimation.class, "[animated-skript] (:pause||unpause||resume) animation of [the] %active-model%");
+        Skript.registerEffect(PauseAnimation.class, "[animated-skript] (:pause||unpause||resume) animation of [the] %activemodel%");
     }
 
     private Expression<ModelClass> activeModel;

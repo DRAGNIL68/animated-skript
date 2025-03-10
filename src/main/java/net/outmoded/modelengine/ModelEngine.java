@@ -36,7 +36,7 @@ public final class ModelEngine extends JavaPlugin {
         );
 
         final Component warning = MiniMessage.miniMessage().deserialize(
-                "<red>WARNING: This Plugin Is Still In Early Alpha And My Do Damage ONLY use on test servers</dark_red>"
+                "<red>WARNING: This Plugin Is Still In Early Alpha And My Do Damage ONLY use on test servers"
         );
         getServer().getConsoleSender().sendMessage(logo.append(component));
         getServer().getConsoleSender().sendMessage(logo.append(warning));

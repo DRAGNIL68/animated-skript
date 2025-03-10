@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public class ExprGetActiveModelsNode extends SimpleExpression<Display> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsNode.class, Display.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] node %string% of %active-model%");
+        Skript.registerExpression(ExprGetActiveModelsNode.class, Display.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] node %string% of %activemodel%");
     }
 
     private Expression<ModelClass> modelClass;
