@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ChunkJsonObject {
-    final String name;
+    private final String name;
 
     private final Map<UUID, ModelJsonObject> models = new HashMap<>();
 
@@ -21,9 +21,11 @@ public class ChunkJsonObject {
         return name;
     }
 
-    public void addModel(ModelJsonObject modelJsonObject){
-        if (!models.containsKey(modelJsonObject.getUuid()))
-            models.put(modelJsonObject.getUuid(), modelJsonObject);
+    public void addModel(ModelJsonObject modelJsonObject){ // allows overriding
+        models.put(modelJsonObject.getUuid(), modelJsonObject);
 
+    }
+    public Map<UUID, ModelJsonObject> getModels(){
+        return models;
     }
 }

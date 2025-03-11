@@ -24,7 +24,6 @@ public class FileJsonObject {
 
     public ChunkJsonObject getChunk(String chunkName){
         if (chunks.containsKey(chunkName))
-
             return chunks.get(chunkName);
 
         return null;

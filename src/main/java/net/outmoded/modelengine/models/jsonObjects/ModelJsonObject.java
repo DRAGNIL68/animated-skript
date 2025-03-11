@@ -13,7 +13,7 @@ public class ModelJsonObject {
     public final String modelType;
 
     @JsonProperty("location")
-    public final float[] location;
+    public final Location location;
 
     @JsonProperty("current_animation")
     public final String currentAnimation;
@@ -23,7 +23,7 @@ public class ModelJsonObject {
         this.uuid = modelClass.getUuid();
         this.modelType = modelClass.getModelType();
         Location location1 = modelClass.getOriginLocation();
-        location = new float[] {(float) location1.getX(), (float) location1.getY(), (float) location1.getZ()};
+        location = modelClass.getOriginLocation();
         this.currentAnimation = modelClass.getCurrentAnimation();
     }
 

@@ -38,6 +38,7 @@ net\outmoded\modelengine\events\OnModelRemovedEvent.class
 net\outmoded\modelengine\skript\expressions\ExprLastSpawnedActiveModel.class
 net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsLocation.class
 net\outmoded\modelengine\models\ModelManager.class
+net\outmoded\modelengine\ModelEngine$2.class
 net\outmoded\modelengine\models\ModelClass.class
 net\outmoded\modelengine\skript\expressions\ExprGetAllModels.class
 net\outmoded\modelengine\skript\expressions\ExprHasAnimation.class

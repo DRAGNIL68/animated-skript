@@ -7,6 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.modelengine.commands.Commands;
 import net.outmoded.modelengine.commands.CommandsTabComplete;
 import net.outmoded.modelengine.models.ModelManager;
+import net.outmoded.modelengine.models.ModelPersistence;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +25,7 @@ public final class ModelEngine extends JavaPlugin {
     public void onEnable() {
 
 
+        getServer().getPluginManager().registerEvents(new ModelPersistence(), this); // model saving and loading
 
         getCommand("animated-skript").setExecutor(new Commands());
         getCommand("animated-skript").setTabCompleter(new CommandsTabComplete());
@@ -65,6 +67,12 @@ public final class ModelEngine extends JavaPlugin {
 
             }
         }, 20, 1L);
+
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+            public void run(){
+                ModelPersistence.saveModels();
+            }
+        }, 20, 6000);
     }
 
     @Override
