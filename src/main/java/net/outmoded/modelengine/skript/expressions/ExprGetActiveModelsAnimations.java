@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class ExprGetActiveModelsAnimations extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsAnimations.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [all|the] %activemodel%('s|s) animations");
+        Skript.registerExpression(ExprGetActiveModelsAnimations.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [all|the] %activemodels% animations");
     }
 
     private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models

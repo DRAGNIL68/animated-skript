@@ -53,6 +53,12 @@ public class ModelClass { // TODO: destroy this shit code
         this.uuid = uuid;
         origin = location.getWorld().spawn(location, ItemDisplay.class);
         origin.setPersistent(false);
+
+        NamespacedKey UuidKey = new NamespacedKey(ModelEngine.getInstance(), "modelUuid");
+        NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+
+        origin.getPersistentDataContainer().set(UuidKey, PersistentDataType.STRING, this.uuid.toString());
+        origin.getPersistentDataContainer().set(key, PersistentDataType.STRING, "origin");
         config = ModelManager.getLoadedModel(modelType);
         loadAnimations();
         spawnModelNodes();
@@ -119,6 +125,7 @@ public class ModelClass { // TODO: destroy this shit code
         JsonNode root = config.get("nodes");
 
         NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
+        NamespacedKey UuidKey = new NamespacedKey(ModelEngine.getInstance(), "modelUuid");
 
         for (JsonNode node : root) {
             try {
@@ -246,6 +253,8 @@ public class ModelClass { // TODO: destroy this shit code
                     default:
                         throw new RuntimeException("Corrupted node in json file: " + modelType + ".json node: " + node.get("uuid"));
                 }
+
+                display.getPersistentDataContainer().set(UuidKey, PersistentDataType.STRING, this.uuid.toString()); // adds the model uuid to all components
 
 
                 if (node.has("config")) {
@@ -375,6 +384,7 @@ public class ModelClass { // TODO: destroy this shit code
            node.remove();
 
        }
+
    }
 
     public void playAnimation(String name){
@@ -607,13 +617,7 @@ public class ModelClass { // TODO: destroy this shit code
     };
 
     public String[] getAnimations(){
-       String[] animationNames = new String[loadedAnimations.size()];
-        Integer count = 0;
-       for (String key : loadedAnimations.keySet()) {
-           animationNames[count] = key;
-           count++;
-       }
-       return animationNames;
+       return loadedAnimations.keySet().toArray(String[]::new);
     };
 
     public void resetAnimation(){
@@ -699,13 +703,7 @@ public class ModelClass { // TODO: destroy this shit code
     }
 
     public String[] getAllVariants() {
-        String[] variants = new String[loadedVariants.size()];
-        int count = 0;
-        for (String key : loadedAnimations.keySet()) {
-            variants[count] = key;
-            count++;
-        }
-        return variants;
+        return loadedVariants.keySet().toArray(String[]::new);
     }
 
     public boolean hasVariant(String variantKey) {
@@ -714,13 +712,7 @@ public class ModelClass { // TODO: destroy this shit code
 
 
     public String[] getAllNodes() {
-        String[] variants = new String[activeNodes.size()];
-        int count = 0;
-        for (String key : activeNodes.keySet()) {
-            variants[count] = key;
-            count++;
-        }
-        return variants;
+        return loadedVariants.keySet().toArray(String[]::new);
     }
 
     public Display getNode(String uuid){

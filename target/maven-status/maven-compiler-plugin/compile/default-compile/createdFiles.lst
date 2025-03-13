@@ -11,6 +11,7 @@ net\outmoded\modelengine\pack\ZipFileUtil.class
 net\outmoded\modelengine\commands\CommandsTabComplete.class
 net\outmoded\modelengine\events\OnModelSpawnedEvent.class
 net\outmoded\modelengine\skript\effects\AnimationControl.class
+net\outmoded\modelengine\skript\events\Test.class
 net\outmoded\modelengine\skript\expressions\ExprGetActiveModel.class
 net\outmoded\modelengine\pack\jsonObjects\Model.class
 net\outmoded\modelengine\skript\effects\TeleportActiveModel.class
@@ -47,4 +48,5 @@ net\outmoded\modelengine\skript\effects\Test.class
 net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsNode.class
 net\outmoded\modelengine\skript\ActiveModel.class
 net\outmoded\modelengine\skript\SkriptManager.class
+net\outmoded\modelengine\models\jsonObjects\WorldJsonObject.class
 net\outmoded\modelengine\commands\Commands.class

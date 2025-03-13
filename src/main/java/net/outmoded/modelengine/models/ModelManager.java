@@ -215,6 +215,7 @@ public class ModelManager {
 
         if (!event.isCancelled()) {
             model.deleteModelNodes();
+            model.getOrigin().remove();
             activeModels.remove(uuid);
 
         }
@@ -304,6 +305,10 @@ public class ModelManager {
 
 
     public static void loadModelConfigs() { // loads json configs for models into memory
+        if (!Config.generatePack()){
+            return;
+        }
+
         OnReloadEvent event = new OnReloadEvent();
 
         Bukkit.getPluginManager().callEvent(event);

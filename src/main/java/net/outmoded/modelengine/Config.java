@@ -11,6 +11,8 @@ import static org.bukkit.Bukkit.getServer;
 
 public class Config {
     private static boolean debug = true;
+    private static boolean generatePack = true;
+    private static int autoSaveTimer = 5;
 
 
     private final static Config configInstance = new Config();
@@ -69,6 +71,8 @@ public class Config {
             }
 
             debug = Boolean.valueOf(configYml.getString("debug"));
+            autoSaveTimer = Integer.valueOf(configYml.getString("auto_save_timer"));
+            generatePack = Boolean.valueOf(configYml.getString("generate_resource_pack"));
 
 
         } catch (Exception e) {
@@ -81,6 +85,14 @@ public class Config {
 
     public static boolean debugMode(){
         return debug;
+    }
+
+    public static int getAutoSaveTimer(){
+        return autoSaveTimer;
+    }
+
+    public static boolean generatePack(){
+        return generatePack;
     }
 
 

@@ -37,11 +37,11 @@ public class ReloadModels extends Effect {
         if (isModelConfig){
             ModelManager.loadModelConfigs();
             ModelManager.reloadAllActiveModels();
-            ModelPersistence.saveModels();
+            //ModelPersistence.saveModels();
         }
         else{
             ModelManager.reloadAllActiveModels();
-            ModelPersistence.saveModels();
+            //ModelPersistence.saveModels();
         }
     }
 }

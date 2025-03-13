@@ -14,6 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 
+import static net.outmoded.modelengine.models.ModelPersistence.loadLastConfig;
+
 
 public final class ModelEngine extends JavaPlugin {
 
@@ -29,6 +31,9 @@ public final class ModelEngine extends JavaPlugin {
 
         getCommand("animated-skript").setExecutor(new Commands());
         getCommand("animated-skript").setTabCompleter(new CommandsTabComplete());
+
+        ModelPersistence.loadLastConfig(); // loads last config into memory
+
         final Component logo = MiniMessage.miniMessage().deserialize(
                 "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
         );
@@ -56,11 +61,13 @@ public final class ModelEngine extends JavaPlugin {
                 "<color:#0dff1d>Skript Syntax Loaded!"
         );
         getServer().getConsoleSender().sendMessage(logo.append(skript));
-
+        // End of Skript Stuff
 
         Config.load();
         ModelManager.loadModelConfigs();
-        // End of Skript Stuff
+        ModelPersistence.loadLastConfig();
+
+
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
                 ModelManager.tickAllAnimations();
@@ -68,16 +75,24 @@ public final class ModelEngine extends JavaPlugin {
             }
         }, 20, 1L);
 
+
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
-                ModelPersistence.saveModels();
+                ModelPersistence.saveAllActiveModelsToCurrentConfig();
+                ModelPersistence.writeToDisk();
+
             }
-        }, 20, 6000);
+        }, 3000, (long) Config.getAutoSaveTimer() * 20 * 60); // 5m * 60 = 300m, 300m * 20 = 6000T
+
+
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        ModelPersistence.saveAllActiveModelsToCurrentConfig();
+        ModelPersistence.writeToDisk();
+
     }
 
 

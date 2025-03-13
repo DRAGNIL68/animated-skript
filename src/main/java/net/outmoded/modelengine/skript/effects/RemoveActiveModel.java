@@ -7,7 +7,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.modelengine.models.ModelClass;
 import net.outmoded.modelengine.models.ModelManager;
-import net.outmoded.modelengine.skript.ActiveModel;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 

@@ -14,6 +14,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\models\jsonObjects\ChunkJsonObject.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\models\jsonObjects\FileJsonObject.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\models\jsonObjects\ModelJsonObject.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\models\jsonObjects\WorldJsonObject.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\models\ModelClass.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\models\ModelManager.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\models\ModelPersistence.java
@@ -37,6 +38,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\StopAllAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\TeleportActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\Test.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\Test.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsLocation.java

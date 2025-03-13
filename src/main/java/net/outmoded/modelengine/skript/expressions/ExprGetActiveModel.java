@@ -6,6 +6,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.modelengine.events.OnModelSpawnedEvent;
 import net.outmoded.modelengine.models.ModelClass;
 import net.outmoded.modelengine.models.ModelManager;
 import org.bukkit.ChatColor;
@@ -83,10 +84,14 @@ public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         text = (Expression<String>) exprs[0];
 
+        if (!getParser().isCurrentEvent(OnModelSpawnedEvent.class)){ // TODO: dont forget this is here you fucking retatrd
+            return false;
+        }
 
 
 
-        return false;
+
+        return true;
     }
 
     @Override

@@ -11,10 +11,17 @@ import java.util.UUID;
 public class ChunkJsonObject {
     private final String name;
 
+    public final int x;
+    public final int z;
+
     private final Map<UUID, ModelJsonObject> models = new HashMap<>();
 
-    public ChunkJsonObject(Chunk chunk){
-        this.name = "chunk-x" + chunk.getX() + "-z" + chunk.getZ();
+
+
+    public ChunkJsonObject(int chunkX, int chunkZ){
+        this.name = "chunk-x" + chunkX + "-z" + chunkZ;
+        x = chunkX;
+        z = chunkZ;
     }
 
     public String getName(){
@@ -25,7 +32,22 @@ public class ChunkJsonObject {
         models.put(modelJsonObject.getUuid(), modelJsonObject);
 
     }
-    public Map<UUID, ModelJsonObject> getModels(){
+
+    public void removeModel(ModelJsonObject modelJsonObject){ // allows overriding
+        if (models.containsKey(modelJsonObject.uuid))
+            models.remove(modelJsonObject.getUuid(), modelJsonObject);
+
+    }
+
+    public Map<UUID, ModelJsonObject> getAllModels(){
         return models;
     }
+    public ModelJsonObject getModel(UUID modelUuid){
+        return models.get(modelUuid);
+    }
+
+    public boolean hasModel(UUID modelUuid){
+        return models.containsKey(modelUuid);
+    }
+
 }
