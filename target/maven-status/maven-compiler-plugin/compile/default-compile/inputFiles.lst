@@ -38,7 +38,16 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\StopAllAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\TeleportActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\Test.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\Test.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationEnded.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationFrameSet.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationPaused.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationResumed.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationStarted.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnModelRemoved.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnModelSpawned.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnReload.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\event\ExprEventGetEventAnimation.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\event\ExprEventGetEventModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsLocation.java
@@ -47,6 +56,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsType.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsUuid.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAllModels.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAnimationFrame.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprHasAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprLastSpawnedActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\SkriptManager.java

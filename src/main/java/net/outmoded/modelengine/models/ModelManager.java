@@ -57,24 +57,27 @@ public class ModelManager {
             if (loadedModelExists(modelType)) {
                 UUID uuid = UUID.randomUUID();
 
-                OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType);
+
+
+
+
+                location.setPitch(0);
+                location.setYaw(0);
+
+
+                ModelClass newModel = new ModelClass(location, modelType, uuid);
+
+                OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType, newModel);
                 Bukkit.getPluginManager().callEvent(event);
 
-                if (!event.isCancelled()) {
+                activeModels.put(uuid, newModel);
+                SkriptManager.setLastSpawnedModelClass(newModel);
 
-                    location.setPitch(0);
-                    location.setYaw(0);
-
-
-                    ModelClass newModel = new ModelClass(location, modelType, uuid);
-                    activeModels.put(uuid, newModel);
-                    SkriptManager.setLastSpawnedModelClass(newModel);
-
-                    if (Config.debugMode())
-                        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
+                if (Config.debugMode())
+                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
 
                 }
-            }
+
 
 
 
@@ -92,24 +95,26 @@ public class ModelManager {
             if (loadedModelExists(modelType)) {
 
 
-                OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType);
+
+
+
+                location.setPitch(0);
+                location.setYaw(0);
+
+
+                ModelClass newModel = new ModelClass(location, modelType, uuid);
+
+                OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType, newModel);
                 Bukkit.getPluginManager().callEvent(event);
 
-                if (!event.isCancelled()) {
+                activeModels.put(uuid, newModel);
+                SkriptManager.setLastSpawnedModelClass(newModel);
 
-                    location.setPitch(0);
-                    location.setYaw(0);
+                if (Config.debugMode())
+                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
 
-
-                    ModelClass newModel = new ModelClass(location, modelType, uuid);
-                    activeModels.put(uuid, newModel);
-                    SkriptManager.setLastSpawnedModelClass(newModel);
-
-                    if (Config.debugMode())
-                        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
-
-                }
             }
+
 
 
 
@@ -210,7 +215,7 @@ public class ModelManager {
             return;
         }
         ModelClass model = activeModels.get(uuid);
-        OnModelRemovedEvent event = new OnModelRemovedEvent(uuid, model.getModelType());
+        OnModelRemovedEvent event = new OnModelRemovedEvent(uuid, model.getModelType(), model);
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
@@ -305,9 +310,6 @@ public class ModelManager {
 
 
     public static void loadModelConfigs() { // loads json configs for models into memory
-        if (!Config.generatePack()){
-            return;
-        }
 
         OnReloadEvent event = new OnReloadEvent();
 

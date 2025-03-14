@@ -1,5 +1,6 @@
 package net.outmoded.modelengine.events;
 
+import net.outmoded.modelengine.models.ModelClass;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -12,10 +13,15 @@ public final class OnModelRemovedEvent extends Event implements Cancellable {
     private boolean cancelled;
     private UUID uuid;
     private String modelType;
+    private ModelClass modelClass;
 
-    public OnModelRemovedEvent(UUID uuid, String type) {
+    public OnModelRemovedEvent(UUID uuid, String type , ModelClass modelClass) {
         this.uuid = uuid;
         modelType = type;
+    }
+
+    public ModelClass getActiveModel() {
+        return modelClass;
     }
 
     public UUID getUuid() {

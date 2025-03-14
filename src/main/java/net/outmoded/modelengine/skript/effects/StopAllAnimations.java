@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public class StopAllAnimations extends Effect {
 
     static {
-        Skript.registerEffect(StopAllAnimations.class, "[animated-skript] stop all animations of %activemodel%");
+        Skript.registerEffect(StopAllAnimations.class, "[animated-skript] stop current animation of %activemodel%");
     }
 
     private Expression<ModelClass> activeModel;

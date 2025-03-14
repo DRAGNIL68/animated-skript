@@ -7,23 +7,27 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.modelengine.models.ModelClass;
+import net.outmoded.modelengine.models.ModelManager;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
+import static org.bukkit.Bukkit.getServer;
 
-public class ExprGetActiveModelsAnimations extends SimpleExpression<String> {
+
+public class ExprGetAnimationFrame extends SimpleExpression<Integer> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsAnimations.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [all|the] %activemodel%('s|s) animations");
+        Skript.registerExpression(ExprGetAnimationFrame.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) current animation (:frame|max frame)");
     }
-
     private Expression<ModelClass> modelClass;
+    private boolean type; // if true = frame, false = max frame
 
     @Override
-    public Class<? extends String> getReturnType() {
+    public Class<? extends Integer> getReturnType() {
         //1
-        return String.class;
+        return Integer.class;
     }
 
     @Override
@@ -34,9 +38,7 @@ public class ExprGetActiveModelsAnimations extends SimpleExpression<String> {
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        modelClass = (Expression<ModelClass>) exprs[0];
-
-
+        type = parser.hasTag("frame");
         return true;
     }
 
@@ -48,15 +50,21 @@ public class ExprGetActiveModelsAnimations extends SimpleExpression<String> {
 
     @Override
     @Nullable
-    protected String[] get(Event event) {
+    protected Integer[] get(Event event) {
         ModelClass modelClass1 = modelClass.getSingle(event);
         if (modelClass1 != null){
+            if (!modelClass1.hasCurrentAnimation())
+                return null;
 
-            return modelClass1.getAnimations();
+            if (type)
+                return new Integer[] {modelClass1.getCurrentAnimationsFrame()};
+            else
+                return new Integer[] {modelClass1.getCurrentAnimationMaxFrame()};
+
         }
 
-
         return null;
+
     }
 }
 

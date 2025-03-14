@@ -63,7 +63,7 @@ import static org.bukkit.Bukkit.getServer;
 public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModel.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-model %-string%");
+        Skript.registerExpression(ExprGetActiveModel.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-model %string%");
     }
 
     private Expression<String> text; // if true = loaded-models | if false = active-models
@@ -84,9 +84,12 @@ public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         text = (Expression<String>) exprs[0];
 
-        if (!getParser().isCurrentEvent(OnModelSpawnedEvent.class)){ // TODO: dont forget this is here you fucking retatrd
+        if (text == null)
             return false;
-        }
+
+        //if (!getParser().isCurrentEvent(OnModelSpawnedEvent.class)){ // TODO: dont forget this is here you fucking retard
+            //return false;
+        //}
 
 
 

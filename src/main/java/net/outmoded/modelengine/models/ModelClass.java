@@ -616,6 +616,10 @@ public class ModelClass { // TODO: destroy this shit code
         return currentAnimationName;
     };
 
+    public boolean hasCurrentAnimation(){
+        return currentAnimationName != null;
+    };
+
     public String[] getAnimations(){
        return loadedAnimations.keySet().toArray(String[]::new);
     };
@@ -660,7 +664,7 @@ public class ModelClass { // TODO: destroy this shit code
         }
     };
 
-    public Boolean getIsCurrentAnimationPaused(){
+    public Boolean isCurrentAnimationPaused(){
         return isActive;
     }
 
@@ -680,7 +684,11 @@ public class ModelClass { // TODO: destroy this shit code
         }
     }
 
-    public int getCurrentAnimationLength(){ // returns max frame time
+    public Integer getCurrentAnimationsFrame(){
+        return currentFrameTime;
+    };
+
+    public int getCurrentAnimationMaxFrame(){ // returns max frame time
         return maxFrameTime;
     }
 

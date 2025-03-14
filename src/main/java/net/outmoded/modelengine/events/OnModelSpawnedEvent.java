@@ -1,20 +1,21 @@
 package net.outmoded.modelengine.events;
 
+import net.outmoded.modelengine.models.ModelClass;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import java.util.UUID;
 
-public final class OnModelSpawnedEvent extends Event implements Cancellable {
+public final class OnModelSpawnedEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
-    private boolean cancelled;
     private UUID uuid;
     private String modelType;
-
-    public OnModelSpawnedEvent(UUID uuid, String type) {
+    private ModelClass modelClass;
+    public OnModelSpawnedEvent(UUID uuid, String type, ModelClass modelClass) {
         this.uuid = uuid;
         modelType = type;
+        this.modelClass = modelClass;
     }
 
     public UUID getUuid() {
@@ -25,6 +26,10 @@ public final class OnModelSpawnedEvent extends Event implements Cancellable {
         return modelType;
     }
 
+    public ModelClass getActiveModel() {
+        return modelClass;
+    }
+
     public HandlerList getHandlers() {
         return handlers;
     }
@@ -33,13 +38,4 @@ public final class OnModelSpawnedEvent extends Event implements Cancellable {
         return handlers;
     }
 
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean cancel) {
-        cancelled = cancel;
-    }
 }

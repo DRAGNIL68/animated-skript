@@ -1,39 +1,34 @@
 /*
 
 
-   %activemodel% = skript type for ModelClass - done
-
-   Expressions return info
-   Effects don't return anything
-
-
    MODELMANAGER:
         EXPRESSIONS:
-            [animated-skript] all [the] (loaded-models|active-models): String[] - Expression - DONE
+            [animated-skript] all [the] (loaded-models|active-models): String[]
 
 
-            [animated-skript] [get] [the] active-model "String -> UUID": ModelClass - Expression - DONE
-            [animated-skript] [get] %activemodel%'s/s location: location - Expression - DONE
+            [animated-skript] [get] [the] active-model "String -> UUID": ModelClass
+            [animated-skript] [get] %activemodel%'s/s location: location
 
-            [animated-skript] [get] last spawned active-model: %active-model% - Expression - DONE
+            [animated-skript] [get] last spawned active-model: %active-model%
 
         EFFECTS:
-            [animated-skript] spawn [the] loaded-model %string% at [the] %location%: null - Effect - DONE
-            [animated-skript] remove [the] active-model %activemodel%: null - Effect - DONE
+            [animated-skript] spawn [the] loaded-model %string% at [the] %location%
+            [animated-skript] remove [the] active-model %activemodel%
 
-            [animated-skript] reload (model-configs|active-models): null - Effect - DONE
-            [animated-skript] (teleport||tp) %active-model%: null - Effect - DONE
+            [animated-skript] reload (model-configs|active-models)
+            [animated-skript] (teleport||tp) %active-model%
 
         CONDITIONS:
-            [animated-skript] (loaded-model|active-model) %string% exits - DONE
+            [animated-skript] (loaded-model|active-model) %string% exits
 
    MODELCLASS:
         EXPRESSIONS:
-            [animated-skript] [get] %activemodel%('s|s) model type: string - Expression - DONE
-            [animated-skript] [get] %activemodel%('s|s) uuid: Uuid - Expression - DONE
-            [animated-skript] [get] %activemodel%('s|s) active variant: string - Expression - CANT DO TODO
+            [animated-skript] [get] %activemodel%('s|s) model type
+            [animated-skript] [get] %activemodel%('s|s) uuid
+            [animated-skript] [get] %activemodel%('s|s) active variant
+            [animated-skript] [get] %activemodel%('s|s) current animation (:frame|max frame)
 
-            [animated-skript] get all [the] variants: string list - Expression - CANT DO TODO
+            [animated-skript] get all [the] variants: string list - Expression - DOES NOT EXIST
 
         EFFECTS:
             [animated-skript] set [the] active variant %string%
@@ -43,33 +38,30 @@
 
        NODES:
             EXPRESSIONS:
-                    [animated-skript] [get] [the||all] nodes of %active-model%: Display[] - Expression - DONE
-                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID": Display - Expression - DONE
+                    [animated-skript] [get] [the||all] nodes of %active-model%
+                    [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID"
 
        ANIMATION:
             EXPRESSIONS:
-                [animated-skript] [get] [all] %active-model%('s|s) animations: String[] - Expression - DONE
-                [animated-skript] %activemodel% has animation %string%: Bool - Condition - DONE
+                [animated-skript] [get] [all] %active-model%('s|s) animations
+                [animated-skript] %activemodel% has animation %string%
 
             EFFECTS:
-                [animated-skript] (play|stop) animation %string% of %activemodel% "String -> UUID": null - Effect - DONE
-                [animated-skript] stop all animations of %activemodel% "String -> UUID": null - Effect - DONE
+                [animated-skript] (play|stop) animation %string% of %activemodel%
+                [animated-skript] stop current animation
+                [animated-skript] (:pause||unpause||resume) animation of [the] %active-model%
 
 
-       UNIMPLEMENTED:
-       [animated-skript] (:pause||unpause||resume) animation of [the] %active-model% "String -> UUID": null - Effect - DONE
-       [animated-skript] %active-model%'s/s scale: Int - Expression TODO i don't have a clue in hell how to do this or if my system even allows it
 
 
 
    EVENTS:
-   [animated-skript] on model spawn: Event
-   [animated-skript] on model remove: Event
-   [animated-skript] on animation started: Event
-   [animated-skript] on animation stopped: Event
-   [animated-skript] on animation frame changed: Event
-   [animated-skript] on animation paused: Event
-   [animated-skript] on animation (unpaused||resumed): Event
-   [animated-skript] on animation ended: Event
-   [animated-skript] on reload : Event
+   [animated-skript] on model spawn
+   [animated-skript] on model remove
+   [animated-skript] on animation started
+   [animated-skript] on animation frame set
+   [animated-skript] on animation paused
+   [animated-skript] on animation (unpaused||resumed)
+   [animated-skript] on animation ended
+   animated-skript reloaded
  */

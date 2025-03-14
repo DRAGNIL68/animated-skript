@@ -18,7 +18,7 @@ public class CommandsTabComplete implements TabCompleter {
             return null;
 
         if (args.length == 1){
-            return Arrays.asList("list_loaded_models", "list_active_models", "help", "reload", "spawn", "play_animation");
+            return Arrays.asList("list_loaded_models", "list_active_models", "help", "reload", "spawn", "remove", "play_animation", "stop_animation");
         }
         if (args.length == 2){
 
@@ -26,6 +26,9 @@ public class CommandsTabComplete implements TabCompleter {
                 return Arrays.asList(getAllLoadedModelsKeys());
             }
             else if(args[0].equals("play_animation")){
+                return Arrays.asList(getAllActiveModelsUuidsAsString());
+            }
+            else if(args[0].equals("stop_animation")){
                 return Arrays.asList(getAllActiveModelsUuidsAsString());
             }
             else if(args[0].equals("remove")){

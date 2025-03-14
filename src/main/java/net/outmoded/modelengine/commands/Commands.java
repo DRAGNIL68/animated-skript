@@ -82,14 +82,27 @@ public class Commands implements CommandExecutor {
 
 
 
-                    if (!loadedModelExists(args[1])) {
+                    if (!activeModelExists(UUID.fromString(args[1]))) {
                         sender.sendMessage(ChatColor.RED + "Model Dose Not Exist");
                         return true;
                     }
-                    Location location = ((Player) sender).getLocation();
 
-                    ModelManager.getActiveModel(UUID.fromString(args[1]));
+                    ModelManager.removeActiveModel(UUID.fromString(args[1]));
                     sender.sendMessage("Removed Model: " + args[1]);
+                    return true;
+                }
+                if (Objects.equals(args[0], "stop_animation")) {
+
+
+
+                    if (!activeModelExists(UUID.fromString(args[1]))) {
+                        sender.sendMessage(ChatColor.RED + "Model Dose Not Exist");
+                        return true;
+                    }
+
+
+                    ModelManager.getActiveModel(UUID.fromString(args[1])).resetAnimation();
+                    sender.sendMessage("Stopped Animation Of Model: " + args[1]);
                     return true;
                 }
 

@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class OnEntityDismountEvent implements Listener {
 
     @EventHandler
-    public void onPlayerMove(EntityDismountEvent event) { // this code may or may not actually work
+    public void onEntityDismountEvent(EntityDismountEvent event) { // this code may or may not actually work
         // this code checks if a entity is part of a model and if it is the code fixes it
         if (event.getDismounted() instanceof Display && event.getEntity() instanceof Display) {
 

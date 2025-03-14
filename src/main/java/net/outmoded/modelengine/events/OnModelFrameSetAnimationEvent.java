@@ -1,5 +1,7 @@
 package net.outmoded.modelengine.events;
 
+import net.outmoded.modelengine.models.ModelClass;
+import net.outmoded.modelengine.models.ModelManager;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -17,6 +19,7 @@ public final class OnModelFrameSetAnimationEvent extends Event implements Cancel
     private int oldFrameTime;
     private int futureFrameTime;
     private int maxFrameTime;
+    private ModelClass modelClass;
 
     public int getOldFrameTime() {
         return oldFrameTime;
@@ -42,6 +45,7 @@ public final class OnModelFrameSetAnimationEvent extends Event implements Cancel
         this.futureFrameTime = futureFrameTime;
         this.oldFrameTime = oldFrameTime;
         this.maxFrameTime = maxFrameTime;
+        this.modelClass = ModelManager.getActiveModel(uuid);
 
     }
 
@@ -51,6 +55,10 @@ public final class OnModelFrameSetAnimationEvent extends Event implements Cancel
 
     public String getModelType() {
         return modelType;
+    }
+
+    public ModelClass getActiveModel() {
+        return modelClass;
     }
 
     public String getAnimation() {

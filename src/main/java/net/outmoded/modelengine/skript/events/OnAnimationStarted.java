@@ -1,36 +1,32 @@
 package net.outmoded.modelengine.skript.events;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.entity.EntityData;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
-
-import ch.njol.skript.registrations.EventValues;
-import net.outmoded.modelengine.events.OnModelSpawnedEvent;
+import net.outmoded.modelengine.events.OnModelRemovedEvent;
+import net.outmoded.modelengine.events.OnModelStartAnimationEvent;
 import org.bukkit.event.Event;
-
 
 import javax.annotation.Nullable;
 
-public class Test extends SkriptEvent {
+public class OnAnimationStarted extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Model Spawn", Test.class, OnModelSpawnedEvent.class, "[animated-skript] on model spawn");
-        EventValues.registerEventValue(OnModelSpawnedEvent.class, String.class, event -> event.getUuid().toString());
+        Skript.registerEvent("Animation Started", OnAnimationStarted.class, OnModelStartAnimationEvent.class, "[animated-skript] animation started");
+
 
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.ParseResult parseResult) {
-        return false;
+
+        return true;
     }
 
     @Override
     public boolean check(Event e) {
-        OnModelSpawnedEvent event = (OnModelSpawnedEvent) e;
-        //event.
 
         return true;
     }

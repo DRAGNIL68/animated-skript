@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.modelengine.commands.Commands;
 import net.outmoded.modelengine.commands.CommandsTabComplete;
+import net.outmoded.modelengine.listeners.OnEntityDismountEvent;
 import net.outmoded.modelengine.models.ModelManager;
 import net.outmoded.modelengine.models.ModelPersistence;
 import org.bukkit.Bukkit;
@@ -27,6 +28,7 @@ public final class ModelEngine extends JavaPlugin {
     public void onEnable() {
 
 
+        getServer().getPluginManager().registerEvents(new OnEntityDismountEvent(), this);
         getServer().getPluginManager().registerEvents(new ModelPersistence(), this); // model saving and loading
 
         getCommand("animated-skript").setExecutor(new Commands());
