@@ -9,6 +9,7 @@ import net.outmoded.modelengine.commands.CommandsTabComplete;
 import net.outmoded.modelengine.listeners.OnEntityDismountEvent;
 import net.outmoded.modelengine.models.ModelManager;
 import net.outmoded.modelengine.models.ModelPersistence;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,9 @@ public final class ModelEngine extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        int pluginId = 25094; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
 
 
         getServer().getPluginManager().registerEvents(new OnEntityDismountEvent(), this);

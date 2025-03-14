@@ -1,6 +1,7 @@
-name: animated-skript
+name: Animated-Skript
 version: '1.3-alpha'
 main: net.outmoded.modelengine.ModelEngine
+depend: [Skript]
 api-version: '1.21'
 author: DRAGNIL68
 commands:
