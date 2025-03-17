@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 public class IsPersistent extends SimpleExpression<Boolean> {
 
     static {
-        Skript.registerExpression(ExprLastSpawnedActiveModel.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] %activemodel% is persistent");
+        Skript.registerExpression(IsPersistent.class, Boolean.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) persistence");
     }
 
     private Expression<ModelClass> activeModel;

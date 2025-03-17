@@ -18,6 +18,7 @@ net\outmoded\modelengine\pack\jsonObjects\Model.class
 net\outmoded\modelengine\skript\effects\TeleportActiveModel.class
 net\outmoded\modelengine\skript\expressions\ExprGetAllActiveModels.class
 net\outmoded\modelengine\listeners\OnEntityDismountEvent.class
+net\outmoded\modelengine\skript\expressions\IsPersistent.class
 net\outmoded\modelengine\events\OnModelFrameSetAnimationEvent.class
 net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsType.class
 net\outmoded\modelengine\events\OnModelUnpauseAnimationEvent.class

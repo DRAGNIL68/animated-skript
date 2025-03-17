@@ -27,13 +27,14 @@
             [animated-skript] [get] %activemodel%('s|s) uuid
             [animated-skript] [get] %activemodel%('s|s) active variant
             [animated-skript] [get] %activemodel%('s|s) current animation (:frame|max frame)
-            [animated-skript] %activemodel% is persistent
+            [animated-skript] [get] %activemodel%('s|s) persistence
 
             [animated-skript] get all [the] variants: string list - Expression - DOES NOT EXIST
 
         EFFECTS:
             [animated-skript] set [the] active variant %string%
             [animated-skript] reset [the] active variant
+            [animated-skript] set %activemodel%('s|s) persistence to %boolean%
 
 
 
@@ -51,7 +52,7 @@
                 [animated-skript] (play|stop) animation %string% of %activemodel%
                 [animated-skript] stop current animation
                 [animated-skript] (:pause||unpause||resume) animation of [the] %active-model%
-                [animated-skript] set %activemodel%('s|s) persistence to %boolean%
+
 
 
 

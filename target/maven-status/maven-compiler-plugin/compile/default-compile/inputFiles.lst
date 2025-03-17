@@ -61,4 +61,5 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAnimationFrame.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprHasAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprLastSpawnedActiveModel.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\IsPersistent.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\SkriptManager.java
