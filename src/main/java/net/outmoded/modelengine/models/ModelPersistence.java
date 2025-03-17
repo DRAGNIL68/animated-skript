@@ -201,20 +201,29 @@ public class ModelPersistence implements Listener {
         }
 
         for (UUID uuid : ModelManager.getAllActiveModelsUuids()){
-            ModelClass modelClass = ModelManager.getActiveModel(uuid);
-            Location location = modelClass.getOriginLocation();
 
-            if (!currentConfig.hasWorld(location.getWorld().getName())){
-                currentConfig.addWorld(new WorldJsonObject(location.getWorld().getName()));
+            ModelClass modelClass = ModelManager.getActiveModel(uuid);
+
+            if (modelClass.getPersistence()) {
+
+                Location location = modelClass.getOriginLocation();
+
+                if (!currentConfig.hasWorld(location.getWorld().getName())){
+                    currentConfig.addWorld(new WorldJsonObject(location.getWorld().getName()));
+                }
+
+                ChunkJsonObject chunkJsonObject = new ChunkJsonObject(location.getChunk().getX(), location.getChunk().getZ());
+
+                currentConfig.getWorld(location.getWorld().getName()).addChunk(chunkJsonObject); // it will fail to make a new chunk if it exists
+
+                ModelJsonObject modelJsonObject = new ModelJsonObject(modelClass);
+
+                currentConfig.getWorld(location.getWorld().getName()).getChunk(chunkJsonObject.getName()).addModel(modelJsonObject);
+
             }
 
-            ChunkJsonObject chunkJsonObject = new ChunkJsonObject(location.getChunk().getX(), location.getChunk().getZ());
 
-            currentConfig.getWorld(location.getWorld().getName()).addChunk(chunkJsonObject); // it will fail to make a new chunk if it exists
 
-            ModelJsonObject modelJsonObject = new ModelJsonObject(modelClass);
-
-            currentConfig.getWorld(location.getWorld().getName()).getChunk(chunkJsonObject.getName()).addModel(modelJsonObject);
 
         }
 
