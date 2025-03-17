@@ -50,6 +50,7 @@
                 [animated-skript] (play|stop) animation %string% of %activemodel%
                 [animated-skript] stop current animation
                 [animated-skript] (:pause||unpause||resume) animation of [the] %active-model%
+                [animated-skript] set %activemodel%('s|s) persistence to false
 
 
 

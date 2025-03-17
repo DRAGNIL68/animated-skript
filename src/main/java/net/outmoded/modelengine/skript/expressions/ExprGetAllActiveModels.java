@@ -6,6 +6,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.modelengine.models.ModelClass;
 import net.outmoded.modelengine.models.ModelManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
@@ -56,18 +57,17 @@ import static org.bukkit.Bukkit.getServer;
  */
 
 
-public class ExprGetAllModels extends SimpleExpression<String> {
+public class ExprGetAllActiveModels extends SimpleExpression<ModelClass> {
 
     static {
-        Skript.registerExpression(ExprGetAllModels.class, String.class, ExpressionType.COMBINED, "[animated-skript] all [the] (:loaded-models|active-models)");
+        Skript.registerExpression(ExprGetAllActiveModels.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] all [the] active-models");
     }
 
-    private boolean type; // if true = loaded-models | if false = active-models
 
     @Override
-    public Class<? extends String> getReturnType() {
+    public Class<? extends ModelClass> getReturnType() {
         //1
-        return String.class;
+        return ModelClass.class;
     }
 
     @Override
@@ -78,10 +78,6 @@ public class ExprGetAllModels extends SimpleExpression<String> {
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        type = parser.hasTag("loaded-models");
-        if (!type)
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "!true");
-
         return true;
     }
 
@@ -93,13 +89,9 @@ public class ExprGetAllModels extends SimpleExpression<String> {
 
     @Override
     @Nullable
-    protected String[] get(Event event) {
-        if (type) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "sent");
-            return ModelManager.getAllLoadedModelsKeys(); // true
-        }
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "not sent");
-        return ModelManager.getAllActiveModelsUuidsAsString(); // false
+    protected ModelClass[] get(Event event) {
+
+        return ModelManager.getAllActiveModels();
 
     }
 }

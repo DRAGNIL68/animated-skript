@@ -173,6 +173,10 @@ public class ModelManager {
         return output;
     } // get all names of loaded models
 
+    public static ModelClass[] getAllActiveModels() {
+        return activeModels.values().toArray(ModelClass[]::new);
+    }
+
     public static ModelClass getActiveModel(UUID uuid) {
         if (activeModels.containsKey(uuid)) {
             return activeModels.get(uuid);

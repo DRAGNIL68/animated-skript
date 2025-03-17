@@ -34,6 +34,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\PauseAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\ReloadModels.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\RemoveActiveModel.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\SetPersistance.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\SpawnLoadedModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\StopAllAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\TeleportActiveModel.java
@@ -55,7 +56,8 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsNodes.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsType.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsUuid.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAllModels.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAllActiveModels.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAllLoadedModels.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAnimationFrame.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprHasAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprLastSpawnedActiveModel.java

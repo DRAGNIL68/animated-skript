@@ -1,10 +1,8 @@
 package net.outmoded.modelengine.models;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.kyori.adventure.text.format.TextColor;
-import net.outmoded.modelengine.Config;
 import net.outmoded.modelengine.ModelEngine;
 import net.outmoded.modelengine.events.*;
 import org.bukkit.*;
@@ -20,7 +18,6 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 
-import java.io.DataInput;
 import java.util.*;
 
 
@@ -47,12 +44,13 @@ public class ModelClass { // TODO: destroy this shit code
     private Integer loopDelay = 0; // in ticks does not need converting
     private Boolean isActive = false;
     private Boolean loopMode = false;
+    private Boolean isPersistence = false;
 
     ModelClass(Location location, String modelType, UUID uuid) {
         this.modelType = modelType;
         this.uuid = uuid;
         origin = location.getWorld().spawn(location, ItemDisplay.class);
-        origin.setPersistent(false);
+        origin.setPersistent(true);
 
         NamespacedKey UuidKey = new NamespacedKey(ModelEngine.getInstance(), "modelUuid");
         NamespacedKey key = new NamespacedKey(ModelEngine.getInstance(), "nodeType");
@@ -64,6 +62,13 @@ public class ModelClass { // TODO: destroy this shit code
         spawnModelNodes();
     }
 
+    public void setPersistence(Boolean persistence) {
+        isPersistence = persistence;
+    }
+
+    public Boolean getPersistence() {
+        return isPersistence;
+    }
 
     public void loadVariants(){
         ObjectMapper objectMapper = new ObjectMapper();

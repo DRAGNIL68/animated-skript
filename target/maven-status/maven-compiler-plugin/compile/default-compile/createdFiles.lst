@@ -2,6 +2,7 @@ net\outmoded\modelengine\events\OnModelStartAnimationEvent.class
 net\outmoded\modelengine\pack\jsonObjects\McMeta.class
 net\outmoded\modelengine\models\ModelPersistence.class
 net\outmoded\modelengine\pack\Namespace.class
+net\outmoded\modelengine\skript\expressions\ExprGetAllLoadedModels.class
 net\outmoded\modelengine\pack\jsonObjects\Writable.class
 net\outmoded\modelengine\pack\jsonObjects\TestWritableJson.class
 net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsUuid.class
@@ -15,11 +16,13 @@ net\outmoded\modelengine\skript\expressions\event\ExprEventGetEventModel.class
 net\outmoded\modelengine\skript\expressions\ExprGetActiveModel.class
 net\outmoded\modelengine\pack\jsonObjects\Model.class
 net\outmoded\modelengine\skript\effects\TeleportActiveModel.class
+net\outmoded\modelengine\skript\expressions\ExprGetAllActiveModels.class
 net\outmoded\modelengine\listeners\OnEntityDismountEvent.class
 net\outmoded\modelengine\events\OnModelFrameSetAnimationEvent.class
 net\outmoded\modelengine\skript\expressions\ExprGetActiveModelsType.class
 net\outmoded\modelengine\events\OnModelUnpauseAnimationEvent.class
 net\outmoded\modelengine\skript\ActiveModel$1.class
+net\outmoded\modelengine\skript\effects\SetPersistance.class
 net\outmoded\modelengine\pack\ResourcePack.class
 net\outmoded\modelengine\skript\effects\StopAllAnimations.class
 net\outmoded\modelengine\skript\events\OnAnimationResumed.class
@@ -50,7 +53,6 @@ net\outmoded\modelengine\models\ModelManager.class
 net\outmoded\modelengine\ModelEngine$2.class
 net\outmoded\modelengine\models\ModelClass.class
 net\outmoded\modelengine\skript\events\OnAnimationFrameSet.class
-net\outmoded\modelengine\skript\expressions\ExprGetAllModels.class
 net\outmoded\modelengine\skript\expressions\ExprHasAnimation.class
 net\outmoded\modelengine\pack\jsonObjects\TestNonWritableClass.class
 net\outmoded\modelengine\skript\effects\Test.class

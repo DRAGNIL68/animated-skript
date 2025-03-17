@@ -14,7 +14,6 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.EntitiesUnloadEvent;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -96,6 +95,10 @@ public class ModelPersistence implements Listener {
                             ModelClass modelClass = ModelManager.getActiveModel(UUID.fromString(uuid));
                             if (modelClass != null){
                                 ModelJsonObject modelJsonObject = new ModelJsonObject(modelClass);
+
+                                if (modelClass.getPersistence())
+                                    return;
+
                                 chunk.addModel(modelJsonObject);
                                 ModelManager.removeActiveModel(UUID.fromString(uuid));
 
