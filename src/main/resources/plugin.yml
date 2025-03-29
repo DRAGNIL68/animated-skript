@@ -1,5 +1,5 @@
 name: Animated-Skript
-version: '1.3.1-alpha'
+version: '1.3.2-alpha'
 main: net.outmoded.modelengine.ModelEngine
 depend: [Skript]
 api-version: '1.21'
