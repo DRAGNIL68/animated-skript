@@ -23,7 +23,7 @@ public final class OnModelPauseAnimationEvent extends Event implements Cancellab
         modelType = type;
         animation = animationName;
         this.loopMode = loopMode;
-        this.modelClass = ModelManager.getActiveModel(uuid);
+        this.modelClass = ModelManager.getInstance().getActiveModel(uuid);
 
     }
 

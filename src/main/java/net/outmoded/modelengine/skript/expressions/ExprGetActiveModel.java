@@ -118,8 +118,8 @@ public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
 
         }
 
-        if (ModelManager.activeModelExists(uuid))
-            return new ModelClass[] {ModelManager.getActiveModel(uuid)};
+        if (ModelManager.getInstance().activeModelExists(uuid))
+            return new ModelClass[] {ModelManager.getInstance().getActiveModel(uuid)};
 
         return null;
     }

@@ -8,35 +8,41 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.modelengine.models.ModelClass;
 import net.outmoded.modelengine.models.ModelManager;
-import org.bukkit.ChatColor;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
-import static org.bukkit.Bukkit.getServer;
 
-public class ExprGetAllLoadedModels extends SimpleExpression<String> {
+
+public class ExprGetOrigin extends SimpleExpression<ItemDisplay> {
 
     static {
-        Skript.registerExpression(ExprGetAllLoadedModels.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] all [the] loaded-models");
+        Skript.registerExpression(ExprGetOrigin.class, ItemDisplay.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodel%('s|s) origin");
     }
 
-
+    private Expression<ModelClass> modelClassExpression;
 
     @Override
-    public Class<? extends String> getReturnType() {
+    public Class<? extends ItemDisplay> getReturnType() {
         //1
-        return String.class;
+        return ItemDisplay.class;
     }
 
     @Override
     public boolean isSingle() {
         //2
-        return false;
+        return true;
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
+        modelClassExpression = (Expression<ModelClass>) exprs[0];
+
+        if (modelClassExpression == null)
+            return false;
+
         return true;
     }
 
@@ -48,9 +54,13 @@ public class ExprGetAllLoadedModels extends SimpleExpression<String> {
 
     @Override
     @Nullable
-    protected String[] get(Event event) {
+    protected ItemDisplay[] get(Event event) {
 
-        return ModelManager.getInstance().getAllLoadedModelsKeys();
+        if (modelClassExpression.getSingle(event) != null){
+            return new ItemDisplay[] {modelClassExpression.getSingle(event).getOrigin()};
+        }
+
+        return null;
 
     }
 }

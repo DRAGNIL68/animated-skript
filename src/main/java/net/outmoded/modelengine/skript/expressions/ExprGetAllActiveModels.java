@@ -60,7 +60,7 @@ import static org.bukkit.Bukkit.getServer;
 public class ExprGetAllActiveModels extends SimpleExpression<ModelClass> {
 
     static {
-        Skript.registerExpression(ExprGetAllActiveModels.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] all [the] active-models");
+        Skript.registerExpression(ExprGetAllActiveModels.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] [get] all [the] active-models");
     }
 
 
@@ -91,7 +91,7 @@ public class ExprGetAllActiveModels extends SimpleExpression<ModelClass> {
     @Nullable
     protected ModelClass[] get(Event event) {
 
-        return ModelManager.getAllActiveModels();
+        return ModelManager.getInstance().getAllActiveModels();
 
     }
 }

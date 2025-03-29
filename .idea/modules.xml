@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/animated-skript.iml" filepath="$PROJECT_DIR$/animated-skript.iml" />
       <module fileurl="file://$PROJECT_DIR$/model-engine.iml" filepath="$PROJECT_DIR$/model-engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modelengine.iml" filepath="$PROJECT_DIR$/modelengine.iml" />
     </modules>
   </component>
 </project>

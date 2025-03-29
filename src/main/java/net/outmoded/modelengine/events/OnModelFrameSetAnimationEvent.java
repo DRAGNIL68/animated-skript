@@ -45,7 +45,7 @@ public final class OnModelFrameSetAnimationEvent extends Event implements Cancel
         this.futureFrameTime = futureFrameTime;
         this.oldFrameTime = oldFrameTime;
         this.maxFrameTime = maxFrameTime;
-        this.modelClass = ModelManager.getActiveModel(uuid);
+        this.modelClass = ModelManager.getInstance().getActiveModel(uuid);
 
     }
 

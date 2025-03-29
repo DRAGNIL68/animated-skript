@@ -37,7 +37,7 @@ public class SpawnLoadedModel extends Effect {
     @Override
     protected void execute(Event event) {
         if (string.getSingle(event) != null && locationExpression != null){
-            ModelManager.spawnNewModel(string.getSingle(event), locationExpression.getSingle(event));
+            ModelManager.getInstance().spawnNewModel(string.getSingle(event), locationExpression.getSingle(event));
 
 
         }

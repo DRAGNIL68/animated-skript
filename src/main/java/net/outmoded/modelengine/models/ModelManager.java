@@ -31,28 +31,44 @@ import static net.outmoded.modelengine.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
 
 public class ModelManager {
-    private final static Map<String, JsonNode> loadedModels = new HashMap<>(); // stores all model types I.e. there configs: key = file name
-    private final static Map<UUID, ModelClass> activeModels = new HashMap<>(); // stores all models that are active on the server
-    private static ResourcePack resourcePack;
-    private static Namespace animatedSkript;
-    private static int errorCount = 0;
+
+    private ModelManager instance;
+
+    private final Map<String, JsonNode> loadedModels = new HashMap<>(); // stores all model types I.e. there configs: key = file name
+    private final Map<UUID, ModelClass> activeModels = new HashMap<>(); // stores all models that are active on the server
+    private ResourcePack resourcePack;
+    private Namespace animatedSkript;
+    private int errorCount = 0;
+    private static ModelManager modelManager;
+
+    private ModelManager(){
 
 
-    public static void increaseErrorCount(){
+    }
+
+    public static ModelManager getInstance() {
+        if (modelManager == null) {
+            modelManager = new ModelManager();
+        }
+        return modelManager;
+    }
+
+
+    public void increaseErrorCount(){
         errorCount++;
     }
 
-    public static void resetErrorCount(){
+    public void resetErrorCount(){
         errorCount = 0;
     }
 
-    public static int getErrorCount(){
+    public int getErrorCount(){
         return errorCount;
     }
 
 
 
-    public static void spawnNewModel(String modelType, Location location){
+    public void spawnNewModel(String modelType, Location location){
         try{
             if (loadedModelExists(modelType)) {
                 UUID uuid = UUID.randomUUID();
@@ -73,7 +89,7 @@ public class ModelManager {
                 activeModels.put(uuid, newModel);
                 SkriptManager.setLastSpawnedModelClass(newModel);
 
-                if (Config.debugMode())
+                if (debugMode())
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
 
                 }
@@ -89,7 +105,7 @@ public class ModelManager {
 
 
     }
-    public static void spawnNewModel(String modelType, Location location, UUID uuid){ // this one lets you set the uuid of the model
+    public void spawnNewModel(String modelType, Location location, UUID uuid){ // this one lets you set the uuid of the model
         try{
 
             if (loadedModelExists(modelType)) {
@@ -110,7 +126,7 @@ public class ModelManager {
                 activeModels.put(uuid, newModel);
                 SkriptManager.setLastSpawnedModelClass(newModel);
 
-                if (Config.debugMode())
+                if (debugMode())
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
 
             }
@@ -127,20 +143,20 @@ public class ModelManager {
 
     }
 
-    public static void addModelConfig(String name, JsonNode modelFile){
+    public void addModelConfig(String name, JsonNode modelFile){
         if (!loadedModels.containsKey(name)){
             loadedModels.put(name, modelFile);
         }
     } // TODO: not sure if ths even needs to exist
 
-    public static void tickAllAnimations() {
+    public void tickAllAnimations() {
         for (ModelClass model : activeModels.values()) {
             model.tickAnimation();
         }
 
     } // loops animations of all active models
 
-    public static UUID[] getAllActiveModelsUuids() {
+    public UUID[] getAllActiveModelsUuids() {
         UUID[] output = new UUID[activeModels.size()];
         Integer count = 0;
         for (UUID key : activeModels.keySet()) {
@@ -151,7 +167,7 @@ public class ModelManager {
         return output;
     } // get uuids of active models
 
-    public static String[] getAllActiveModelsUuidsAsString() {
+    public String[] getAllActiveModelsUuidsAsString() {
         String[] output = new String[activeModels.size()];
         Integer count = 0;
         for (UUID key : activeModels.keySet()) {
@@ -162,7 +178,7 @@ public class ModelManager {
         return output;
     } // get uuids of active models
 
-    public static String[] getAllLoadedModelsKeys() {
+    public String[] getAllLoadedModelsKeys() {
         String[] output = new String[loadedModels.size()];
         Integer count = 0;
         for (String key : loadedModels.keySet()) {
@@ -173,36 +189,36 @@ public class ModelManager {
         return output;
     } // get all names of loaded models
 
-    public static ModelClass[] getAllActiveModels() {
+    public ModelClass[] getAllActiveModels() {
         return activeModels.values().toArray(ModelClass[]::new);
     }
 
-    public static ModelClass getActiveModel(UUID uuid) {
+    public ModelClass getActiveModel(UUID uuid) {
         if (activeModels.containsKey(uuid)) {
             return activeModels.get(uuid);
         }
         return null;
     } // returns a reference of the requested ModelClass
 
-    public static boolean  activeModelExists(UUID uuid) {
+    public boolean  activeModelExists(UUID uuid) {
         if (activeModels.containsKey(uuid)) {
             return true;
         }
         return false;
     }
 
-    public static boolean loadedModelExists(String uuid) {
+    public boolean loadedModelExists(String uuid) {
         if (loadedModels.containsKey(uuid)) {
             return true;
         }
         return false;
     }
 
-    public static JsonNode getLoadedModel(String name) {
+    public JsonNode getLoadedModel(String name) {
         return loadedModels.get(name);
     } // returns a reference of the requested JsonNode
 
-    public static void reloadAllActiveModels() {
+    public void reloadAllActiveModels() {
         resetErrorCount();
 
 
@@ -214,7 +230,7 @@ public class ModelManager {
     }
 
 
-    public static void removeActiveModel(UUID uuid) {
+    public void removeActiveModel(UUID uuid) {
         if (!activeModels.containsKey(uuid)){
             return;
         }
@@ -232,7 +248,7 @@ public class ModelManager {
 
     } // deletes an active model TODO: need way to remove loaded model
 
-    public static void loadModelTextures(JsonNode model, String modelName){
+    public void loadModelTextures(JsonNode model, String modelName){
         if (model.get("textures") == null){
             return;
         }
@@ -264,7 +280,7 @@ public class ModelManager {
 
     }
 
-    public static void loadModelData(JsonNode model, String modelName){ // terrible name, loads 3d model from json file
+    public void loadModelData(JsonNode model, String modelName){ // terrible name, loads 3d model from json file
         if (model.get("variants") == null){
             return;
         }
@@ -313,7 +329,7 @@ public class ModelManager {
     }
 
 
-    public static void loadModelConfigs() { // loads json configs for models into memory
+    public void loadModelConfigs() { // loads json configs for models into memory
 
         OnReloadEvent event = new OnReloadEvent();
 

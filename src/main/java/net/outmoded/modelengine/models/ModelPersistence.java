@@ -48,9 +48,9 @@ public class ModelPersistence implements Listener {
 
         while (iterator.hasNext()){
             ModelJsonObject modelJsonObject = iterator.next();
-            ModelManager.spawnNewModel(modelJsonObject.modelType, modelJsonObject.locationAsLocation, modelJsonObject.uuid);
+            ModelManager.getInstance().spawnNewModel(modelJsonObject.modelType, modelJsonObject.locationAsLocation, modelJsonObject.uuid);
 
-            ModelClass modelClass = ModelManager.getActiveModel(modelJsonObject.getUuid());
+            ModelClass modelClass = ModelManager.getInstance().getActiveModel(modelJsonObject.getUuid());
             if (modelClass.hasAnimation(modelJsonObject.currentAnimation)){
 
                 modelClass.playAnimation(modelJsonObject.currentAnimation);
@@ -92,7 +92,7 @@ public class ModelPersistence implements Listener {
                         if (entity.getPersistentDataContainer().has(UuidKey)){
 
                             String uuid = entity.getPersistentDataContainer().get(UuidKey, PersistentDataType.STRING);
-                            ModelClass modelClass = ModelManager.getActiveModel(UUID.fromString(uuid));
+                            ModelClass modelClass = ModelManager.getInstance().getActiveModel(UUID.fromString(uuid));
                             if (modelClass != null){
                                 ModelJsonObject modelJsonObject = new ModelJsonObject(modelClass);
 
@@ -100,7 +100,7 @@ public class ModelPersistence implements Listener {
                                     return;
 
                                 chunk.addModel(modelJsonObject);
-                                ModelManager.removeActiveModel(UUID.fromString(uuid));
+                                ModelManager.getInstance().removeActiveModel(UUID.fromString(uuid));
 
                                 if (debugMode())
                                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "animated-skript: saved model");
@@ -196,13 +196,13 @@ public class ModelPersistence implements Listener {
         return currentConfig;
     }
     public static void saveAllActiveModelsToCurrentConfig(){
-        if (ModelManager.getAllActiveModelsUuids().length == 0){
+        if (ModelManager.getInstance().getAllActiveModelsUuids().length == 0){
             return;
         }
 
-        for (UUID uuid : ModelManager.getAllActiveModelsUuids()){
+        for (UUID uuid : ModelManager.getInstance().getAllActiveModelsUuids()){
 
-            ModelClass modelClass = ModelManager.getActiveModel(uuid);
+            ModelClass modelClass = ModelManager.getInstance().getActiveModel(uuid);
 
             if (modelClass.getPersistence()) {
 

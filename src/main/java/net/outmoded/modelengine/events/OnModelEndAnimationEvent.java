@@ -22,7 +22,7 @@ public final class OnModelEndAnimationEvent extends Event{
         modelType = type;
         animation = animationName;
         this.loopMode = loopMode;
-        this.modelClass = ModelManager.getActiveModel(uuid);
+        this.modelClass = ModelManager.getInstance().getActiveModel(uuid);
 
     }
 

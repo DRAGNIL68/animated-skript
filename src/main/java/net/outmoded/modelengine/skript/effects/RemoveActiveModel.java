@@ -38,7 +38,7 @@ public class RemoveActiveModel extends Effect {
         ModelClass modelClass = activeModel.getSingle(event);
 
         if (modelClass != null){
-            ModelManager.removeActiveModel(modelClass.getUuid());
+            ModelManager.getInstance().removeActiveModel(modelClass.getUuid());
 
 
         }

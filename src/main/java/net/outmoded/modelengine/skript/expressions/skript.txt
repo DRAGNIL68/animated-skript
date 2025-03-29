@@ -3,7 +3,9 @@
 
    MODELMANAGER:
         EXPRESSIONS:
-            [animated-skript] all [the] (loaded-models|active-models): String[]
+            [animated-skript] [get] [the] origin
+            [animated-skript] [get] all [the] loaded-models
+            [animated-skript] [get] all [the] active-models
 
 
             [animated-skript] [get] [the] active-model "String -> UUID": ModelClass

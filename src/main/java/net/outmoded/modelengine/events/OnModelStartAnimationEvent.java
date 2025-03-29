@@ -20,7 +20,7 @@ public final class OnModelStartAnimationEvent extends Event implements Cancellab
         this.uuid = uuid;
         modelType = type;
         animation = animationName;
-        this.modelClass = ModelManager.getActiveModel(uuid);
+        this.modelClass = ModelManager.getInstance().getActiveModel(uuid);
 
     }
 

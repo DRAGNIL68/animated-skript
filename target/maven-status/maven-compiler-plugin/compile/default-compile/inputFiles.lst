@@ -38,7 +38,6 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\SpawnLoadedModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\StopAllAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\TeleportActiveModel.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\effects\Test.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationEnded.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationFrameSet.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\events\OnAnimationPaused.java
@@ -59,6 +58,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengi
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAllActiveModels.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAllLoadedModels.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetAnimationFrame.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprGetOrigin.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprHasAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\ExprLastSpawnedActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\modelengine\skript\expressions\IsPersistent.java

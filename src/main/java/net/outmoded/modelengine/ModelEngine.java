@@ -70,13 +70,13 @@ public final class ModelEngine extends JavaPlugin {
         // End of Skript Stuff
 
         Config.load();
-        ModelManager.loadModelConfigs();
+        ModelManager.getInstance().loadModelConfigs();
         ModelPersistence.loadLastConfig();
 
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
-                ModelManager.tickAllAnimations();
+                ModelManager.getInstance().tickAllAnimations();
 
             }
         }, 20, 1L);

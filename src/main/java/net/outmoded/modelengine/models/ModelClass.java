@@ -57,7 +57,7 @@ public class ModelClass { // TODO: destroy this shit code
 
         origin.getPersistentDataContainer().set(UuidKey, PersistentDataType.STRING, this.uuid.toString());
         origin.getPersistentDataContainer().set(key, PersistentDataType.STRING, "origin");
-        config = ModelManager.getLoadedModel(modelType);
+        config = ModelManager.getInstance().getLoadedModel(modelType);
         loadAnimations();
         spawnModelNodes();
     }
@@ -110,7 +110,7 @@ public class ModelClass { // TODO: destroy this shit code
     public void loadConfig(){
         ObjectMapper objectMapper = new ObjectMapper();
         try{
-            config = ModelManager.getLoadedModel(modelType); // gets json config for model
+            config = ModelManager.getInstance().getLoadedModel(modelType); // gets json config for model
             deleteModelNodes(); // deletes nodes
             spawnModelNodes(); // respawns nodes
             loadAnimations(); // loads animations and resets current animation
@@ -175,7 +175,7 @@ public class ModelClass { // TODO: destroy this shit code
                         break;
                     case "bone":
 
-                        ItemStack boneItemStack = new ItemStack(Material.SKELETON_SKULL);
+                        ItemStack boneItemStack = new ItemStack(Material.PAPER);
 
 
                         NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + activeVariant + "/" + uuid);

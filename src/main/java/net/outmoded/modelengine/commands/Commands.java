@@ -30,12 +30,12 @@ public class Commands implements CommandExecutor {
 
                 if (Objects.equals(args[0], "list_loaded_models")) {
 
-                    sender.sendMessage(ChatColor.GREEN + "Models Loaded:" + Arrays.toString(ModelManager.getAllLoadedModelsKeys()));
+                    sender.sendMessage(ChatColor.GREEN + "Models Loaded:" + Arrays.toString(ModelManager.getInstance().getAllLoadedModelsKeys()));
                     return true;
 
                 } else if (Objects.equals(args[0], "list_active_models")) {
 
-                    sender.sendMessage(ChatColor.GREEN + "Models Active:" + Arrays.toString(ModelManager.getAllActiveModelsUuids()));
+                    sender.sendMessage(ChatColor.GREEN + "Models Active:" + Arrays.toString(ModelManager.getInstance().getAllActiveModelsUuids()));
                     return true;
 
                 } else if (Objects.equals(args[0], "help")) {
@@ -47,8 +47,8 @@ public class Commands implements CommandExecutor {
                 } else if (Objects.equals(args[0], "reload")) {
 
                     Config.load();
-                    ModelManager.loadModelConfigs();
-                    ModelManager.reloadAllActiveModels();
+                    ModelManager.getInstance().loadModelConfigs();
+                    ModelManager.getInstance().reloadAllActiveModels();
 
 
                     //ModelPersistence.saveModels();
@@ -67,13 +67,13 @@ public class Commands implements CommandExecutor {
 
 
 
-                    if (!loadedModelExists(args[1])) {
+                    if (!ModelManager.getInstance().loadedModelExists(args[1])) {
                         sender.sendMessage(ChatColor.RED + "Model Dose Not Exist");
                         return true;
                     }
                     Location location = ((Player) sender).getLocation();
 
-                    ModelManager.spawnNewModel(args[1], location);
+                    ModelManager.getInstance().spawnNewModel(args[1], location);
                     sender.sendMessage("Spawned Model: " + args[1]);
                     return true;
                 }
@@ -82,12 +82,12 @@ public class Commands implements CommandExecutor {
 
 
 
-                    if (!activeModelExists(UUID.fromString(args[1]))) {
+                    if (!ModelManager.getInstance().activeModelExists(UUID.fromString(args[1]))) {
                         sender.sendMessage(ChatColor.RED + "Model Dose Not Exist");
                         return true;
                     }
 
-                    ModelManager.removeActiveModel(UUID.fromString(args[1]));
+                    ModelManager.getInstance().removeActiveModel(UUID.fromString(args[1]));
                     sender.sendMessage("Removed Model: " + args[1]);
                     return true;
                 }
@@ -95,13 +95,13 @@ public class Commands implements CommandExecutor {
 
 
 
-                    if (!activeModelExists(UUID.fromString(args[1]))) {
+                    if (!ModelManager.getInstance().activeModelExists(UUID.fromString(args[1]))) {
                         sender.sendMessage(ChatColor.RED + "Model Dose Not Exist");
                         return true;
                     }
 
 
-                    ModelManager.getActiveModel(UUID.fromString(args[1])).resetAnimation();
+                    ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])).resetAnimation();
                     sender.sendMessage("Stopped Animation Of Model: " + args[1]);
                     return true;
                 }
@@ -112,13 +112,13 @@ public class Commands implements CommandExecutor {
                 if (Objects.equals(args[0], "play_animation")) {
 
 
-                    if (activeModelExists(UUID.fromString(args[1]))) {
-                        if (getActiveModel(UUID.fromString(args[1])) == null) {
+                    if (ModelManager.getInstance().activeModelExists(UUID.fromString(args[1]))) {
+                        if (ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])) == null) {
                             sender.sendMessage(ChatColor.RED + "Model Dose Not Exist");
                             return true;
                         }
 
-                        getActiveModel(UUID.fromString(args[1])).playAnimation(args[2]);
+                        ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])).playAnimation(args[2]);
                         return true;
                     }
                 }

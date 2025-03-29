@@ -2,6 +2,7 @@ package net.outmoded.modelengine.commands;
 
 
 import net.outmoded.modelengine.models.ModelClass;
+import net.outmoded.modelengine.models.ModelManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -23,16 +24,16 @@ public class CommandsTabComplete implements TabCompleter {
         if (args.length == 2){
 
             if (args[0].equals("spawn")){
-                return Arrays.asList(getAllLoadedModelsKeys());
+                return Arrays.asList(ModelManager.getInstance().getAllLoadedModelsKeys());
             }
             else if(args[0].equals("play_animation")){
-                return Arrays.asList(getAllActiveModelsUuidsAsString());
+                return Arrays.asList(ModelManager.getInstance().getAllActiveModelsUuidsAsString());
             }
             else if(args[0].equals("stop_animation")){
-                return Arrays.asList(getAllActiveModelsUuidsAsString());
+                return Arrays.asList(ModelManager.getInstance().getAllActiveModelsUuidsAsString());
             }
             else if(args[0].equals("remove")){
-                return Arrays.asList(getAllActiveModelsUuidsAsString());
+                return Arrays.asList(ModelManager.getInstance().getAllActiveModelsUuidsAsString());
             }
             else {
                 return new ArrayList<>();
@@ -51,12 +52,12 @@ public class CommandsTabComplete implements TabCompleter {
 
                 sender.sendMessage(args[1]);
 
-                if (!activeModelExists(uuid)){
+                if (!ModelManager.getInstance().activeModelExists(uuid)){
 
                     return Collections.emptyList();
                 }
 
-                ModelClass model = getActiveModel(uuid);
+                ModelClass model = ModelManager.getInstance().getActiveModel(uuid);
 
                 if (model == null) {
                     return Collections.emptyList();

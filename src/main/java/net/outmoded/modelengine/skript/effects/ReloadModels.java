@@ -35,12 +35,12 @@ public class ReloadModels extends Effect {
     @Override
     protected void execute(Event event) {
         if (isModelConfig){
-            ModelManager.loadModelConfigs();
-            ModelManager.reloadAllActiveModels();
+            ModelManager.getInstance().loadModelConfigs();
+            ModelManager.getInstance().reloadAllActiveModels();
             //ModelPersistence.saveModels();
         }
         else{
-            ModelManager.reloadAllActiveModels();
+            ModelManager.getInstance().reloadAllActiveModels();
             //ModelPersistence.saveModels();
         }
     }

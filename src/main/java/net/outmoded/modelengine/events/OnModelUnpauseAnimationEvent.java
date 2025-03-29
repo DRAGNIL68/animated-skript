@@ -23,7 +23,7 @@ public final class OnModelUnpauseAnimationEvent extends Event implements Cancell
         modelType = type;
         animation = animationName;
         this.loopMode = loopMode;
-        this.modelClass = ModelManager.getActiveModel(uuid);
+        this.modelClass = ModelManager.getInstance().getActiveModel(uuid);
     }
 
     public ModelClass getActiveModel() {

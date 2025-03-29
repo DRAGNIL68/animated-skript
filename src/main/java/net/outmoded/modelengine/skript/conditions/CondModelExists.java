@@ -43,7 +43,7 @@ public class CondModelExists extends Condition {
     public boolean check(Event event) {
         if (type){
 
-            return ModelManager.loadedModelExists(text.toString());
+            return ModelManager.getInstance().loadedModelExists(text.toString());
         }
         String uuidAsString = text.toString().replace("\"", "");
         UUID uuid = null;
@@ -55,7 +55,7 @@ public class CondModelExists extends Condition {
             return false;
 
         }
-        return ModelManager.activeModelExists(uuid);
+        return ModelManager.getInstance().activeModelExists(uuid);
     }
 
 
