@@ -10,6 +10,7 @@ import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
 
 public class ExprGetActiveModelsNodes extends SimpleExpression<String> {
@@ -52,7 +53,7 @@ public class ExprGetActiveModelsNodes extends SimpleExpression<String> {
         ModelClass modelClass1 = modelClass.getSingle(event);
         if (modelClass1 != null){
 
-            return modelClass1.getAllNodes();
+            return new String[]{Arrays.toString(modelClass1.getAllNodes())};
         }
 
 

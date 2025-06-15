@@ -25,7 +25,6 @@ import org.joml.Vector3f;
 import java.util.*;
 
 import static net.outmoded.animated_skript.Config.debugMode;
-import static org.bukkit.Bukkit.getServer;
 
 public class ModelClass {
     public final Map<UUID, Node> nodeMap = new HashMap<>();
@@ -235,7 +234,7 @@ public class ModelClass {
                         modelAnimation.uuid = UUID.fromString(animationName);
 
                         modelAnimation.name = animation.get("name").asText();
-                        modelAnimation.duration = animation.get("duration").asInt();
+                        modelAnimation.duration = animation.get("duration").asInt()-1;
                         modelAnimation.loopDelay = animation.get("loop_delay").asInt();
                         modelAnimation.loopMode = animation.get("loop_mode").asText();
 
@@ -248,8 +247,8 @@ public class ModelClass {
 
                             double doubleTime = frame.get("time").asDouble();
                             Integer time = (int) (doubleTime * 20);
-                            JsonNode nodeTransforms = frame.get("default_transforms");
-
+                            JsonNode nodeTransforms = frame.get("node_transforms");
+                            AnimatedSkript.getInstance().getLogger().warning("frog2");
                             for (Iterator<String> iter = nodeTransforms.fieldNames(); iter.hasNext(); ) {
                                 String nodeTransformUuid = iter.next();
                                 JsonNode nodeTransform = nodeTransforms.get(nodeTransformUuid);
@@ -295,7 +294,7 @@ public class ModelClass {
 
                             }
 
-                            animationFrame.nodeTransforms = nodes.toArray(new Node[0]);
+                            animationFrame.nodeTransforms = nodes;
                             modelAnimation.frames.put(time, animationFrame);
                         }
 
@@ -371,8 +370,8 @@ public class ModelClass {
 
                 case "block_display":
 
-
-                    Material blockDisplayMaterial = (Material) node.typeSpecificProperties.get("block");
+                    String material = (String) node.typeSpecificProperties.get("block");
+                    Material blockDisplayMaterial = Material.valueOf(material.toUpperCase()) ;
                     BlockDisplay blockDisplay = origin.getWorld().spawn(origin.getLocation(), BlockDisplay.class);
 
                     blockDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "block_display");
@@ -478,6 +477,10 @@ public class ModelClass {
 
             }
 
+        }
+        else {
+
+            this.animation = null;
         }
     }
 
@@ -669,8 +672,8 @@ public class ModelClass {
        // return loadedVariants.containsKey(variantKey);
     //}
 
-   public String[] getAllNodes() {
-        return activeNodes.keySet().toArray(String[]::new);
+   public UUID[] getAllNodes() {
+        return activeNodes.keySet().toArray(UUID[]::new);
     }
 
     public Display getDisplayNode(UUID uuid){
