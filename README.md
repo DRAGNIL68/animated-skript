@@ -1,7 +1,7 @@
 Animated-Skript is a model engine designed to be used with Skript Using the Blockbench plugin called Animated-Java.
 
 
-Animted-java is still in early development it was also coded as fast as possible so its internals are not the best.
+Animated-java is still in early development it the current version works (1.3.2-alpha) but is more of a rough prototype, i am currently reworking the internals to not resemble blended rubish
 
 features:
 - 
