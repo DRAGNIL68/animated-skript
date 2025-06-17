@@ -54,19 +54,15 @@ public final class AnimatedSkript extends JavaPlugin {
         ModelPersistence.loadLastConfig();
         // ###########################
         // terrible component code TODO: replace this with something sane
-        final Component logo = MiniMessage.miniMessage().deserialize(
-                "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
-        );
-
         final Component component = MiniMessage.miniMessage().deserialize(
-                "<color:#0dff1d>Loaded | Version 1.3.2-alpha | Made by DRAGNIL68</color>"
+                "<color:#0dff1d>Loaded | Version 1.4.0-alpha | Made by DRAGNIL68</color>"
         );
 
         final Component warning = MiniMessage.miniMessage().deserialize(
-                "<red>WARNING: This Plugin Is Still In Early Alpha And My Do Damage ONLY use on test servers"
+                "<red>WARNING: This Plugin Is Still In Early Alpha And My Do Damage ONLY Use On Test Servers"
         );
-        getServer().getConsoleSender().sendMessage(logo.append(component));
-        getServer().getConsoleSender().sendMessage(logo.append(warning));
+        getServer().getConsoleSender().sendMessage(Config.getPrefix().append(component));
+        getServer().getConsoleSender().sendMessage(Config.getPrefix().append(warning));
 
         // ###########################
         // Skript stuff
@@ -80,7 +76,7 @@ public final class AnimatedSkript extends JavaPlugin {
         final Component skript = MiniMessage.miniMessage().deserialize(
                 "<color:#0dff1d>Skript Syntax Loaded!"
         );
-        getServer().getConsoleSender().sendMessage(logo.append(skript));
+        getServer().getConsoleSender().sendMessage(Config.getPrefix().append(skript));
         // ###########################
 
 

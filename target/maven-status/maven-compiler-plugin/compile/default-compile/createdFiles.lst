@@ -4,6 +4,7 @@ net\outmoded\animated_skript\skript\expressions\ExprGetAllLoadedModels.class
 net\outmoded\animated_skript\pack\jsonObjects\Model.class
 net\outmoded\animated_skript\events\OnReloadEvent.class
 net\outmoded\animated_skript\pack\ResourcePackManager.class
+net\outmoded\animated_skript\skript\effects\DefaultVisibility.class
 net\outmoded\animated_skript\events\OnModelRemovedEvent.class
 net\outmoded\animated_skript\events\OnModelUnpauseAnimationEvent.class
 net\outmoded\animated_skript\skript\expressions\ExprHasAnimation.class
@@ -36,6 +37,7 @@ net\outmoded\animated_skript\pack\jsonObjects\NonWritable.class
 net\outmoded\animated_skript\skript\effects\TeleportActiveModel.class
 net\outmoded\animated_skript\pack\jsonObjects\McMeta.class
 net\outmoded\animated_skript\skript\conditions\CondModelExists.class
+net\outmoded\animated_skript\skript\effects\SetVisibility.class
 net\outmoded\animated_skript\skript\effects\RemoveActiveModel.class
 net\outmoded\animated_skript\events\OnModelSpawnedEvent.class
 net\outmoded\animated_skript\models\jsonObjects\ChunkJsonObject.class
@@ -63,7 +65,9 @@ net\outmoded\animated_skript\models\jsonObjects\ModelJsonObject.class
 net\outmoded\animated_skript\skript\events\OnReload.class
 net\outmoded\animated_skript\skript\events\OnAnimationFrameSet.class
 net\outmoded\animated_skript\skript\ActiveModel$1.class
+net\outmoded\animated_skript\listeners\OnJoin.class
 net\outmoded\animated_skript\events\OnModelFrameSetAnimationEvent.class
+net\outmoded\animated_skript\skript\effects\CameraControl.class
 net\outmoded\animated_skript\pack\jsonObjects\Writable.class
 net\outmoded\animated_skript\Config.class
 net\outmoded\animated_skript\skript\events\OnAnimationEnded.class

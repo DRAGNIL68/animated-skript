@@ -94,6 +94,12 @@ public class Config {
         return generatePack;
     }
 
+    public static Component getPrefix(){
+        final Component logo = MiniMessage.miniMessage().deserialize(
+                "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
+        );
 
+        return logo;
+    }
 }
 

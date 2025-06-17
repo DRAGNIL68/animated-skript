@@ -8,10 +8,7 @@ import net.outmoded.animated_skript.models.new_stuff.Animation;
 import net.outmoded.animated_skript.models.new_stuff.Frame;
 import net.outmoded.animated_skript.models.new_stuff.Node;
 import org.bukkit.*;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,8 +22,10 @@ import org.joml.Vector3f;
 import java.util.*;
 
 import static net.outmoded.animated_skript.Config.debugMode;
+import static org.bukkit.Bukkit.getServer;
 
 public class ModelClass {
+    public final Map<String, UUID> activeCameras = new HashMap<>(); // stores a reference to a camera by name
     public final Map<UUID, Node> nodeMap = new HashMap<>();
     public final Map<String, Animation> animationMap = new HashMap<>();
     public final Map<UUID, Display> activeNodes = new HashMap<>();
@@ -58,15 +57,16 @@ public class ModelClass {
     }
 
     public void loadConfig(){
+        deleteModelNodes();
         loadJsonConfig();
         loadAnimations();
-        deleteModelNodes();
         spawnModelNodes();
     }
 
     public void loadJsonConfig(){
         try{
             if (ModelManager.getInstance().loadedModelExists(modelType)) {
+                nodeMap.clear();
                 UUID uuid = UUID.randomUUID();
 
                 JsonNode config = ModelManager.getInstance().getLoadedModel(modelType);
@@ -93,13 +93,13 @@ public class ModelClass {
                         modelNode.pos = objectMapper.treeToValue(defaultTransform.get("pos"), Float[].class);
 
                         modelNode.uuid = UUID.fromString(node.get("uuid").asText());
+                        modelNode.name = node.get("name").asText();
 
-
-                        modelNode.type = node.get("type").asText();
+                                modelNode.type = node.get("type").asText();
 
 
                         if (modelNode.type.equals("block_display")) {
-                            modelNode.typeSpecificProperties.put("block", Material.valueOf(node.get("block").asText().replace("minecraft:", "").toUpperCase()));
+                            modelNode.typeSpecificProperties.put("block", node.get("block").asText().replace("minecraft:", "").toUpperCase());
 
                         } else if (modelNode.type.equals("item_display")) {
                             modelNode.typeSpecificProperties.put("item", node.get("item").asText().replace("minecraft:", "").toUpperCase());
@@ -169,24 +169,30 @@ public class ModelClass {
                         // TODO: NOTE Blockbench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯
                         // TODO: NOTE Mr Aj has made custom textured models actually face north for some reason block displays still face south
 
-                        if (modelNode.type.equals("bone")) {
+                        if (modelNode.type.equals("bone")){
                             AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
                             quaternion.mul(new Quaternionf(additionalRotation));
+                        }
 
-                            Transformation transformation = new Transformation(
-                                    new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
-                                    new AxisAngle4f().set(quaternion), // left rot
-                                    new Vector3f(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]), // scale
-                                    new AxisAngle4f() // no right rotation
-                            );
-
-                            modelNode.transformation = transformation;
-                        } else if (modelNode.type.equals("struct") && debugMode()) {
+                        if (modelNode.type.equals("struct") && debugMode()) {
 
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
                                     new AxisAngle4f().set(quaternion), // left rot
                                     new Vector3f(0.2F, 0.2F, 0.2F), // scale
+                                    new AxisAngle4f() // no right rotation
+                            );
+
+                            modelNode.transformation = transformation;
+                        }
+                        else {
+
+
+
+                            Transformation transformation = new Transformation(
+                                    new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
+                                    new AxisAngle4f().set(quaternion), // left rot
+                                    new Vector3f(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]), // scale
                                     new AxisAngle4f() // no right rotation
                             );
 
@@ -199,6 +205,10 @@ public class ModelClass {
                         e.printStackTrace();
                     }
                 }
+            }
+            else {
+                ModelManager.getInstance().removeActiveModel(uuid);
+
             }
 
         }catch (Exception e){
@@ -248,7 +258,6 @@ public class ModelClass {
                             double doubleTime = frame.get("time").asDouble();
                             Integer time = (int) (doubleTime * 20);
                             JsonNode nodeTransforms = frame.get("node_transforms");
-                            AnimatedSkript.getInstance().getLogger().warning("frog2");
                             for (Iterator<String> iter = nodeTransforms.fieldNames(); iter.hasNext(); ) {
                                 String nodeTransformUuid = iter.next();
                                 JsonNode nodeTransform = nodeTransforms.get(nodeTransformUuid);
@@ -265,10 +274,29 @@ public class ModelClass {
 
                                 Quaternionf quaternion = new Quaternionf(frameNode.leftRotation[0], frameNode.leftRotation[1], frameNode.leftRotation[2], frameNode.leftRotation[3]); // fuck math
 
-                                if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("bone")) {
+
+
+
+                                if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("struct") && debugMode()) {
 
                                     AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
                                     quaternion.mul(new Quaternionf(additionalRotation));
+
+                                    Transformation transformation = new Transformation(
+                                            new Vector3f(frameNode.translation[0], frameNode.translation[1], frameNode.translation[2]), // translation
+                                            new AxisAngle4f().set(quaternion), // left rot
+                                            new Vector3f(0.2F, 0.2F, 0.2F), // scale
+                                            new AxisAngle4f() // no right rotation
+                                    );
+
+                                    frameNode.transformation = transformation;
+                                }
+                                else {
+
+                                    if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("bone")){
+                                        AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
+                                        quaternion.mul(new Quaternionf(additionalRotation));
+                                    }
 
                                     Transformation transformation = new Transformation(
                                             new Vector3f(frameNode.translation[0], frameNode.translation[1], frameNode.translation[2]), // translation
@@ -277,16 +305,7 @@ public class ModelClass {
                                             new AxisAngle4f() // no right rotation
                                     );
 
-                                    frameNode.transformation = transformation;
-                                }
-                                else if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("struct") && debugMode()) {
 
-                                    Transformation transformation = new Transformation(
-                                            new Vector3f(frameNode.translation[0], frameNode.translation[1], frameNode.translation[2]), // translation
-                                            new AxisAngle4f().set(quaternion), // left rot
-                                            new Vector3f(0.2F, 0.2F, 0.2F), // scale
-                                            new AxisAngle4f() // no right rotation
-                                    );
 
                                     frameNode.transformation = transformation;
                                 }
@@ -320,13 +339,16 @@ public class ModelClass {
     @ApiStatus.Internal
     public void spawnModelNodes(){
 
+        deleteModelNodes();
+        activeCameras.clear();
+        activeNodes.clear();
+
         NamespacedKey key = new NamespacedKey(AnimatedSkript.getInstance(), "nodeType");
         NamespacedKey UuidKey = new NamespacedKey(AnimatedSkript.getInstance(), "modelUuid");
 
         for (Node node : nodeMap.values()){
 
             Display display = null;
-            AnimatedSkript.getInstance().getLogger().warning("nodetype1: "+node.type);
             switch (node.type) {
 
                 case "struct":
@@ -348,13 +370,14 @@ public class ModelClass {
 
                     display = structItemDisplay;
 
+
                     break;
                 case "bone":
 
                     ItemStack boneItemStack = new ItemStack(Material.PAPER);
 
 
-                    NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + "default" + "/" + uuid); // unused
+                    NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + "default" + "/" + node.uuid);
                     ItemMeta meta = boneItemStack.getItemMeta();
                     meta.setItemModel(modelKey);
                     boneItemStack.setItemMeta(meta);
@@ -366,12 +389,13 @@ public class ModelClass {
 
                     display = boneItemDisplay;
 
+
                     break;
 
                 case "block_display":
 
                     String material = (String) node.typeSpecificProperties.get("block");
-                    Material blockDisplayMaterial = Material.valueOf(material.toUpperCase()) ;
+                    Material blockDisplayMaterial = Material.valueOf(material.toUpperCase());
                     BlockDisplay blockDisplay = origin.getWorld().spawn(origin.getLocation(), BlockDisplay.class);
 
                     blockDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "block_display");
@@ -382,8 +406,8 @@ public class ModelClass {
                     break;
                 case "item_display":
 
-
-                    Material itemDisplayMaterial = (Material) node.typeSpecificProperties.get("item");
+                    String material1 = (String) node.typeSpecificProperties.get("item");
+                    Material itemDisplayMaterial = Material.valueOf(material1.toUpperCase());
                     ItemDisplay itemDisplayItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
 
                     itemDisplayItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "item_display");
@@ -426,8 +450,10 @@ public class ModelClass {
 
                     display = itemDisplay;
 
-                    Display.Brightness brightness = new Display.Brightness(100, 100);
+                    Display.Brightness brightness = new Display.Brightness(15, 15);
                     display.setBrightness(brightness);
+
+                    activeCameras.put(node.name, node.uuid);
 
                     break;
 
@@ -436,8 +462,9 @@ public class ModelClass {
             }
 
 
-
+            display.setPersistent(false);
             display.setTransformation(node.transformation);
+            activeNodes.put(node.uuid, display);
 
         }
     }
@@ -457,7 +484,7 @@ public class ModelClass {
         }
 
 
-        isActive = true;
+
 
         if (animationMap.containsKey(name)){
 
@@ -468,63 +495,66 @@ public class ModelClass {
 
 
                 resetAnimation();
-
+                isActive = true;
                 //sets the animation
                 this.animation = animationMap.get(name);
+                currentFrameTime = 0;
 
-                // (debugMode())
-                    //getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + name + " LoopMode: " + this.animation.loopMode + " AnimationTimeInTicks: " + this.animation.duration);
+                if (debugMode())
+                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + name + " LoopMode: " + this.animation.loopMode + " AnimationTimeInTicks: " + this.animation.duration);
 
             }
 
         }
         else {
-
+            resetAnimation();
             this.animation = null;
         }
     }
 
     public void tickAnimation(){
+
         if (!isActive){
             return;
         }
 
         if (animation == null){ // TODO: stop models from ticking if they have no current animation
 
-
-
-
-            isActive = false;
             resetAnimation();
-
-            for (Node node : nodeMap.values()){
-                AnimatedSkript.getInstance().getLogger().severe(String.valueOf(node.uuid));
-                activeNodes.get(node.uuid).setTransformation(node.transformation);
-
-            }
-
         }
 
         else {
+            if (animation.frames.containsKey(currentFrameTime)){ // should stop corrupted nodes form causing problems
 
-            for (Node node : animation.frames.get(currentFrameTime).nodeTransforms){
+                for (Node node : animation.frames.get(currentFrameTime).nodeTransforms){
 
-                if (activeNodes.containsKey(node.uuid))
-                    activeNodes.get(node.uuid).setTransformation(node.transformation);
+                    if (activeNodes.containsKey(node.uuid)){
+                        activeNodes.get(node.uuid).setTransformation(node.transformation);
+                    }
 
+
+                }
             }
+
+
         }
 
-        if (currentFrameTime >= animation.duration) {
-            if (animation.loopMode.equals("loop")) {
-                resetAnimation();
-            } else {
-                currentFrameTime = 0;
+        if (animation != null){
+            if (currentFrameTime >= animation.duration) {
+                if (animation.loopMode.equals("loop")) {
+                    currentFrameTime = 0;
+                } else {
+                    resetAnimation();
+
+                }
             }
+
+            currentFrameTime += 1;
         }
 
 
-        currentFrameTime += 1;
+
+
 
     }
 
@@ -577,11 +607,17 @@ public class ModelClass {
         }else{
             event = new OnModelEndAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
 
+
+            this.animation = null;
         }
 
-        Bukkit.getPluginManager().callEvent(event);
+        for (Node node : nodeMap.values()){
+            activeNodes.get(node.uuid).setTransformation(node.transformation);
 
-        this.animation = null;
+        }
+
+        this.isActive = false;
+        Bukkit.getPluginManager().callEvent(event);
 
 
     };
@@ -697,5 +733,59 @@ public class ModelClass {
     public Boolean hasNode(UUID uuid){
         return nodeMap.containsKey(uuid);
     }
+
+    public Display getActiveCamera(String name){
+        if (activeCameras.containsKey(name))
+            return activeNodes.get(activeCameras.get(name));
+        return null;
+
+    }
+    public boolean hasActiveCamera(String name){
+        return activeCameras.containsKey(name);
+    }
+
+    public UUID getUuidFromActiveCamera(String name){
+        if (activeCameras.containsKey(name)){
+            return activeCameras.get(name);
+        }
+        return null;
+    }
+
+    public boolean spectateNode(Player player, UUID uuid){
+        if (activeNodes.containsKey(uuid)){
+
+            NamespacedKey namespacedKey = new NamespacedKey(AnimatedSkript.getInstance(), "isSpectating");
+            player.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, player.getGameMode().toString());
+            player.setGameMode(GameMode.SPECTATOR);
+            player.setSpectatorTarget(activeNodes.get(uuid));
+            return true;
+
+        }
+        return false;
+    }
+
+
+
+
+    public void setDefaultVisibility(boolean visibility){ // sets default visibility for the entire model
+        origin.setVisibleByDefault(visibility);
+        for (Display display : activeNodes.values()){
+            display.setVisibleByDefault(visibility);
+        }
+
+    }
+    public void setVisibilityForPlayer(Player player, boolean visibility){ // sets visibility for the entire model for a player
+        player.showEntity(AnimatedSkript.getInstance(), origin);
+        for (Display display : activeNodes.values()){
+            player.showEntity(AnimatedSkript.getInstance(), display);
+        }
+
+        Location location = player.getLocation(); // or any Location
+        World world = location.getWorld();
+
+
+    }
+
+
 
 }

@@ -33,7 +33,7 @@ public class ModelPersistence implements Listener {
 
 
     @EventHandler
-    private static void onChuckLoad(ChunkLoadEvent event){
+    private static void onChunkLoad(ChunkLoadEvent event){
         String name = "chunk-x" + event.getChunk().getX() + "-z" + event.getChunk().getZ();
         if (!currentConfig.hasWorld(event.getWorld().getName())){
             return;
@@ -97,9 +97,9 @@ public class ModelPersistence implements Listener {
                                 ModelJsonObject modelJsonObject = new ModelJsonObject(modelClass);
 
                                 if (modelClass.getPersistence())
-                                    return;
+                                    chunk.addModel(modelJsonObject);
 
-                                chunk.addModel(modelJsonObject);
+
                                 ModelManager.getInstance().removeActiveModel(UUID.fromString(uuid));
 
                                 if (debugMode())
@@ -195,6 +195,7 @@ public class ModelPersistence implements Listener {
     public static FileJsonObject getCurrentConfig(){
         return currentConfig;
     }
+
     public static void saveAllActiveModelsToCurrentConfig(){
         if (ModelManager.getInstance().getAllActiveModelsUuids().length == 0){
             return;

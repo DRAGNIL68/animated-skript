@@ -15,6 +15,8 @@ import net.outmoded.animated_skript.pack.jsonObjects.McMeta;
 import net.outmoded.animated_skript.pack.jsonObjects.Model;
 import net.outmoded.animated_skript.skript.SkriptManager;
 import org.bukkit.*;
+import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.util.HashMap;
@@ -386,4 +388,12 @@ public class ModelManager {
         }
     }
     // ###########################################
+
+    public void stopSpectatingNode(Player player){
+        NamespacedKey namespacedKey = new NamespacedKey(AnimatedSkript.getInstance(), "isSpectating");
+        if (player.getPersistentDataContainer().has(namespacedKey)){
+            player.setGameMode(GameMode.valueOf(player.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING)));
+            player.getPersistentDataContainer().remove(namespacedKey);
+        }
+    }
 }

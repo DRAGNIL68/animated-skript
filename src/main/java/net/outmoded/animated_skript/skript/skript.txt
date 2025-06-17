@@ -3,6 +3,7 @@
 
    MODELMANAGER:
         EXPRESSIONS:
+
             [animated-skript] [get] [the] origin
             [animated-skript] [get] all [the] loaded-models
             [animated-skript] [get] all [the] active-models
@@ -14,6 +15,8 @@
             [animated-skript] [get] last spawned active-model: %active-model%
 
         EFFECTS:
+            [animated-skript] set %activemodel%('s|s) visibility [to] %boolean% for %player%
+            [animated-skript] set %activemodel%('s|s) default visibility %boolean%
             [animated-skript] spawn [the] loaded-model %string% at [the] %location%
             [animated-skript] remove [the] active-model %activemodel%
 
@@ -25,6 +28,7 @@
 
    MODELCLASS:
         EXPRESSIONS:
+            [animated-skript] [get] %activemodel%('s|s) camera %string%
             [animated-skript] [get] %activemodel%('s|s) model type
             [animated-skript] [get] %activemodel%('s|s) uuid
             [animated-skript] [get] %activemodel%('s|s) active variant
@@ -34,6 +38,7 @@
             [animated-skript] get all [the] variants: string list - Expression - DOES NOT EXIST
 
         EFFECTS:
+            [animated-skript] make %player% (:start|stop) spectating %activemodel%('s|s) camera %string% TODO: Implement
             [animated-skript] set [the] active variant %string%
             [animated-skript] reset [the] active variant
             [animated-skript] set %activemodel%('s|s) persistence to %boolean%
