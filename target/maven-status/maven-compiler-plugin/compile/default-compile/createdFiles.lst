@@ -3,7 +3,6 @@ net\outmoded\animated_skript\skript\effects\AnimationControl.class
 net\outmoded\animated_skript\skript\expressions\ExprGetAllLoadedModels.class
 net\outmoded\animated_skript\pack\jsonObjects\Model.class
 net\outmoded\animated_skript\events\OnReloadEvent.class
-net\outmoded\animated_skript\pack\ResourcePackManager.class
 net\outmoded\animated_skript\skript\effects\DefaultVisibility.class
 net\outmoded\animated_skript\events\OnModelRemovedEvent.class
 net\outmoded\animated_skript\events\OnModelUnpauseAnimationEvent.class
@@ -48,9 +47,11 @@ net\outmoded\animated_skript\models\jsonObjects\WorldJsonObject.class
 net\outmoded\animated_skript\skript\effects\SpawnLoadedModel.class
 net\outmoded\animated_skript\skript\effects\ReloadModels.class
 net\outmoded\animated_skript\pack\jsonObjects\TestNonWritableClass.class
+net\outmoded\animated_skript\skript\effects\ResetScale.class
 net\outmoded\animated_skript\events\OnModelEndAnimationEvent.class
 net\outmoded\animated_skript\models\new_stuff\Frame.class
 net\outmoded\animated_skript\skript\events\OnAnimationResumed.class
+net\outmoded\animated_skript\skript\effects\SetScale.class
 net\outmoded\animated_skript\models\ModelManager.class
 net\outmoded\animated_skript\skript\events\OnModelRemoved.class
 net\outmoded\animated_skript\skript\events\OnAnimationPaused.class

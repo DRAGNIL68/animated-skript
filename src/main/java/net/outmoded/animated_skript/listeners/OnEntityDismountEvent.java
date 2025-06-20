@@ -26,6 +26,7 @@ public class OnEntityDismountEvent implements Listener {
             if (origin.getPersistentDataContainer().has(key)){
                 if (node.getPersistentDataContainer().has(key)){
                     origin.addPassenger(node);
+                    AnimatedSkript.getInstance().getLogger().warning("reattached model");
                 }
             }
 

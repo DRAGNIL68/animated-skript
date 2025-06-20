@@ -34,6 +34,7 @@ public class ModelClass {
     public final String modelType;
     public ItemDisplay origin;
     public final UUID uuid;
+    private float modelScale = 1;
 
     //current animation info
     Animation animation = null;
@@ -463,8 +464,10 @@ public class ModelClass {
 
 
             display.setPersistent(false);
-            display.setTransformation(node.transformation);
             activeNodes.put(node.uuid, display);
+            //activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+            display.setTransformation(applyScale(node.transformation, modelScale));
+
 
         }
     }
@@ -529,7 +532,7 @@ public class ModelClass {
                 for (Node node : animation.frames.get(currentFrameTime).nodeTransforms){
 
                     if (activeNodes.containsKey(node.uuid)){
-                        activeNodes.get(node.uuid).setTransformation(node.transformation);
+                        activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
                     }
 
 
@@ -543,6 +546,10 @@ public class ModelClass {
             if (currentFrameTime >= animation.duration) {
                 if (animation.loopMode.equals("loop")) {
                     currentFrameTime = 0;
+                }
+                else if (animation.loopMode.equals("hold")){
+                    pauseCurrentAnimation(true);
+
                 } else {
                     resetAnimation();
 
@@ -558,8 +565,13 @@ public class ModelClass {
 
     }
 
-    public void setOriginLocation(Location location){
+    public void teleport(Location location){
         origin.teleport(location);
+        for (Display node: activeNodes.values()){
+            node.teleport(location);
+
+
+        }
     };
 
     public Location getOriginLocation(){
@@ -612,7 +624,7 @@ public class ModelClass {
         }
 
         for (Node node : nodeMap.values()){
-            activeNodes.get(node.uuid).setTransformation(node.transformation);
+            activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
 
         }
 
@@ -786,6 +798,26 @@ public class ModelClass {
 
     }
 
+    public void setScale(float scale){
+        modelScale = scale;
+        isActive = true; // should tick once to update
 
+    }
 
+    // ################# internal stuff
+    private Transformation applyScale(Transformation originalTransformation, float modelScale){ // should probably be in a util class
+
+        Vector3f scale = new Vector3f(originalTransformation.getScale());
+        Vector3f originalTranslation = new Vector3f(originalTransformation.getTranslation());
+
+        Transformation transformation = new Transformation(
+
+                originalTranslation.mul(modelScale), // translation
+                new AxisAngle4f(originalTransformation.getLeftRotation()), // left rot
+                scale.mul(modelScale), // scale
+                new AxisAngle4f() // no right rotation
+        );
+
+        return transformation;
+    }
 }

@@ -6,7 +6,7 @@
 
     <groupId>net.outmoded</groupId>
     <artifactId>animated-skript</artifactId>
-    <version>1.4.0-alpha</version>
+    <version>1.4.1-alpha</version>
     <packaging>jar</packaging>
 
     <name>animated-skript</name>

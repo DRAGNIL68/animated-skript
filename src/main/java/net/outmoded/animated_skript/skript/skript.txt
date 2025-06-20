@@ -15,6 +15,8 @@
             [animated-skript] [get] last spawned active-model: %active-model%
 
         EFFECTS:
+            [animated-skript] set %activemodel%('s|s) scale to %number%
+            [animated-skript] reset %activemodel%('s|s) scale
             [animated-skript] set %activemodel%('s|s) visibility [to] %boolean% for %player%
             [animated-skript] set %activemodel%('s|s) default visibility %boolean%
             [animated-skript] spawn [the] loaded-model %string% at [the] %location%

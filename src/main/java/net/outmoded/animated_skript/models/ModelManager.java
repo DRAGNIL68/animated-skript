@@ -65,16 +65,13 @@ public class ModelManager {
     }
 
 
-    public void spawnNewModel(String modelType, Location location){
+    public ModelClass spawnNewModel(String modelType, Location location){
         try{
 
             if (loadedModelExists(modelType)) {
 
                 UUID uuid = UUID.randomUUID();
 
-                location.setPitch(0);
-                location.setYaw(0);
-
                 ModelClass newModel = new ModelClass(location, modelType, uuid);
 
                 OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType, newModel);
@@ -83,23 +80,24 @@ public class ModelManager {
                 activeModels.put(uuid, newModel);
                 SkriptManager.setLastSpawnedModelClass(newModel);
 
+
                 if (debugMode())
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
 
+                return newModel;
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        return null;
     }
 
-    public void spawnNewModel(String modelType, Location location, UUID uuid){ // this one lets you set the uuid of the model
+    public ModelClass spawnNewModel(String modelType, Location location, UUID uuid){ // this one lets you set the uuid of the model
         try{
 
             if (loadedModelExists(modelType)) {
 
-                location.setPitch(0);
-                location.setYaw(0);
-
                 ModelClass newModel = new ModelClass(location, modelType, uuid);
 
                 OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType, newModel);
@@ -111,12 +109,13 @@ public class ModelManager {
                 if (debugMode())
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
 
+                return newModel;
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-
+        return null;
     }
 
     public void addModelConfig(String name, JsonNode modelFile){
@@ -234,13 +233,13 @@ public class ModelManager {
 
         for (JsonNode texture : textures) {
             String textureName = texture.get("name").asText();
-            if (Pattern.compile("[^a-zA-Z0-9_]").matcher(textureName.replace(".png", "")).find()){
+            if (Pattern.compile("[^a-z0-9_]").matcher(textureName.replace(".png", "")).find()){
                 final Component logo = MiniMessage.miniMessage().deserialize(
                         "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
                 );
 
                 final Component warning = MiniMessage.miniMessage().deserialize(
-                        "<red>texture names cannot contain special characters ("+modelName+")"
+                        "<red>"+modelName+" contains a texture ("+textureName+") name with special charters use only a-z 0-9 and _"
                 );
                 getServer().getConsoleSender().sendMessage(logo.append(warning));
                 increaseErrorCount();
@@ -354,7 +353,7 @@ public class ModelManager {
 
                             loadModelTextures(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
                             loadModelData(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
-                            resourcePack.writeJsonObject(new McMeta("§3Animated-Skript", 42), "");
+                            resourcePack.writeJsonObject(new McMeta("§3Animated-Skript", 46), "");
                             if (debugMode()){
                                 final Component debug = MiniMessage.miniMessage().deserialize(
                                         "<dark_red>(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex)
