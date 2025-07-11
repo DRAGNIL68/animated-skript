@@ -1,5 +1,6 @@
 package net.outmoded.animated_skript.commands;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.ChatColor;
@@ -43,13 +44,15 @@ public class Commands implements CommandExecutor {
                 } else if (Objects.equals(args[0], "reload")) {
 
                     Config.load();
+                    Config.loadLang();
                     ModelManager.getInstance().loadModelConfigs();
                     ModelManager.getInstance().reloadAllActiveModels();
 
 
                     //ModelPersistence.saveModels();
+                    String message = Config.getLang("prefix")+Config.getLang("reload_command");
+                    sender.sendMessage(message);
 
-                    sender.sendMessage(ChatColor.GREEN + "Reloaded All Models");
                     return true;
 
                 } else {
@@ -64,15 +67,19 @@ public class Commands implements CommandExecutor {
 
 
                     if (!ModelManager.getInstance().loadedModelExists(args[1])) {
-                        sender.sendMessage(ChatColor.RED + "Model Does Not Exist");
+                        String message = Config.getLang("prefix")+Config.getLang("model_invalid_command");
+                        sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
                         return true;
                     }
                     Location location = ((Player) sender).getLocation();
                     location.setYaw(0);
                     location.setPitch(0);
 
-                    ModelManager.getInstance().spawnNewModel(args[1], location);
-                    sender.sendMessage("Spawned Model: " + args[1]);
+                    String modelType = ModelManager.getInstance().spawnNewModel(args[1], location).modelType;
+                    String message = Config.getLang("prefix")+Config.getLang("spawn_model_command");
+                    message = message.replace("{model_uuid}", modelType);
+                    message = message.replace("{model_type}", args[1]);
+                    sender.sendMessage(message);
                     return true;
                 }
 
@@ -81,12 +88,18 @@ public class Commands implements CommandExecutor {
 
 
                     if (!ModelManager.getInstance().activeModelExists(UUID.fromString(args[1]))) {
-                        sender.sendMessage(ChatColor.RED + "Model Does Not Exist");
+                        String message = Config.getLang("prefix")+Config.getLang("model_invalid_command");
+                        sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
                         return true;
                     }
-
+                    String modelType = ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])).modelType;
                     ModelManager.getInstance().removeActiveModel(UUID.fromString(args[1]));
-                    sender.sendMessage("Removed Model: " + args[1]);
+
+                    String message = Config.getLang("prefix")+Config.getLang("removed_model_command");
+                    message = message.replace("{model_uuid}", args[1]);
+                    message = message.replace("{model_type}", modelType);
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
+
                     return true;
                 }
                 if (Objects.equals(args[0], "stop_animation")) {
@@ -94,13 +107,18 @@ public class Commands implements CommandExecutor {
 
 
                     if (!ModelManager.getInstance().activeModelExists(UUID.fromString(args[1]))) {
-                        sender.sendMessage(ChatColor.RED + "Model Does Not Exist");
+                        String message = Config.getLang("prefix")+Config.getLang("model_invalid_command");
+                        sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
                         return true;
                     }
 
 
                     ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])).resetAnimation();
-                    sender.sendMessage("Stopped Animation Of Model: " + args[1]);
+
+                    String message = Config.getLang("prefix")+Config.getLang("stopped_animation_command");
+                    message = message.replace("{model_uuid}", args[1]);
+                    message = message.replace("{model_type}", ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])).modelType);
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
                     return true;
                 }
 
@@ -112,7 +130,9 @@ public class Commands implements CommandExecutor {
 
                     if (ModelManager.getInstance().activeModelExists(UUID.fromString(args[1]))) {
                         if (ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])) == null) {
-                            sender.sendMessage(ChatColor.RED + "Model Does Not Exist");
+
+                            String message = Config.getLang("prefix")+Config.getLang("model_invalid_command");
+                            sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
                             return true;
                         }
 

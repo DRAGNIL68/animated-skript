@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
+import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.pack.jsonObjects.Writable;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
@@ -27,11 +29,34 @@ public class ResourcePack {
         createPath("/assets");
 
         Namespace minecraft = new Namespace("minecraft", this);
+        copyFileFromResources(AnimatedSkript.getInstance().getResource("logo.png"), "pack.png");
 
     }
     public String getName(){
         return name;
 
+    }
+
+    public boolean copyFileFromResources(InputStream inputStream, String pastePath) { // use something like this as input: InputStream inputStream = MyPlugin.getInstance().getResource("plugin.yml");
+        try {
+
+            Path directory = fileSystem.getPath(pastePath); // gets path in virtual file system
+            if (inputStream == null){
+                return false;
+            }
+
+            if (!Files.exists(directory)) {
+                Files.createDirectories(directory);
+            }
+
+            Files.copy(inputStream, directory, StandardCopyOption.REPLACE_EXISTING);
+
+            return true;
+
+        } catch (IOException e) {
+            throw new RuntimeException("failed to copy file from resources");
+
+        }
     }
 
     public void copyFileFromDisk(String filePath, String pastePath) {

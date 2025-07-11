@@ -3,7 +3,9 @@ package net.outmoded.animated_skript.models;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.AnimatedSkript;
+import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.jsonObjects.ChunkJsonObject;
 import net.outmoded.animated_skript.models.jsonObjects.FileJsonObject;
 import net.outmoded.animated_skript.models.jsonObjects.ModelJsonObject;
@@ -187,8 +189,7 @@ public class ModelPersistence implements Listener {
     public static void writeToDisk(){ // writes current config to disk
         currentConfig.writeToDisk();
 
-        if (debugMode())
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "animated-skript: writing save data to disk");
+        getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("saving_models") ));
 
     }
 

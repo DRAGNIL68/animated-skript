@@ -107,7 +107,7 @@ public class ModelManager {
                 SkriptManager.setLastSpawnedModelClass(newModel);
 
                 if (debugMode())
-                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
+                    getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("<color:#1235ff>New Model <white>" + modelType + " <color:#1235ff>With Uuid <white>" + uuid) );
 
                 return newModel;
             }

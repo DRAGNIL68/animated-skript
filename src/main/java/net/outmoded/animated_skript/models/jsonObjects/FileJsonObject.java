@@ -2,7 +2,10 @@ package net.outmoded.animated_skript.models.jsonObjects;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.AnimatedSkript;
+import net.outmoded.animated_skript.Config;
 import org.bukkit.ChatColor;
 
 import java.io.File;
@@ -23,7 +26,7 @@ public class FileJsonObject {
         if (!worlds.containsKey(worldJsonObject.getName()))
             worlds.put(worldJsonObject.getName(), worldJsonObject);
         if (debugMode())
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "animated-skript: world added to save data");
+            getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+"world added to save data"));
     }
 
     public WorldJsonObject getWorld(String chunkName){

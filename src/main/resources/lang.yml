@@ -1,0 +1,11 @@
+prefix: "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
+alpha_warning: "<red>WARNING: Keep In Mind That This Plugin Is Still In Alpha"
+skript_syntax_loaded: "<color:#0dff1d>Skript Syntax Loaded"
+skript_syntax_disabled: "<red>Skript Syntax Disabled"
+model_invalid_command: "<red>Model Does Not Exist"
+stopped_animation_command: "<color:#1235ff>Stopped Animation Of Model: {model_uuid}" # can use {model_type}
+reload_command: "<color:#1235ff>Reloaded All Models"
+help_command: "<red>Type /animation help for list of commands"
+spawn_model_command: "Spawned Model: {model_uuid}" # can use {model_type}
+removed_model_command: "Removed Model: {model_uuid}" # can use {model_type}
+saving_models: "writing save data to disk"
