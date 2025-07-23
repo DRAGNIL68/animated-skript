@@ -6,12 +6,12 @@ import org.bukkit.event.HandlerList;
 
 import java.util.UUID;
 
-public final class OnModelSpawnedEvent extends Event{
+public final class ModelSpawnedEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
     private UUID uuid;
     private String modelType;
     private ModelClass modelClass;
-    public OnModelSpawnedEvent(UUID uuid, String type, ModelClass modelClass) {
+    public ModelSpawnedEvent(UUID uuid, String type, ModelClass modelClass) {
         this.uuid = uuid;
         modelType = type;
         this.modelClass = modelClass;

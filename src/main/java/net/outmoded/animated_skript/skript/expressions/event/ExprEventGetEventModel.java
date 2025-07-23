@@ -35,25 +35,31 @@ public class ExprEventGetEventModel extends SimpleExpression<ModelClass> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
 
-        if (getParser().isCurrentEvent(OnModelSpawnedEvent.class)){
+        if (getParser().isCurrentEvent(ModelSpawnedEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelRemovedEvent.class)){
+        else if (getParser().isCurrentEvent(ModelRemovedEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelStartAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelStartAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelEndAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelEndAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelPauseAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelPauseAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelUnpauseAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelUnpauseAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelFrameSetAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelFrameSetAnimationEvent.class)){
+            return true;
+        }
+        else if (getParser().isCurrentEvent(ActiveModelHitboxAttack.class)){
+            return true;
+        }
+        else if (getParser().isCurrentEvent(ActiveModelHitboxInteract.class)){
             return true;
         }
         else{
@@ -73,31 +79,31 @@ public class ExprEventGetEventModel extends SimpleExpression<ModelClass> {
     protected ModelClass[] get(Event event) {
         ModelClass modelClass;
 
-        if (event instanceof OnModelSpawnedEvent event1){
+        if (event instanceof ModelSpawnedEvent event1){
             modelClass = event1.getActiveModel();
             return null;
 
         }
-        else if (event instanceof OnModelRemovedEvent event1){
+        else if (event instanceof ModelRemovedEvent event1){
             modelClass = event1.getActiveModel();
 
         }
-        else if (event instanceof OnModelStartAnimationEvent event1){;
+        else if (event instanceof ModelStartAnimationEvent event1){;
             modelClass = event1.getActiveModel();
 
         }
-        else if (event instanceof OnModelEndAnimationEvent event1){
+        else if (event instanceof ModelEndAnimationEvent event1){
             modelClass = event1.getActiveModel();
         }
-        else if (event instanceof OnModelUnpauseAnimationEvent event1){
-            modelClass = event1.getActiveModel();
-
-        }
-        else if (event instanceof OnModelPauseAnimationEvent event1){
+        else if (event instanceof ModelUnpauseAnimationEvent event1){
             modelClass = event1.getActiveModel();
 
         }
-        else if (event instanceof OnModelFrameSetAnimationEvent event1){
+        else if (event instanceof ModelPauseAnimationEvent event1){
+            modelClass = event1.getActiveModel();
+
+        }
+        else if (event instanceof ModelFrameSetAnimationEvent event1){
             modelClass = event1.getActiveModel();
 
         }

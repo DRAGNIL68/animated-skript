@@ -6,29 +6,25 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class SetVisibility extends Effect {
-
+public class EffSetPersistence extends Effect {
+    // Persistence
     static {
-        Skript.registerEffect(SetVisibility.class, "[animated-skript] set %activemodel%('s|s) visibility [to] %boolean% for %player%");
+        Skript.registerEffect(EffSetPersistence.class, "[animated-skript] set %activemodel%('s|s) persistence to %boolean%");
     }
 
     private Expression<ModelClass> activeModel;
     private Expression<Boolean> booleanExpression;
-    private Expression<Player> playerExpression;
 
-    private Boolean isPlay = false;
     
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         activeModel = (Expression<ModelClass>) expressions[0];
         booleanExpression = (Expression<Boolean>) expressions[1];
-        playerExpression = (Expression<Player>) expressions[2];
         return true;
     }
 
@@ -40,12 +36,19 @@ public class SetVisibility extends Effect {
     @Override
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
-        Boolean b = booleanExpression.getSingle(event);
-        Player player = playerExpression.getSingle(event);
+        boolean bool = booleanExpression.getSingle(event);
+        if (modelClass != null){
 
-        if (modelClass != null && b != null && player != null){
-            modelClass.setVisibilityForPlayer(player, b);
+            if (bool){
+                modelClass.setPersistence(true);
+
+            }
+            else {
+
+                modelClass.setPersistence(false);
+            }
         }
+
 
 
     }

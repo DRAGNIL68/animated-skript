@@ -8,18 +8,15 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
-import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
 
-public class CameraControl extends Effect {
+public class EffCameraControl extends Effect {
 
     static {
-        Skript.registerEffect(CameraControl.class, "[animated-skript] make %player% (:start|stop) spectating %activemodel%('s|s) camera %string%");
+        Skript.registerEffect(EffCameraControl.class, "[animated-skript] make %player% (:start|stop) spectating %activemodel%('s|s) camera %string%");
     }
 
     private Expression<ModelClass> activeModel;

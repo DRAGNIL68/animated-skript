@@ -5,23 +5,24 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.models.ModelManager;
+import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class ReloadModels extends Effect {
+public class EffStopAllAnimations extends Effect {
 
     static {
-        Skript.registerEffect(ReloadModels.class, "[animated-skript] reload (model-configs|active-models)");
+        Skript.registerEffect(EffStopAllAnimations.class, "[animated-skript] stop current animation of %activemodel%");
     }
 
-    private boolean isModelConfig = false; // true if model-configs, false if active-models
+    private Expression<ModelClass> activeModel;
+
     
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        isModelConfig = parser.hasTag("model-configs");
+        activeModel = (Expression<ModelClass>) expressions[0];
         return true;
     }
 
@@ -32,14 +33,11 @@ public class ReloadModels extends Effect {
 
     @Override
     protected void execute(Event event) {
-        if (isModelConfig){
-            ModelManager.getInstance().loadModelConfigs();
-            ModelManager.getInstance().reloadAllActiveModels();
-            //ModelPersistence.saveModels();
+        ModelClass modelClass = activeModel.getSingle(event);
+        if (modelClass != null){
+            modelClass.resetAnimation();
         }
-        else{
-            ModelManager.getInstance().reloadAllActiveModels();
-            //ModelPersistence.saveModels();
-        }
+
+
     }
 }

@@ -77,16 +77,11 @@ public final class AnimatedSkript extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            final Component skript = MiniMessage.miniMessage().deserialize(
-                    "<color:#0dff1d>Skript Syntax Loaded"
-            );
-            getServer().getConsoleSender().sendMessage(Config.getLang("prefix")+Config.getLang("skript_syntax_loaded"));
+            getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("skript_syntax_loaded")));
         }
         else {
-            final Component skript = MiniMessage.miniMessage().deserialize(
-                    "<red>Skript Syntax Disabled"
-            );
-            getServer().getConsoleSender().sendMessage(Config.getLang("prefix")+Config.getLang("skript_syntax_disabled"));
+
+            getServer().getConsoleSender().sendMessage( MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("skript_syntax_disabled")));
 
         }
 

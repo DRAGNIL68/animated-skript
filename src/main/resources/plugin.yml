@@ -1,5 +1,5 @@
 name: Animated-Skript
-version: '1.4.1-alpha'
+version: '1.0-test1'
 main: net.outmoded.animated_skript.AnimatedSkript
 softdepend: [Skript]
 api-version: '1.21'
@@ -8,4 +8,8 @@ commands:
   animated-skript:
     description: Insert Funny Text Here
     usage: /animated-skript help
-    permission: animated-skript
+    permission: animated-skript.see_command
+
+animated-skript:
+  description: Allows a player to use all animated-skript commands
+  default: op

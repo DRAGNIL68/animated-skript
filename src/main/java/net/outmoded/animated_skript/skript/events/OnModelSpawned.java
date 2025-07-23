@@ -5,7 +5,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 
-import net.outmoded.animated_skript.events.OnModelSpawnedEvent;
+import net.outmoded.animated_skript.events.ModelSpawnedEvent;
 import org.bukkit.event.Event;
 
 
@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 public class OnModelSpawned extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Model Spawned", OnModelSpawned.class, OnModelSpawnedEvent.class, "[animated-skript] model spawned");
+        Skript.registerEvent("Model Spawned", OnModelSpawned.class, ModelSpawnedEvent.class, "[animated-skript] model spawned");
 
     }
 
@@ -27,7 +27,7 @@ public class OnModelSpawned extends SkriptEvent {
 
     @Override
     public boolean check(Event e) {
-        OnModelSpawnedEvent event = (OnModelSpawnedEvent) e;
+        ModelSpawnedEvent event = (ModelSpawnedEvent) e;
         //event.
 
         return true;

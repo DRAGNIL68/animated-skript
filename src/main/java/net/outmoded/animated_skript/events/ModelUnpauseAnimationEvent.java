@@ -9,40 +9,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public final class OnModelFrameSetAnimationEvent extends Event implements Cancellable {
+public final class ModelUnpauseAnimationEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
     private UUID uuid;
     private String modelType;
     private String animation;
     private String loopMode;
-    private int oldFrameTime;
-    private int futureFrameTime;
-    private int maxFrameTime;
     private ModelClass modelClass;
 
-    public int getOldFrameTime() {
-        return oldFrameTime;
-    }
-
-    public int getFutureFrameTime() {
-        return futureFrameTime;
-    }
-
-    public int getMaxFrameTime() {
-        return maxFrameTime;
-    }
-
-    public OnModelFrameSetAnimationEvent(UUID uuid, String type, String animationName, String loopMode, int oldFrameTime, int futureFrameTime, int maxFrameTime) {
+    public ModelUnpauseAnimationEvent(UUID uuid, String type, String animationName, String loopMode) {
         this.uuid = uuid;
         modelType = type;
         animation = animationName;
         this.loopMode = loopMode;
-        this.futureFrameTime = futureFrameTime;
-        this.oldFrameTime = oldFrameTime;
-        this.maxFrameTime = maxFrameTime;
         this.modelClass = ModelManager.getInstance().getActiveModel(uuid);
+    }
 
+    public ModelClass getActiveModel() {
+        return modelClass;
     }
 
     public UUID getUuid() {
@@ -51,10 +36,6 @@ public final class OnModelFrameSetAnimationEvent extends Event implements Cancel
 
     public String getModelType() {
         return modelType;
-    }
-
-    public ModelClass getActiveModel() {
-        return modelClass;
     }
 
     public String getAnimation() {

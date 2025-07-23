@@ -21,7 +21,7 @@ public class Commands implements CommandExecutor {
             if (args.length == 1) {
 
                 if (!sender.hasPermission("animated-skript")) {
-                    sender.sendMessage(ChatColor.RED + "Type /animation help for list of commands");
+                    sender.sendMessage(ChatColor.RED + "You Cannon Use This Command");
                     return true;
                 }
 
@@ -51,7 +51,7 @@ public class Commands implements CommandExecutor {
 
                     //ModelPersistence.saveModels();
                     String message = Config.getLang("prefix")+Config.getLang("reload_command");
-                    sender.sendMessage(message);
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
 
                     return true;
 
@@ -79,7 +79,7 @@ public class Commands implements CommandExecutor {
                     String message = Config.getLang("prefix")+Config.getLang("spawn_model_command");
                     message = message.replace("{model_uuid}", modelType);
                     message = message.replace("{model_type}", args[1]);
-                    sender.sendMessage(message);
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
                     return true;
                 }
 

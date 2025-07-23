@@ -4,7 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
-import net.outmoded.animated_skript.events.OnModelRemovedEvent;
+import net.outmoded.animated_skript.events.ModelRemovedEvent;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class OnModelRemoved extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Model Removed", OnModelRemoved.class, OnModelRemovedEvent.class, "[animated-skript] model spawned");
+        Skript.registerEvent("Model Removed", OnModelRemoved.class, ModelRemovedEvent.class, "[animated-skript] model spawned");
 
     }
 
@@ -25,7 +25,7 @@ public class OnModelRemoved extends SkriptEvent {
 
     @Override
     public boolean check(Event e) {
-        //OnModelSpawnedEvent event = (OnModelSpawnedEvent) e;
+        //ModelSpawnedEvent event = (ModelSpawnedEvent) e;
         //event.
 
         return true;

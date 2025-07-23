@@ -37,13 +37,26 @@
             [animated-skript] [get] %activemodel%('s|s) current animation (:frame|max frame)
             [animated-skript] [get] %activemodel%('s|s) persistence
 
-            [animated-skript] get all [the] variants: string list - Expression - DOES NOT EXIST
+            [animated-skript] get %activemodel%('s|s) variant %string%: string
+
+            [animated-skript] get %activemodel%('s|s) active variant: string
+            [animated-skript] get all %activemodel%('s|s) variants: string list
+            [animated-skript] %activemodel% has [the] variant %string%
+
+            [animated-skript] get %variants%('s|s) name: string
+            [animated-skript] get %variants%('s|s) display name: string
+            [animated-skript] get %variants%('s|s) uuid: string
 
         EFFECTS:
             [animated-skript] make %player% (:start|stop) spectating %activemodel%('s|s) camera %string% TODO: Implement
-            [animated-skript] set [the] active variant %string%
-            [animated-skript] reset [the] active variant
+
+            [animated-skript] set %activemodel%('s|s) active variant [to] %string%
+            [animated-skript] reset %activemodel%('s|s) active variant
+
             [animated-skript] set %activemodel%('s|s) persistence to %boolean%
+
+            [animated-skript] set %activemodel%('s|s) tint to %color%
+            [animated-skript] reset %activemodel%('s|s) tint colo[u]r
 
 
 

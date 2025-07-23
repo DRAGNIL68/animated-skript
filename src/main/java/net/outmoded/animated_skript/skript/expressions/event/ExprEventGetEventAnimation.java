@@ -34,19 +34,19 @@ public class ExprEventGetEventAnimation extends SimpleExpression<String> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
 
-        if (getParser().isCurrentEvent(OnModelStartAnimationEvent.class)){
+        if (getParser().isCurrentEvent(ModelStartAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelEndAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelEndAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelPauseAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelPauseAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelUnpauseAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelUnpauseAnimationEvent.class)){
             return true;
         }
-        else if (getParser().isCurrentEvent(OnModelFrameSetAnimationEvent.class)){
+        else if (getParser().isCurrentEvent(ModelFrameSetAnimationEvent.class)){
             return true;
         }
 
@@ -64,23 +64,23 @@ public class ExprEventGetEventAnimation extends SimpleExpression<String> {
     protected String[] get(Event event) {
 
         // there is a better way to do this, but I don't care.
-        if (event instanceof OnModelStartAnimationEvent event1){;
+        if (event instanceof ModelStartAnimationEvent event1){;
             return new String[] {event1.getAnimation()};
 
         }
-        else if (event instanceof OnModelEndAnimationEvent event1){
+        else if (event instanceof ModelEndAnimationEvent event1){
             return new String[] {event1.getAnimation()};
 
         }
-        else if (event instanceof OnModelUnpauseAnimationEvent event1){
+        else if (event instanceof ModelUnpauseAnimationEvent event1){
             return new String[] {event1.getAnimation()};
 
         }
-        else if (event instanceof OnModelPauseAnimationEvent event1){
+        else if (event instanceof ModelPauseAnimationEvent event1){
             return new String[] {event1.getAnimation()};
 
         }
-        else if (event instanceof OnModelFrameSetAnimationEvent event1){
+        else if (event instanceof ModelFrameSetAnimationEvent event1){
             return new String[] {event1.getAnimation()};
 
         }

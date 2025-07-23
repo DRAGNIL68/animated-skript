@@ -10,23 +10,22 @@ import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class AnimationControl extends Effect {
+public class EffDefaultVisibility extends Effect {
 
     static {
-        Skript.registerEffect(AnimationControl.class, "[animated-skript] (:play|stop) animation %string% of %activemodel%");
+        Skript.registerEffect(EffDefaultVisibility.class, "[animated-skript] set %activemodel%('s|s) default visibility %boolean%");
     }
 
     private Expression<ModelClass> activeModel;
-    private Expression<String> string;
+    private Expression<Boolean> bExpression;
 
     private Boolean isPlay = false;
     
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        activeModel = (Expression<ModelClass>) expressions[1];
-        string = (Expression<String>) expressions[0];
-        isPlay = parser.hasTag("play");
+        activeModel = (Expression<ModelClass>) expressions[0];
+        bExpression = (Expression<Boolean>) expressions[1];;
         return true;
     }
 
@@ -38,21 +37,9 @@ public class AnimationControl extends Effect {
     @Override
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
-        String string1 = string.getSingle(event);
-        if (modelClass != null && string1 != null){
-
-            if (modelClass.hasAnimation(string1)){
-
-                if (isPlay){
-                    modelClass.playAnimation(string1);
-
-                }
-                else{
-                    modelClass.resetAnimation();
-
-                }
-
-            }
+        Boolean b = bExpression.getSingle(event);
+        if (modelClass != null && b != null){
+            modelClass.setDefaultVisibility(b);
 
 
         }

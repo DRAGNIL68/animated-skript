@@ -6,25 +6,22 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelManager;
-import org.bukkit.Location;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class SpawnLoadedModel extends Effect {
+public class EffReloadModels extends Effect {
 
     static {
-        Skript.registerEffect(SpawnLoadedModel.class, "[animated-skript] spawn [the] loaded-model %string% at [the] %location%");
+        Skript.registerEffect(EffReloadModels.class, "[animated-skript] reload (model-configs|active-models)");
     }
 
-    private Expression<String> string;
-    private Expression<Location> locationExpression;
+    private boolean isModelConfig = false; // true if model-configs, false if active-models
     
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        string = (Expression<String>) expressions[0];
-        locationExpression = (Expression<Location>) expressions[1];
+        isModelConfig = parser.hasTag("model-configs");
         return true;
     }
 
@@ -35,10 +32,14 @@ public class SpawnLoadedModel extends Effect {
 
     @Override
     protected void execute(Event event) {
-        if (string.getSingle(event) != null && locationExpression != null){
-            ModelManager.getInstance().spawnNewModel(string.getSingle(event), locationExpression.getSingle(event));
-
-
+        if (isModelConfig){
+            ModelManager.getInstance().loadModelConfigs();
+            ModelManager.getInstance().reloadAllActiveModels();
+            //ModelPersistence.saveModels();
+        }
+        else{
+            ModelManager.getInstance().reloadAllActiveModels();
+            //ModelPersistence.saveModels();
         }
     }
 }

@@ -1,6 +1,7 @@
 package net.outmoded.animated_skript.events;
 
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -8,16 +9,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public final class OnModelRemovedEvent extends Event implements Cancellable {
+public final class ModelPauseAnimationEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
     private UUID uuid;
     private String modelType;
+    private String animation;
+    private String loopMode;
     private ModelClass modelClass;
 
-    public OnModelRemovedEvent(UUID uuid, String type , ModelClass modelClass) {
+    public ModelPauseAnimationEvent(UUID uuid, String type, String animationName, String loopMode) {
         this.uuid = uuid;
         modelType = type;
+        animation = animationName;
+        this.loopMode = loopMode;
+        this.modelClass = ModelManager.getInstance().getActiveModel(uuid);
+
     }
 
     public ModelClass getActiveModel() {
@@ -32,17 +39,23 @@ public final class OnModelRemovedEvent extends Event implements Cancellable {
         return modelType;
     }
 
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
+    public String getAnimation() {
+        return animation;
     }
 
-    public static HandlerList getHandlerList() {
+    public String getLoopMode() {
+        return loopMode;
+    }
+
+
+
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return false;
     }
 
     @Override

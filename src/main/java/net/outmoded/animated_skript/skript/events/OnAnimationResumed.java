@@ -4,7 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
-import net.outmoded.animated_skript.events.OnModelUnpauseAnimationEvent;
+import net.outmoded.animated_skript.events.ModelUnpauseAnimationEvent;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class OnAnimationResumed extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Animation Resumed", OnAnimationResumed.class, OnModelUnpauseAnimationEvent.class, "[animated-skript] animation (unpaused||resumed)");
+        Skript.registerEvent("Animation Resumed", OnAnimationResumed.class, ModelUnpauseAnimationEvent.class, "[animated-skript] animation (unpaused||resumed)");
 
 
     }

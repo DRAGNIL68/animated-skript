@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.AnimatedSkript;
-import net.outmoded.animated_skript.events.OnModelRemovedEvent;
-import net.outmoded.animated_skript.events.OnModelSpawnedEvent;
-import net.outmoded.animated_skript.events.OnReloadEvent;
+import net.outmoded.animated_skript.events.ModelRemovedEvent;
+import net.outmoded.animated_skript.events.ModelSpawnedEvent;
+import net.outmoded.animated_skript.events.AnimatedSkriptReload;
 import net.outmoded.animated_skript.pack.Namespace;
 import net.outmoded.animated_skript.pack.ResourcePack;
 import net.outmoded.animated_skript.pack.jsonObjects.McMeta;
@@ -74,7 +74,7 @@ public class ModelManager {
 
                 ModelClass newModel = new ModelClass(location, modelType, uuid);
 
-                OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType, newModel);
+                ModelSpawnedEvent event = new ModelSpawnedEvent(uuid, modelType, newModel);
                 Bukkit.getPluginManager().callEvent(event);
 
                 activeModels.put(uuid, newModel);
@@ -100,7 +100,7 @@ public class ModelManager {
 
                 ModelClass newModel = new ModelClass(location, modelType, uuid);
 
-                OnModelSpawnedEvent event = new OnModelSpawnedEvent(uuid, modelType, newModel);
+                ModelSpawnedEvent event = new ModelSpawnedEvent(uuid, modelType, newModel);
                 Bukkit.getPluginManager().callEvent(event);
 
                 activeModels.put(uuid, newModel);
@@ -209,7 +209,7 @@ public class ModelManager {
             return;
         }
         ModelClass model = activeModels.get(uuid);
-        OnModelRemovedEvent event = new OnModelRemovedEvent(uuid, model.getModelType(), model);
+        ModelRemovedEvent event = new ModelRemovedEvent(uuid, model.getModelType(), model);
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
@@ -268,30 +268,60 @@ public class ModelManager {
 
             JsonNode models = variant.get("models");
 
-            models.forEach(modelUuid -> {
+            Iterator<String> itr1 = models.fieldNames(); // this code loops textures a strips out the animated-java file path
+            while (itr1.hasNext()) {
+                String modelUuidKey = itr1.next();
+
+                JsonNode modelUuid = models.get(modelUuidKey);
                 JsonNode textures = modelUuid.get("model").get("textures");
 
                 Map<String, String> update = new HashMap<>();
 
-                Iterator<String> itr = textures.fieldNames();
+                Iterator<String> itr = textures.fieldNames(); // this code loops textures a strips out the animated-java file path
                 while (itr.hasNext()) {
-                    String key_field = itr.next();
+                    String key_field = itr.next(); // this is the key for a texture
                     String value = textures.get(key_field).asText();
                     String newVal = animatedSkript.getNamespaceAsString() + ":item/" + modelName + "/" + value.substring(value.lastIndexOf("/") + 1);
                     update.put(key_field, newVal);
+
+
+
                 }
 
-                update.forEach((key, newValue) -> {
+                update.forEach((key, newValue) -> { // this modifies the json file loaded in memory to reflect the changes
                     ((ObjectNode) textures).put(key, newValue);
                 });
+
+
+                if ( modelUuid.get("model").has("parent")){
+
+                    JsonNode modelModelData = modelUuid.get("model");
+
+                    // modifying parent
+                    // "animated_java:item/frog/bone" -> animated-skript:item/{model_name}/{bone_uuid}
+
+                    String parentNewVal = animatedSkript.getNamespaceAsString() + ":" + modelName + "/default/" + modelUuidKey;
+                    ((ObjectNode) modelModelData).put("parent", parentNewVal);
+
+                }
+
+
+            }
+
+            models.forEach(modelUuid -> {
+
+
+
+
+
 
 
 
 
 
             });
-
-            Iterator<String> itr = models.fieldNames();
+            // this code uses the old (0.1) version of the pack gen from the outmodedlib, it is terrible and is very hard to use or understand.
+            Iterator<String> itr = models.fieldNames(); // this code writes model data to the resource pack.
             while (itr.hasNext()) {
                 String key_field = itr.next();
                 String value = models.get(key_field).asText();
@@ -307,7 +337,7 @@ public class ModelManager {
 
     public void loadModelConfigs() { // loads json configs for models into memory
 
-        OnReloadEvent event = new OnReloadEvent();
+        AnimatedSkriptReload event = new AnimatedSkriptReload();
 
         Bukkit.getPluginManager().callEvent(event);
 

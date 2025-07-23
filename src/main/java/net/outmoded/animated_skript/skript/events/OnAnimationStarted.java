@@ -4,7 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
-import net.outmoded.animated_skript.events.OnModelStartAnimationEvent;
+import net.outmoded.animated_skript.events.ModelStartAnimationEvent;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class OnAnimationStarted extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Animation Started", OnAnimationStarted.class, OnModelStartAnimationEvent.class, "[animated-skript] animation started");
+        Skript.registerEvent("Animation Started", OnAnimationStarted.class, ModelStartAnimationEvent.class, "[animated-skript] animation started");
 
 
     }

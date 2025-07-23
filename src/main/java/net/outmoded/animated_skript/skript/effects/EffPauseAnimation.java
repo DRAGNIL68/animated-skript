@@ -5,28 +5,26 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.ModelClass;
-import org.bukkit.Location;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-import static org.bukkit.Bukkit.getServer;
-
-public class TeleportActiveModel extends Effect {
+public class EffPauseAnimation extends Effect {
 
     static {
-        Skript.registerEffect(TeleportActiveModel.class, "[animated-skript] teleport active-model %activemodel% to %location%");
+        Skript.registerEffect(EffPauseAnimation.class, "[animated-skript] (:pause||unpause||resume) animation of [the] %activemodel%");
     }
-    private Expression<ModelClass> activeModel;
-    private Expression<Location> locationExpression;
 
+    private Expression<ModelClass> activeModel;
+
+    private Boolean isPlay = false; // if true = pause, if false = unpause/resume
+    
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         activeModel = (Expression<ModelClass>) expressions[0];
-        locationExpression = (Expression<Location>) expressions[1];
+        isPlay = parser.hasTag("pause");
         return true;
     }
 
@@ -38,13 +36,19 @@ public class TeleportActiveModel extends Effect {
     @Override
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
-        Location location = locationExpression.getSingle(event);
-        if (modelClass != null && location != null){
-            modelClass.teleport(location);
+        if (modelClass != null){
+
+            if (isPlay){
+                modelClass.pauseCurrentAnimation(true);
+
+            }
+            else {
+
+                modelClass.pauseCurrentAnimation(false);
+            }
         }
-        else{
-            if (Config.debugMode())
-                getServer().getConsoleSender().sendMessage("did not tp model");
-        }
+
+
+
     }
 }

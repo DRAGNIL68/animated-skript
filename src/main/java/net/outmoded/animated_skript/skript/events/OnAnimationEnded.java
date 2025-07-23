@@ -4,7 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
-import net.outmoded.animated_skript.events.OnModelEndAnimationEvent;
+import net.outmoded.animated_skript.events.ModelEndAnimationEvent;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class OnAnimationEnded extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Animation Ended", OnAnimationEnded.class, OnModelEndAnimationEvent.class, "[animated-skript] animation ended");
+        Skript.registerEvent("Animation Ended", OnAnimationEnded.class, ModelEndAnimationEvent.class, "[animated-skript] animation ended");
 
 
     }

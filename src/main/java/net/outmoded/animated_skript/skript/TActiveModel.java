@@ -10,7 +10,7 @@ import net.outmoded.animated_skript.models.ModelClass;
 
 import javax.annotation.Nullable;
 
-public class ActiveModel {
+public class TActiveModel {
 
     static {
         Classes.registerClass(new ClassInfo<>(ModelClass.class, "activemodel")

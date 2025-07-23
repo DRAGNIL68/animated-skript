@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 
 import java.util.UUID;
 
-public final class OnModelStartAnimationEvent extends Event implements Cancellable {
+public final class ModelStartAnimationEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
     private final UUID uuid;
@@ -16,7 +16,7 @@ public final class OnModelStartAnimationEvent extends Event implements Cancellab
     private final String animation;
     private ModelClass modelClass;
 
-    public OnModelStartAnimationEvent(UUID uuid, String type, String animationName) {
+    public ModelStartAnimationEvent(UUID uuid, String type, String animationName) {
         this.uuid = uuid;
         modelType = type;
         animation = animationName;

@@ -10,10 +10,10 @@ import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class StopAllAnimations extends Effect {
+public class EffResetScale extends Effect {
 
     static {
-        Skript.registerEffect(StopAllAnimations.class, "[animated-skript] stop current animation of %activemodel%");
+        Skript.registerEffect(EffResetScale.class, "[animated-skript] reset %activemodel%('s|s) scale");
     }
 
     private Expression<ModelClass> activeModel;
@@ -34,8 +34,9 @@ public class StopAllAnimations extends Effect {
     @Override
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
+
         if (modelClass != null){
-            modelClass.resetAnimation();
+            modelClass.setScale(1F);
         }
 
 

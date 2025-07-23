@@ -6,25 +6,29 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
-import net.outmoded.animated_skript.models.ModelManager;
-import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class RemoveActiveModel extends Effect {
+public class EffSetVisibility extends Effect {
 
     static {
-        Skript.registerEffect(RemoveActiveModel.class, "[animated-skript] remove [the] active-model %activemodel%");
+        Skript.registerEffect(EffSetVisibility.class, "[animated-skript] set %activemodel%('s|s) visibility [to] %boolean% for %player%");
     }
 
     private Expression<ModelClass> activeModel;
-    private Expression<Location> locationExpression;
+    private Expression<Boolean> booleanExpression;
+    private Expression<Player> playerExpression;
+
+    private Boolean isPlay = false;
     
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         activeModel = (Expression<ModelClass>) expressions[0];
+        booleanExpression = (Expression<Boolean>) expressions[1];
+        playerExpression = (Expression<Player>) expressions[2];
         return true;
     }
 
@@ -36,11 +40,13 @@ public class RemoveActiveModel extends Effect {
     @Override
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
+        Boolean b = booleanExpression.getSingle(event);
+        Player player = playerExpression.getSingle(event);
 
-        if (modelClass != null){
-            ModelManager.getInstance().removeActiveModel(modelClass.getUuid());
-
-
+        if (modelClass != null && b != null && player != null){
+            modelClass.setVisibilityForPlayer(player, b);
         }
+
+
     }
 }

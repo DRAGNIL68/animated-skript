@@ -86,7 +86,7 @@ public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
 
         return text != null;
 
-        //if (!getParser().isCurrentEvent(OnModelSpawnedEvent.class)){ // TODO: don't forget this is here you fucking retard
+        //if (!getParser().isCurrentEvent(ModelSpawnedEvent.class)){ // TODO: don't forget this is here you fucking retard
             //return false;
         //}
     }

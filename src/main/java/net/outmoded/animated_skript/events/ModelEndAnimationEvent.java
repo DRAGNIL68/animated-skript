@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public final class OnModelEndAnimationEvent extends Event{
+public final class ModelEndAnimationEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
     private UUID uuid;
@@ -17,7 +17,7 @@ public final class OnModelEndAnimationEvent extends Event{
     private String loopMode;
     private ModelClass modelClass;
 
-    public OnModelEndAnimationEvent(UUID uuid, String type, String animationName, String loopMode) {
+    public ModelEndAnimationEvent(UUID uuid, String type, String animationName, String loopMode) {
         this.uuid = uuid;
         modelType = type;
         animation = animationName;

@@ -2,11 +2,14 @@ package net.outmoded.animated_skript.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.DyedItemColor;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.*;
 import net.outmoded.animated_skript.models.new_stuff.Animation;
 import net.outmoded.animated_skript.models.new_stuff.Frame;
 import net.outmoded.animated_skript.models.new_stuff.Node;
+import net.outmoded.animated_skript.models.new_stuff.Variant;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -20,28 +23,33 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static net.outmoded.animated_skript.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
 
 public class ModelClass {
+    public final Map<String, Variant> variants = new HashMap<>();
     public final Map<String, UUID> activeCameras = new HashMap<>(); // stores a reference to a camera by name
     public final Map<UUID, Node> nodeMap = new HashMap<>();
     public final Map<String, Animation> animationMap = new HashMap<>();
     public final Map<UUID, Display> activeNodes = new HashMap<>();
+    public final Map<UUID, Interaction> activeHitboxes = new HashMap<>();
     public boolean isPersistent = true; //
 
     public final String modelType;
     public ItemDisplay origin;
     public final UUID uuid;
     private float modelScale = 1;
+    private String activeVariant = "default";
 
     //current animation info
     Animation animation = null;
     Integer currentFrameTime = 0; // in ticks 1T = 0.05S | 0.05 x 20 = 1S
     boolean isActive = false;
 
-    public ModelClass(@NotNull Location location, @NotNull String modelType, @NotNull UUID uuid) {
+    protected ModelClass(@NotNull Location location, @NotNull String modelType, @NotNull UUID uuid) {
         this.modelType = modelType;
         this.uuid = uuid;
         origin = location.getWorld().spawn(location, ItemDisplay.class);
@@ -57,13 +65,16 @@ public class ModelClass {
         loadConfig();
     }
 
+    @ApiStatus.Internal
     public void loadConfig(){
         deleteModelNodes();
         loadJsonConfig();
         loadAnimations();
+        loadVariants();
         spawnModelNodes();
     }
 
+    @ApiStatus.Internal
     public void loadJsonConfig(){
         try{
             if (ModelManager.getInstance().loadedModelExists(modelType)) {
@@ -95,8 +106,9 @@ public class ModelClass {
 
                         modelNode.uuid = UUID.fromString(node.get("uuid").asText());
                         modelNode.name = node.get("name").asText();
+                        modelNode.type = node.get("type").asText();
 
-                                modelNode.type = node.get("type").asText();
+
 
 
                         if (modelNode.type.equals("block_display")) {
@@ -119,6 +131,24 @@ public class ModelClass {
                         }
                         else if (modelNode.type.equals("camera")) {
                                 // do nothing
+
+
+                        }
+                        else if (modelNode.type.equals("locator")) { // hitbox and locator code
+                            Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)}", Pattern.CASE_INSENSITIVE);
+                            Matcher matcher = pattern.matcher(modelNode.name);
+                            boolean matchFound = matcher.find();
+
+
+                            if (matchFound){
+                                modelNode.type = "hitbox";
+                                double width = Double.parseDouble(matcher.group(1));
+                                double height = Double.parseDouble(matcher.group(2));
+
+                                modelNode.typeSpecificProperties.put("hitbox_width", width);
+                                modelNode.typeSpecificProperties.put("hitbox_height", height);
+
+                            }
 
 
                         }
@@ -217,14 +247,7 @@ public class ModelClass {
         }
     }
 
-    public void setPersistence(Boolean persistence) {
-        isPersistent = persistence;
-    }
-
-    public Boolean getPersistence() {
-        return isPersistent;
-    }
-
+    @ApiStatus.Internal
     public void loadAnimations(){
         try{
             animationMap.clear();
@@ -266,12 +289,19 @@ public class ModelClass {
 
                                 Node frameNode = new Node();
                                 frameNode.uuid = UUID.fromString(nodeTransformUuid);
+                                frameNode.name = nodeMap.get(frameNode.uuid).name;
+
+
                                 JsonNode decomposed = nodeTransform.get("decomposed");
 
                                 frameNode.scale = objectMapper.treeToValue(nodeTransform.get("scale"), Float[].class); // "scale": [1, 1, 1]
                                 frameNode.translation = objectMapper.treeToValue(decomposed.get("translation"), Float[].class); // "translation": [0, 0, 0]
                                 frameNode.leftRotation = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
                                 frameNode.pos = objectMapper.treeToValue(nodeTransform.get("pos"), Float[].class);
+
+                                Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)}", Pattern.CASE_INSENSITIVE);
+                                Matcher matcher = pattern.matcher(frameNode.name);
+                                boolean matchFound = matcher.find();
 
                                 Quaternionf quaternion = new Quaternionf(frameNode.leftRotation[0], frameNode.leftRotation[1], frameNode.leftRotation[2], frameNode.leftRotation[3]); // fuck math
 
@@ -306,10 +336,10 @@ public class ModelClass {
                                             new AxisAngle4f() // no right rotation
                                     );
 
-
-
                                     frameNode.transformation = transformation;
                                 }
+
+
                                 nodes.add(frameNode);
 
                             }
@@ -338,14 +368,55 @@ public class ModelClass {
     }
 
     @ApiStatus.Internal
+    public void loadVariants(){
+        this.variants.clear();
+
+
+        JsonNode config = ModelManager.getInstance().getLoadedModel(modelType);
+        JsonNode variants = config.get("variants");
+
+        for (JsonNode variant : variants) {
+            Variant variantClass = new Variant();
+
+
+            variantClass.name = variant.get("name").asText();
+            variantClass.displayName = variant.get("display_name").asText();
+            variantClass.uuid = UUID.fromString(variant.get("uuid").asText());
+
+            JsonNode textureMap = variant.get("texture_map");
+
+
+            Iterator<String> itr = textureMap.fieldNames();
+            while (itr.hasNext()) {
+                String key = itr.next();
+                variantClass.textureMap.put(UUID.fromString(key), UUID.fromString(textureMap.get(key).asText()));
+
+            }
+
+            this.variants.put(variantClass.name, variantClass);
+        }
+
+    }
+
+    public void setPersistence(Boolean persistence) {
+        isPersistent = persistence;
+    }
+
+    public Boolean getPersistence() {
+        return isPersistent;
+    }
+
+    @ApiStatus.Internal
     public void spawnModelNodes(){
 
         deleteModelNodes();
         activeCameras.clear();
         activeNodes.clear();
+        activeHitboxes.clear();
 
         NamespacedKey key = new NamespacedKey(AnimatedSkript.getInstance(), "nodeType");
         NamespacedKey UuidKey = new NamespacedKey(AnimatedSkript.getInstance(), "modelUuid");
+        NamespacedKey nodeUuid = new NamespacedKey(AnimatedSkript.getInstance(), "nodeUuid");
 
         for (Node node : nodeMap.values()){
 
@@ -396,13 +467,23 @@ public class ModelClass {
                 case "block_display":
 
                     String material = (String) node.typeSpecificProperties.get("block");
+                    String name = node.name;
+
+
+
                     Material blockDisplayMaterial = Material.valueOf(material.toUpperCase());
+
+
                     BlockDisplay blockDisplay = origin.getWorld().spawn(origin.getLocation(), BlockDisplay.class);
 
                     blockDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "block_display");
 
                     blockDisplay.setBlock(blockDisplayMaterial.createBlockData());
                     display = blockDisplay;
+
+
+
+
 
                     break;
                 case "item_display":
@@ -457,16 +538,54 @@ public class ModelClass {
                     activeCameras.put(node.name, node.uuid);
 
                     break;
+                case "hitbox":
+
+                    Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)\\}", Pattern.CASE_INSENSITIVE);
+                    Matcher matcher = pattern.matcher(node.name);
+                    boolean matchFound = matcher.find();
+
+
+                    if (matchFound){
+
+                        float width = Float.parseFloat(matcher.group(1));
+                        float height = Float.parseFloat(matcher.group(2));
+
+                        Interaction interaction = origin.getWorld().spawn(origin.getLocation(), Interaction.class);
+                        interaction.getPersistentDataContainer().set(key, PersistentDataType.STRING, "hitbox");
+                        interaction.getPersistentDataContainer().set(nodeUuid, PersistentDataType.STRING, node.uuid.toString());
+                        interaction.getPersistentDataContainer().set(UuidKey, PersistentDataType.STRING, uuid.toString());
+
+                        interaction.setInteractionHeight(height);
+                        interaction.setInteractionWidth(width);
+
+                        Location originLocation = origin.getLocation().clone();
+
+                        Location location = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+
+                        interaction.teleport(location);
+                        interaction.setPersistent(false);
+                        activeHitboxes.put(node.uuid, interaction);
+
+
+
+                    }
+                    break;
 
                 default:
                     throw new RuntimeException("Corrupted node in json file: " + modelType + ".json node: " + node.uuid);
             }
 
 
-            display.setPersistent(false);
-            activeNodes.put(node.uuid, display);
-            //activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
-            display.setTransformation(applyScale(node.transformation, modelScale));
+            if (display != null){
+                display.setPersistent(false);
+                activeNodes.put(node.uuid, display);
+                display.setTransformation(applyScale(node.transformation, modelScale));
+
+            }
+
+
+
+
 
 
         }
@@ -478,43 +597,14 @@ public class ModelClass {
             node.remove();
 
         }
+        for (Interaction node : activeHitboxes.values()) {
+            node.remove();
+
+        }
 
     }
 
-    public void playAnimation(String name){
-        if (name == null) {
-            return;
-        }
-
-
-
-
-        if (animationMap.containsKey(name)){
-
-            OnModelStartAnimationEvent event = new OnModelStartAnimationEvent(uuid, modelType, name);
-            Bukkit.getPluginManager().callEvent(event);
-
-            if (!event.isCancelled()) {
-
-
-                resetAnimation();
-                isActive = true;
-                //sets the animation
-                this.animation = animationMap.get(name);
-                currentFrameTime = 0;
-
-                if (debugMode())
-                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + name + " LoopMode: " + this.animation.loopMode + " AnimationTimeInTicks: " + this.animation.duration);
-
-            }
-
-        }
-        else {
-            resetAnimation();
-            this.animation = null;
-        }
-    }
-
+    @ApiStatus.Internal
     public void tickAnimation(){
 
         if (!isActive){
@@ -532,7 +622,17 @@ public class ModelClass {
                 for (Node node : animation.frames.get(currentFrameTime).nodeTransforms){
 
                     if (activeNodes.containsKey(node.uuid)){
+                        activeNodes.get(node.uuid).setInterpolationDelay(0);
+                        activeNodes.get(node.uuid).setInterpolationDuration(1);
                         activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+
+                    }
+                    else if (activeHitboxes.containsKey(node.uuid)){
+                        Location originLocation = origin.getLocation().clone();
+                        Location location = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+
+
+                        activeHitboxes.get(node.uuid).teleport(location);
                     }
 
 
@@ -570,8 +670,46 @@ public class ModelClass {
         for (Display node: activeNodes.values()){
             node.teleport(location);
 
+        }
+
+        if (animation.frames.containsKey(currentFrameTime)){ // a bit janky but will be fixed
+
+            for (Node node : animation.frames.get(currentFrameTime).nodeTransforms){
+
+                if (activeHitboxes.containsKey(node.uuid)){
+                    Location originLocation = origin.getLocation().clone();
+
+                    Location location1 = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+
+                    location1 = originLocation.add(location1);
+
+
+                    activeHitboxes.get(uuid).teleport(location1);
+                }
+
+
+            }
+        }
+        else {
+            for (Node node : nodeMap.values()){ // this just sets there normal pos
+
+                if (activeHitboxes.containsKey(node.uuid)){
+                    Location originLocation = origin.getLocation().clone();
+
+                    Location location1 = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+
+                    location1 = originLocation.add(location1);
+
+
+                    activeHitboxes.get(uuid).teleport(location1);
+                }
+
+
+            }
+
 
         }
+
     };
 
     public Location getOriginLocation(){
@@ -589,6 +727,9 @@ public class ModelClass {
     public UUID getUuid(){
         return uuid;
     };
+
+    // ###############################################
+    // animations
 
     public String getCurrentAnimationName(){
         if (animation == null)
@@ -612,21 +753,36 @@ public class ModelClass {
     public void resetAnimation(){
 
 
-        OnModelEndAnimationEvent event;
+        ModelEndAnimationEvent event;
         if (animation == null){
-            event = new OnModelEndAnimationEvent(uuid, modelType, "none", "none");
+            event = new ModelEndAnimationEvent(uuid, modelType, "none", "none");
 
         }else{
-            event = new OnModelEndAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
+            event = new ModelEndAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
 
 
             this.animation = null;
         }
 
         for (Node node : nodeMap.values()){
-            activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+            if (activeNodes.containsKey(node.uuid)){
+                activeNodes.get(node.uuid).setInterpolationDelay(0);
+                activeNodes.get(node.uuid).setInterpolationDuration(0);
 
+                activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+
+            }
+            else if (activeHitboxes.containsKey(node.uuid)){
+                Location originLocation = origin.getLocation().clone();
+
+                Location location = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+
+                activeHitboxes.get(node.uuid).teleport(location);
+            }
         }
+
+
+
 
         this.isActive = false;
         Bukkit.getPluginManager().callEvent(event);
@@ -639,7 +795,7 @@ public class ModelClass {
             return;
 
         if (!bool){
-            OnModelPauseAnimationEvent event = new OnModelPauseAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
+            ModelPauseAnimationEvent event = new ModelPauseAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
             Bukkit.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
@@ -650,7 +806,7 @@ public class ModelClass {
         }
         else{
 
-            OnModelUnpauseAnimationEvent event = new OnModelUnpauseAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
+            ModelUnpauseAnimationEvent event = new ModelUnpauseAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
             Bukkit.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
@@ -673,7 +829,7 @@ public class ModelClass {
             ticks = animation.duration;
         }
 
-        OnModelFrameSetAnimationEvent event = new OnModelFrameSetAnimationEvent(uuid, modelType, animation.name, animation.loopMode, currentFrameTime, ticks, animation.duration );
+        ModelFrameSetAnimationEvent event = new ModelFrameSetAnimationEvent(uuid, modelType, animation.name, animation.loopMode, currentFrameTime, ticks, animation.duration );
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
@@ -702,23 +858,127 @@ public class ModelClass {
         return animationMap.containsKey(key);
     }
 
-    public String getActiveVariant(){
-        return "activeVariant";
-    };
+    public void playAnimation(String name){
+        if (name == null) {
+            return;
+        }
 
-    public void setVariant(String variantKey) {
-        //if (loadedVariants.containsKey(variantKey)){
-            //activeVariant = variantKey;
-        //}
+
+
+
+        if (animationMap.containsKey(name)){
+
+            ModelStartAnimationEvent event = new ModelStartAnimationEvent(uuid, modelType, name);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+
+
+                resetAnimation();
+                isActive = true;
+                //sets the animation
+                this.animation = animationMap.get(name);
+                currentFrameTime = 0;
+
+                if (debugMode())
+                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + name + " LoopMode: " + this.animation.loopMode + " AnimationTimeInTicks: " + this.animation.duration);
+
+            }
+
+        }
+        else {
+            resetAnimation();
+            this.animation = null;
+        }
     }
 
-    //public String[] getAllVariants() {
-        //return loadedVariants.keySet().toArray(String[]::new);
-    //}
+    // ###############################################
+    // variants
+    public Variant[] getAllVariants(){
+        return variants.values().toArray(new Variant[0]);
+    };
 
-    //public boolean hasVariant(String variantKey) {
-       // return loadedVariants.containsKey(variantKey);
-    //}
+    public String getActiveVariant(){
+        return activeVariant;
+    };
+
+    public boolean hasVariant(String variant) {
+        if (variant == null)
+            return false;
+
+        return variants.containsKey(variant);
+    }
+
+    public boolean hasVariant(Variant variant) {
+        if (variant == null)
+            return false;
+
+        return variants.containsKey(variant.name);
+    }
+
+    public void setActiveVariant(String variant) {
+        if (variant == null)
+            variant = "default";
+
+
+        if (!variants.containsKey(variant)){
+            return;
+        }
+        activeVariant = variant;
+        for (UUID nodeKey : activeNodes.keySet()){
+            Display node = activeNodes.get(nodeKey);
+
+            NamespacedKey key = new NamespacedKey(AnimatedSkript.getInstance(), "nodeType");
+
+
+            if (node.getPersistentDataContainer().has(key) && node.getPersistentDataContainer().get(key, PersistentDataType.STRING).equals("bone")){
+
+                ItemStack boneItemStack = new ItemStack(Material.PAPER);
+                NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + variant + "/" + nodeKey.toString());
+                ItemMeta meta = boneItemStack.getItemMeta();
+                meta.setItemModel(modelKey);
+                boneItemStack.setItemMeta(meta);
+                ItemDisplay itemDisplay = (ItemDisplay) node;
+
+                itemDisplay.setItemStack(boneItemStack);
+            }
+
+
+
+
+        }
+    }
+
+    // ###############################################
+
+    public void setTint(Color color) {
+
+        for (UUID nodeKey : activeNodes.keySet()){
+            Display node = activeNodes.get(nodeKey);
+
+            NamespacedKey key = new NamespacedKey(AnimatedSkript.getInstance(), "nodeType");
+
+
+            if (node.getPersistentDataContainer().has(key) && node.getPersistentDataContainer().get(key, PersistentDataType.STRING).equals("bone")){
+                ItemDisplay itemDisplay = (ItemDisplay) node;
+                ItemStack itemStack = itemDisplay.getItemStack();
+
+                if (color == null)
+                    itemStack.unsetData(DataComponentTypes.DYED_COLOR);
+                else
+                    itemStack.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor().color(color).build());
+
+                itemDisplay.setItemStack(itemStack);
+            }
+
+
+
+
+        }
+    }
+
+    // ###############################################
+    // node methods
 
    public UUID[] getAllNodes() {
         return activeNodes.keySet().toArray(UUID[]::new);
@@ -745,17 +1005,54 @@ public class ModelClass {
     public Boolean hasNode(UUID uuid){
         return nodeMap.containsKey(uuid);
     }
+    // ###############################################
+    // hitbox node methods
 
+    public UUID[] getAllHitboxes() {
+        return activeHitboxes.keySet().toArray(UUID[]::new);
+    }
+
+    public Interaction getActiveHitbox(UUID uuid){
+        if (activeHitboxes.containsKey(uuid)){
+            return activeHitboxes.get(uuid);
+        }
+        return null;
+    }
+
+    public Boolean hasActiveHitbox(UUID uuid){
+        return activeNodes.containsKey(uuid);
+    }
+
+    public Node getHitbox(UUID uuid){
+        if (nodeMap.containsKey(uuid)){
+            return nodeMap.get(uuid);
+        }
+        return null;
+    }
+
+    public Boolean hasHitbox(UUID uuid){
+        return nodeMap.containsKey(uuid);
+    }
+
+
+
+
+    // ############################################### camera stuff, does not work because I am stupid
+
+    @ApiStatus.Experimental
     public Display getActiveCamera(String name){
         if (activeCameras.containsKey(name))
             return activeNodes.get(activeCameras.get(name));
         return null;
 
     }
+
+    @ApiStatus.Experimental
     public boolean hasActiveCamera(String name){
         return activeCameras.containsKey(name);
     }
 
+    @ApiStatus.Experimental
     public UUID getUuidFromActiveCamera(String name){
         if (activeCameras.containsKey(name)){
             return activeCameras.get(name);
@@ -763,6 +1060,7 @@ public class ModelClass {
         return null;
     }
 
+    @ApiStatus.Experimental
     public boolean spectateNode(Player player, UUID uuid){
         if (activeNodes.containsKey(uuid)){
 
@@ -776,9 +1074,7 @@ public class ModelClass {
         return false;
     }
 
-
-
-
+    // ###############################################
     public void setDefaultVisibility(boolean visibility){ // sets default visibility for the entire model
         origin.setVisibleByDefault(visibility);
         for (Display display : activeNodes.values()){
@@ -786,6 +1082,7 @@ public class ModelClass {
         }
 
     }
+
     public void setVisibilityForPlayer(Player player, boolean visibility){ // sets visibility for the entire model for a player
         player.showEntity(AnimatedSkript.getInstance(), origin);
         for (Display display : activeNodes.values()){
@@ -804,7 +1101,6 @@ public class ModelClass {
 
     }
 
-    // ################# internal stuff
     private Transformation applyScale(Transformation originalTransformation, float modelScale){ // should probably be in a util class
 
         Vector3f scale = new Vector3f(originalTransformation.getScale());
@@ -820,4 +1116,5 @@ public class ModelClass {
 
         return transformation;
     }
+
 }
