@@ -35,10 +35,6 @@ public class ExprGetNodeType extends SimpleExpression<String> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         nodeExpression = (Expression<Node>) exprs[0];
-
-        if (nodeExpression == null)
-            return false;
-
         return true;
     }
 

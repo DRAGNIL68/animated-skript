@@ -51,8 +51,8 @@ public class ExprGetNodeUuid extends SimpleExpression<String> {
     @Override
     @Nullable
     protected String[] get(Event event) {
-
-        if (nodeExpression.getSingle(event) != null){
+        Node node = nodeExpression.getSingle(event);
+        if (node != null){
             return new String[] {nodeExpression.getSingle(event).uuid.toString()};
         }
 
