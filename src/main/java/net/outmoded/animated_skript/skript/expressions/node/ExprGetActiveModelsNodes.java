@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.expressions;
+package net.outmoded.animated_skript.skript.expressions.node;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -7,39 +7,35 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
-import org.bukkit.entity.Display;
+import net.outmoded.animated_skript.models.new_stuff.Node;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 
-public class ExprGetActiveModelsNode extends SimpleExpression<Display> {
+public class ExprGetActiveModelsNodes extends SimpleExpression<Node> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsNode.class, Display.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] node %string% of %activemodel%");
+        Skript.registerExpression(ExprGetActiveModelsNodes.class, Node.class, ExpressionType.COMBINED, "[animated-skript] [get] [the||all] nodes of %activemodel%");
     }
 
     private Expression<ModelClass> modelClass;
-    private Expression<String> stringExpression;// if true = loaded-models | if false = active-models
 
     @Override
-    public Class<? extends Display> getReturnType() {
+    public Class<? extends Node> getReturnType() {
         //1
-        return Display.class;
+        return Node.class;
     }
 
     @Override
     public boolean isSingle() {
         //2
-        return true;
+        return false;
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        modelClass = (Expression<ModelClass>) exprs[1];
-        stringExpression = (Expression<String>) exprs[1];
-
+        modelClass = (Expression<ModelClass>) exprs[0];
 
 
         return true;
@@ -53,12 +49,11 @@ public class ExprGetActiveModelsNode extends SimpleExpression<Display> {
 
     @Override
     @Nullable
-    protected Display[] get(Event event) {
+    protected Node[] get(Event event) {
         ModelClass modelClass1 = modelClass.getSingle(event);
-        String string = stringExpression.getSingle(event);
+        if (modelClass1 != null){
 
-        if (modelClass1 != null && string != null){
-            return new Display[] {modelClass1.getDisplayNode(UUID.fromString(string))};
+            return modelClass1.getAllNodes();
         }
 
 

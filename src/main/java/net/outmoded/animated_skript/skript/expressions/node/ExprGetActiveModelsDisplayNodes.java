@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.expressions;
+package net.outmoded.animated_skript.skript.expressions.node;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -7,29 +7,30 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import org.bukkit.entity.Display;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
 
-public class ExprGetActiveModelsActiveVariant extends SimpleExpression<String> {
+public class ExprGetActiveModelsDisplayNodes extends SimpleExpression<Display> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsActiveVariant.class, String.class, ExpressionType.COMBINED, "[animated-skript] get %activemodel%('s|s) active variant");
+        Skript.registerExpression(ExprGetActiveModelsDisplayNodes.class, Display.class, ExpressionType.COMBINED, "[animated-skript] [get] [the||all] display nodes of %activemodel%");
     }
 
-    private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models
+    private Expression<ModelClass> modelClass;
 
     @Override
-    public Class<? extends String> getReturnType() {
+    public Class<? extends Display> getReturnType() {
         //1
-        return String.class;
+        return Display.class;
     }
 
     @Override
     public boolean isSingle() {
         //2
-        return true;
+        return false;
     }
 
     @Override
@@ -48,10 +49,11 @@ public class ExprGetActiveModelsActiveVariant extends SimpleExpression<String> {
 
     @Override
     @Nullable
-    protected String[] get(Event event) {
+    protected Display[] get(Event event) {
         ModelClass modelClass1 = modelClass.getSingle(event);
         if (modelClass1 != null){
-            return new String[] {modelClass1.getActiveVariant()};
+
+            return modelClass1.getAllDisplayNodes();
         }
 
 

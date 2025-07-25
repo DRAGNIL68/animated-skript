@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.effects;
+package net.outmoded.animated_skript.skript.effects.tint;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Effect;
@@ -10,10 +10,10 @@ import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class EffResetScale extends Effect {
-
+public class EffResetTint extends Effect {
+    // Persistence
     static {
-        Skript.registerEffect(EffResetScale.class, "[animated-skript] reset %activemodel%('s|s) scale");
+        Skript.registerEffect(EffResetTint.class, "[animated-skript] reset %activemodel%('s|s) tint colo[u]r");
     }
 
     private Expression<ModelClass> activeModel;
@@ -34,10 +34,11 @@ public class EffResetScale extends Effect {
     @Override
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
-
         if (modelClass != null){
-            modelClass.setScale(1F);
+            modelClass.setTint(null);
+
         }
+
 
 
     }

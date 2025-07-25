@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript;
+package net.outmoded.animated_skript.skript.types;
 
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
@@ -10,7 +10,7 @@ import net.outmoded.animated_skript.models.ModelClass;
 
 import javax.annotation.Nullable;
 
-public class TActiveModel {
+public class ActiveModel {
 
     static {
         Classes.registerClass(new ClassInfo<>(ModelClass.class, "activemodel")

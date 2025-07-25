@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.expressions.variants;
+package net.outmoded.animated_skript.skript.expressions.variant;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -12,10 +12,10 @@ import org.bukkit.event.Event;
 import javax.annotation.Nullable;
 
 
-public class ExprGetVariantsUuid extends SimpleExpression<String> {
+public class ExprGetVariantsName extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprGetVariantsUuid.class, String.class, ExpressionType.COMBINED, "[animated-skript] get %variants%('s|s) uuid");
+        Skript.registerExpression(ExprGetVariantsName.class, String.class, ExpressionType.COMBINED, "[animated-skript] get %activemodelvariant%('s|s) name");
     }
 
     private Expression<Variant> variantExpression; // if true = loaded-models | if false = active-models
@@ -43,7 +43,7 @@ public class ExprGetVariantsUuid extends SimpleExpression<String> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ExprGetVariantsUuid extends SimpleExpression<String> {
     protected String[] get(Event event) {
         Variant variant = variantExpression.getSingle(event);
         if (variant != null){
-            return new String[] {variant.uuid.toString()};
+            return new String[] {variant.name};
         }
 
 

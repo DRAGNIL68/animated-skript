@@ -43,7 +43,7 @@ public class ExprGetActiveModelsUuid extends SimpleExpression<String> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override

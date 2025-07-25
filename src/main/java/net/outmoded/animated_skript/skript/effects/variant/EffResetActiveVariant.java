@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.effects;
+package net.outmoded.animated_skript.skript.effects.variant;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Effect;
@@ -6,26 +6,23 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
-import org.bukkit.Color;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class EffSetTint extends Effect {
+public class EffResetActiveVariant extends Effect {
     // Persistence
     static {
-        Skript.registerEffect(EffSetTint.class, "[animated-skript] set %activemodel%('s|s) tint [colo[u]r] to %color%");
+        Skript.registerEffect(EffResetActiveVariant.class, "[animated-skript] reset %activemodel%('s|s) tint colo[u]r");
     }
 
     private Expression<ModelClass> activeModel;
-    private Expression<ch.njol.skript.util.Color> colorExpression;
 
     
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         activeModel = (Expression<ModelClass>) expressions[0];
-        colorExpression = (Expression<ch.njol.skript.util.Color>) expressions[1];
         return true;
     }
 
@@ -37,9 +34,8 @@ public class EffSetTint extends Effect {
     @Override
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
-        ch.njol.skript.util.Color color = colorExpression.getSingle(event);
-        if (modelClass != null && color != null){
-            modelClass.setTint(color.asBukkitColor());
+        if (modelClass != null){
+            modelClass.setActiveVariant(null);
 
         }
 

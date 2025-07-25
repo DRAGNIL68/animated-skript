@@ -57,7 +57,6 @@ public final class AnimatedSkript extends JavaPlugin {
         ModelManager.getInstance().loadModelConfigs();
         ModelPersistence.loadLastConfig();
         // ###########################
-        // terrible component code TODO: replace this with something sane (lang file)
         final Component component = MiniMessage.miniMessage().deserialize(
                 Config.getLang("prefix")+"<color:#0dff1d>Loaded | Version "+AnimatedSkript.getInstance().getPluginMeta().getVersion()+" | Made by DRAGNIL68</color>"
         );

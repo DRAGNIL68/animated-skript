@@ -352,6 +352,14 @@ public class ModelClass {
                             animationMap.put(modelAnimation.name, modelAnimation);
                         }
 
+                        if (this.animation != null){ // this updates active animation if the model is reloaded
+                            if (animationMap.containsKey(this.animation.name)){
+                                this.animation = animationMap.get(this.animation.name);
+
+                            }
+
+                        }
+
 
 
 
@@ -509,7 +517,6 @@ public class ModelClass {
 
                     textDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "text_display");
 
-                    textDisplay.setText(text);
                     textDisplay.setText(text);
                     textDisplay.setShadowed(shadow);
                     textDisplay.setSeeThrough(seeThrough);
@@ -746,8 +753,12 @@ public class ModelClass {
         return animation != null;
     };
 
-    public String[] getAnimations(){
+    public String[] getAnimationNames(){
         return animationMap.keySet().toArray(String[]::new);
+    };
+
+    public Animation[] getAnimations(){
+        return animationMap.values().toArray(Animation[]::new);
     };
 
     public void resetAnimation(){
@@ -893,7 +904,7 @@ public class ModelClass {
     }
 
     // ###############################################
-    // variants
+    // variant
     public Variant[] getAllVariants(){
         return variants.values().toArray(new Variant[0]);
     };
@@ -980,7 +991,11 @@ public class ModelClass {
     // ###############################################
     // node methods
 
-   public UUID[] getAllNodes() {
+   public Display[] getAllDisplayNodes() {
+        return activeNodes.values().toArray(Display[]::new);
+    }
+
+    public UUID[] getAllDisplayNodesUuids() {
         return activeNodes.keySet().toArray(UUID[]::new);
     }
 
@@ -994,6 +1009,18 @@ public class ModelClass {
     public Boolean hasDisplayNode(UUID uuid){
         return activeNodes.containsKey(uuid);
     }
+
+    // ###############################################
+    // nodes (info)
+
+    public Node[] getAllNodes() {
+        return nodeMap.values().toArray(Node[]::new);
+    }
+
+    public UUID[] getAllNodesUuids() {
+        return nodeMap.keySet().toArray(UUID[]::new);
+    }
+
 
     public Node getNode(UUID uuid){
         if (nodeMap.containsKey(uuid)){

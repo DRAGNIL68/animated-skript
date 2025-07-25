@@ -258,12 +258,12 @@ public class ModelManager {
     }
 
     public void loadModelData(JsonNode model, String modelName){ // terrible name, loads 3d model from json file
-        if (model.get("variants") == null){
+        if (model.get("variant") == null){
             return;
         }
 
 
-        JsonNode variants = model.get("variants");
+        JsonNode variants = model.get("variant");
         variants.forEach(variant -> {
 
             JsonNode models = variant.get("models");

@@ -64,7 +64,7 @@ public class CommandsTabComplete implements TabCompleter {
                 if (model.getAnimations().length == 0) {
                     return Collections.emptyList();
                 }
-                return Arrays.asList(model.getAnimations());
+                return Arrays.asList(model.getAnimationNames());
             }
 
 

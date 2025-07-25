@@ -21,7 +21,7 @@ import static org.bukkit.Bukkit.getServer;
 public class CondHasVariant extends Condition {
 
     static {
-        Skript.registerCondition(CondHasVariant.class, "[animated-skript] %activemodel% has [the] variant %variant%");
+        Skript.registerCondition(CondHasVariant.class, "[animated-skript] %activemodel% has [the] variant %activemodelvariant%");
     }
 
     private Expression<Variant> variantExpression;

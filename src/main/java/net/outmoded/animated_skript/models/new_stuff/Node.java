@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
+//skript can return type, name, uuid and transformation (%itemdisplaytransform%)
 public class Node {
     public final Map<String, Object> typeSpecificProperties = new HashMap<>(); //
     public String type;

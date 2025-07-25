@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.expressions;
+package net.outmoded.animated_skript.skript.expressions.variant;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -6,18 +6,19 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.models.ModelManager;
+import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class ExprGetAllLoadedModels extends SimpleExpression<String> {
+
+public class ExprGetActiveModelsActiveVariant extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprGetAllLoadedModels.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] all [the] loaded-models");
+        Skript.registerExpression(ExprGetActiveModelsActiveVariant.class, String.class, ExpressionType.COMBINED, "[animated-skript] get %activemodel%('s|s) active variant");
     }
 
-
+    private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models
 
     @Override
     public Class<? extends String> getReturnType() {
@@ -28,11 +29,14 @@ public class ExprGetAllLoadedModels extends SimpleExpression<String> {
     @Override
     public boolean isSingle() {
         //2
-        return false;
+        return true;
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
+        modelClass = (Expression<ModelClass>) exprs[0];
+
+
         return true;
     }
 
@@ -45,9 +49,13 @@ public class ExprGetAllLoadedModels extends SimpleExpression<String> {
     @Override
     @Nullable
     protected String[] get(Event event) {
+        ModelClass modelClass1 = modelClass.getSingle(event);
+        if (modelClass1 != null){
+            return new String[] {modelClass1.getActiveVariant()};
+        }
 
-        return ModelManager.getInstance().getAllLoadedModelsKeys();
 
+        return null;
     }
 }
 

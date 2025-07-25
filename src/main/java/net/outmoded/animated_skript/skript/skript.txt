@@ -64,6 +64,8 @@
             EXPRESSIONS:
                     [animated-skript] [get] [the||all] nodes of %active-model%
                     [animated-skript] [get] [the] node %string% of %active-model% "String -> UUID"
+                    [animated-skript] [get] [the||all] display nodes of %active-model%
+                    [animated-skript] [get] [the] display node %string% of %active-model% "String -> UUID"
 
        ANIMATION:
             EXPRESSIONS:

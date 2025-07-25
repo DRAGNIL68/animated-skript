@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.expressions;
+package net.outmoded.animated_skript.skript.expressions.animation;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -7,17 +7,19 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.skript.expressions.ExprLastSpawnedActiveModel;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-public class ExprIsPersistent extends SimpleExpression<Boolean> { // TODO: needs moving to a condition, not sure why it's an expression
+public class ExprHasAnimation extends SimpleExpression<Boolean> { // TODO: needs moving to a condition, not sure why it's an expression
 
     static {
-        Skript.registerExpression(ExprIsPersistent.class, Boolean.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) persistence");
+        Skript.registerExpression(ExprLastSpawnedActiveModel.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] %activemodel% has animation %string%");
     }
 
     private Expression<ModelClass> activeModel;
+    private Expression<String> animationName;
 
     @Override
     public Class<? extends Boolean> getReturnType() {
@@ -34,6 +36,7 @@ public class ExprIsPersistent extends SimpleExpression<Boolean> { // TODO: needs
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         activeModel = (Expression<ModelClass>) exprs[0];
+        animationName = (Expression<String>) exprs[1];
 
         return true;
     }
@@ -47,13 +50,16 @@ public class ExprIsPersistent extends SimpleExpression<Boolean> { // TODO: needs
     @Override
     protected Boolean[] get(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
-        if (modelClass == null){
-            return new Boolean[] {false};
+        String string = animationName.getSingle(event);
+
+        if (string != null){
+            if (modelClass != null){
+                return new Boolean[] {modelClass.hasAnimation(string)};
+
+            }
 
         }
-
-
-        return new Boolean[] {modelClass.getPersistence()};
+        return new Boolean[] {};
     }
 }
 

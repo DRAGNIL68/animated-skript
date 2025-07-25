@@ -56,7 +56,7 @@ public class ExprEventGetEventAnimation extends SimpleExpression<String> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return null;
+        return "";
     }
 
     @Override

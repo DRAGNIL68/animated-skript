@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.expressions;
+package net.outmoded.animated_skript.skript.expressions.variant;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -6,20 +6,19 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.models.new_stuff.Variant;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 
 
-public class ExprGetActiveModelsNodes extends SimpleExpression<String> {
+public class ExprGetVariantsDisplayName extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsNodes.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [the||all] nodes of %activemodel%");
+        Skript.registerExpression(ExprGetVariantsDisplayName.class, String.class, ExpressionType.COMBINED, "[animated-skript] get %activemodelvariant%('s|s) display name");
     }
 
-    private Expression<ModelClass> modelClass;
+    private Expression<Variant> variantExpression; // if true = loaded-models | if false = active-models
 
     @Override
     public Class<? extends String> getReturnType() {
@@ -30,12 +29,12 @@ public class ExprGetActiveModelsNodes extends SimpleExpression<String> {
     @Override
     public boolean isSingle() {
         //2
-        return false;
+        return true;
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        modelClass = (Expression<ModelClass>) exprs[0];
+        variantExpression = (Expression<Variant>) exprs[0];
 
 
         return true;
@@ -44,16 +43,15 @@ public class ExprGetActiveModelsNodes extends SimpleExpression<String> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override
     @Nullable
     protected String[] get(Event event) {
-        ModelClass modelClass1 = modelClass.getSingle(event);
-        if (modelClass1 != null){
-
-            return new String[]{Arrays.toString(modelClass1.getAllNodes())};
+        Variant variant = variantExpression.getSingle(event);
+        if (variant != null){
+            return new String[] {variant.displayName};
         }
 
 

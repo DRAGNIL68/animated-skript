@@ -44,7 +44,7 @@ public class ExprGetActiveModelsLocation extends SimpleExpression<Location> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override

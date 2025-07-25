@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class CondHasVariant1 extends Condition {
 
     static {
-        Skript.registerCondition(CondHasVariant1.class, "[animated-skript] %activemodel% has [the] variant %string%");
+        Skript.registerCondition(CondHasVariant1.class, "[animated-skript] %activemodel% has [the] variant %activemodelvariant%");
     }
 
     private Expression<String> variantExpression;

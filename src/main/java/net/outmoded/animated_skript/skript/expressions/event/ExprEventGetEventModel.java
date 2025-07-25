@@ -71,7 +71,7 @@ public class ExprEventGetEventModel extends SimpleExpression<ModelClass> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return null;
+        return "";
     }
 
     @Override
