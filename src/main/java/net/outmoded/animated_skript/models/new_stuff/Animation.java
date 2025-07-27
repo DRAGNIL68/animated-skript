@@ -13,9 +13,9 @@ public class Animation {
     public String name;
     public String loopMode;
 
-    public int duration;
-    public int loopDelay;
-    public int maxFrameTime = 0;
+    public Integer duration;
+    public Integer loopDelay;
+    public Integer maxFrameTime = 0;
 
     public Animation(){}
 }

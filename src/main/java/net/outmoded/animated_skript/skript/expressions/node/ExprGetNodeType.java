@@ -48,8 +48,10 @@ public class ExprGetNodeType extends SimpleExpression<String> {
     @Nullable
     protected String[] get(Event event) {
 
-        if (nodeExpression.getSingle(event) != null){
-            return new String[] {nodeExpression.getSingle(event).type};
+        Node node = nodeExpression.getSingle(event);
+
+        if (node != null && node.type != null){
+            return new String[] {node.type};
         }
 
         return null;

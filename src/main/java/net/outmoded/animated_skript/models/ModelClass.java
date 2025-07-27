@@ -585,9 +585,9 @@ public class ModelClass {
 
             if (display != null){
                 display.setPersistent(false);
-                activeNodes.put(node.uuid, display);
-                display.setTransformation(applyScale(node.transformation, modelScale));
 
+                display.setTransformation(applyScale(node.transformation, modelScale));
+                activeNodes.put(node.uuid, display);
             }
 
 
@@ -596,6 +596,8 @@ public class ModelClass {
 
 
         }
+
+        setTint(Color.WHITE); // this stops tinted parts of the model from not having a texture for some strange reason
     }
 
     @ApiStatus.Internal
@@ -759,6 +761,13 @@ public class ModelClass {
 
     public Animation[] getAnimations(){
         return animationMap.values().toArray(Animation[]::new);
+    };
+
+    public Animation getAnimation(String name){
+        if (animationMap.containsKey(name))
+            return animationMap.get(name);
+
+        return null;
     };
 
     public void resetAnimation(){
@@ -975,7 +984,7 @@ public class ModelClass {
                 ItemStack itemStack = itemDisplay.getItemStack();
 
                 if (color == null)
-                    itemStack.unsetData(DataComponentTypes.DYED_COLOR);
+                    itemStack.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor().color(Color.WHITE).build());
                 else
                     itemStack.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor().color(color).build());
 

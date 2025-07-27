@@ -4,17 +4,21 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
-import net.outmoded.animated_skript.events.ModelStartAnimationEvent;
+
+import ch.njol.skript.registrations.EventValues;
+import net.outmoded.animated_skript.events.ModelSpawnedEvent;
+import net.outmoded.animated_skript.events.ModelSpawnedEvent;
+import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+
 
 import javax.annotation.Nullable;
 
-public class OnAnimationStarted extends SkriptEvent {
+public class EvtOnModelSpawned extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Animation Started", OnAnimationStarted.class, ModelStartAnimationEvent.class, "[animated-skript] animation started");
-
-
+        Skript.registerEvent("Model Spawned", EvtOnModelSpawned.class, ModelSpawnedEvent.class, "[animated-skript] model spawned");
+        EventValues.registerEventValue(ModelSpawnedEvent.class, ModelClass.class, ModelSpawnedEvent::getActiveModel);
     }
 
     @SuppressWarnings("unchecked")
@@ -26,6 +30,8 @@ public class OnAnimationStarted extends SkriptEvent {
 
     @Override
     public boolean check(Event e) {
+        ModelSpawnedEvent event = (ModelSpawnedEvent) e;
+        //event.
 
         return true;
     }

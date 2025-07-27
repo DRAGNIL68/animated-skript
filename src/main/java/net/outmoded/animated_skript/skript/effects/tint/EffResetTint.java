@@ -6,6 +6,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import org.bukkit.Color;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -35,7 +36,7 @@ public class EffResetTint extends Effect {
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
         if (modelClass != null){
-            modelClass.setTint(null);
+            modelClass.setTint(Color.WHITE);
 
         }
 

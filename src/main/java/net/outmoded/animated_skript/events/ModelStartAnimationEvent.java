@@ -2,6 +2,7 @@ package net.outmoded.animated_skript.events;
 
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
+import net.outmoded.animated_skript.models.new_stuff.Animation;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -36,8 +37,8 @@ public final class ModelStartAnimationEvent extends Event implements Cancellable
         return modelType;
     }
 
-    public String getAnimation() {
-        return animation;
+    public Animation getAnimation() {
+        return modelClass.getAnimation(animation);
     }
 
     public HandlerList getHandlers() {

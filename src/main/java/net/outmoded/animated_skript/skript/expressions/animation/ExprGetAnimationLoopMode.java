@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.expressions.node;
+package net.outmoded.animated_skript.skript.expressions.animation;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -6,21 +6,19 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.models.ModelClass;
-import net.outmoded.animated_skript.models.new_stuff.Node;
+import net.outmoded.animated_skript.models.new_stuff.Animation;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.lang.String;
 
 
-public class ExprGetNodeName extends SimpleExpression<String> {
+public class ExprGetAnimationLoopMode extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprGetNodeName.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelnode%('s|s) name");
+        Skript.registerExpression(ExprGetAnimationLoopMode.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelanimation%('s|s) loopmode");
     }
 
-    private Expression<Node> nodeExpression;
+    private Expression<Animation> animationExpression;
 
     @Override
     public Class<? extends String> getReturnType() {
@@ -36,9 +34,9 @@ public class ExprGetNodeName extends SimpleExpression<String> {
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        nodeExpression = (Expression<Node>) exprs[0];
+        animationExpression = (Expression<Animation>) exprs[0];
 
-        if (nodeExpression == null)
+        if (animationExpression == null)
             return false;
 
         return true;
@@ -54,11 +52,11 @@ public class ExprGetNodeName extends SimpleExpression<String> {
     @Nullable
     protected String[] get(Event event) {
 
-        Node node = nodeExpression.getSingle(event);
+        Animation animation = animationExpression.getSingle(event);
 
 
-        if (node != null && node.name != null){
-            return new String[] {node.name};
+        if (animation != null && animation.loopMode != null){
+            return new String[] {animation.loopMode};
         }
 
         return null;

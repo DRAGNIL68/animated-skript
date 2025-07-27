@@ -10,20 +10,21 @@ import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 
-public class ExprGetActiveModelsUuid extends SimpleExpression<String> {
+public class ExprGetActiveModelsUuid extends SimpleExpression<UUID> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsUuid.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) uuid");
+        Skript.registerExpression(ExprGetActiveModelsUuid.class, UUID.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) uuid");
     }
 
     private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models
 
     @Override
-    public Class<? extends String> getReturnType() {
+    public Class<? extends UUID> getReturnType() {
         //1
-        return String.class;
+        return UUID.class;
     }
 
     @Override
@@ -48,10 +49,10 @@ public class ExprGetActiveModelsUuid extends SimpleExpression<String> {
 
     @Override
     @Nullable
-    protected String[] get(Event event) {
+    protected UUID[] get(Event event) {
         ModelClass modelClass1 = modelClass.getSingle(event);
         if (modelClass1 != null){
-            return new String[] {modelClass1.getUuid().toString()};
+            return new UUID[] {modelClass1.getUuid()};
         }
 
 

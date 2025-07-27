@@ -53,8 +53,11 @@ public class ExprGetNodeTransformation extends SimpleExpression<Transformation> 
     @Nullable
     protected Transformation[] get(Event event) {
 
-        if (nodeExpression.getSingle(event) != null){
-            return new Transformation[] {nodeExpression.getSingle(event).transformation};
+        Node node = nodeExpression.getSingle(event);
+
+
+        if (node != null && node.transformation != null){
+            return new Transformation[] {node.transformation};
         }
 
         return null;

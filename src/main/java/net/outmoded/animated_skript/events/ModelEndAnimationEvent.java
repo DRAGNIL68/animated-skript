@@ -2,8 +2,10 @@ package net.outmoded.animated_skript.events;
 
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
+import net.outmoded.animated_skript.models.new_stuff.Animation;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -38,8 +40,8 @@ public final class ModelEndAnimationEvent extends Event{
         return modelType;
     }
 
-    public String getAnimation() {
-        return animation;
+    public Animation getAnimation() {
+        return modelClass.getAnimation(animation);
     }
 
     public String getLoopMode() {

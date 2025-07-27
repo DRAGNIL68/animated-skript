@@ -1,11 +1,12 @@
 name: Animated-Skript
-version: '1.0-test1'
+version: '1.0-test2'
 main: net.outmoded.animated_skript.AnimatedSkript
 softdepend: [Skript]
 api-version: '1.21'
 author: DRAGNIL68
 commands:
   animated-skript:
+    aliases: [as]
     description: Insert Funny Text Here
     usage: /animated-skript help
     permission: animated-skript.see_command
