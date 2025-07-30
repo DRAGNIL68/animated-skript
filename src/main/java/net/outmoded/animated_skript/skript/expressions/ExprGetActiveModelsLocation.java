@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public class ExprGetActiveModelsLocation extends SimpleExpression<Location> {
 
     static {
-        Skript.registerExpression(ExprGetActiveModelsLocation.class, Location.class, ExpressionType.COMBINED, "[animated-skript] [get] location of %activemodel%");
+        Skript.registerExpression(ExprGetActiveModelsLocation.class, Location.class, ExpressionType.COMBINED, "[animated-skript] [get] location of active-model %activemodel%");
     }
     private Location location;
     private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models

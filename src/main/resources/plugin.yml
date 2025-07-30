@@ -1,9 +1,10 @@
 name: Animated-Skript
-version: '1.0-test2'
+version: '1.0-test3'
 main: net.outmoded.animated_skript.AnimatedSkript
 softdepend: [Skript]
 api-version: '1.21'
 author: DRAGNIL68
+description: a model engine made for skript
 commands:
   animated-skript:
     aliases: [as]

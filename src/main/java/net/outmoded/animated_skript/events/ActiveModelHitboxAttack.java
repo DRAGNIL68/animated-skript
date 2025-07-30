@@ -21,6 +21,11 @@ public final class ActiveModelHitboxAttack extends Event implements Cancellable 
     private final DamageSource damageSource;
     private final EntityDamageEvent.DamageCause damageCause;
     private final Double finalDamage;
+
+    public Double getDamage() {
+        return damage;
+    }
+
     private final Double damage;
 
     private boolean aBoolean = false;

@@ -6,7 +6,7 @@
 
     <groupId>net.outmoded</groupId>
     <artifactId>animated-skript</artifactId>
-    <version>1.0-test2</version>
+    <version>1.0-test3</version>
     <packaging>jar</packaging>
 
     <name>animated-skript</name>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.8-R0.1-SNAPSHOT</version>
+            <version>1.21.7-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

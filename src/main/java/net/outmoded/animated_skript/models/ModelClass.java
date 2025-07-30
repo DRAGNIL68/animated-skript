@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
+import io.papermc.paper.dialog.Dialog;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.*;
 import net.outmoded.animated_skript.models.new_stuff.Animation;
@@ -585,7 +586,7 @@ public class ModelClass {
 
             if (display != null){
                 display.setPersistent(false);
-
+                applyTypeSpecificProperties(display);
                 display.setTransformation(applyScale(node.transformation, modelScale));
                 activeNodes.put(node.uuid, display);
             }
@@ -598,6 +599,14 @@ public class ModelClass {
         }
 
         setTint(Color.WHITE); // this stops tinted parts of the model from not having a texture for some strange reason
+    }
+
+    private void applyTypeSpecificProperties(Display display){
+
+
+
+
+
     }
 
     @ApiStatus.Internal

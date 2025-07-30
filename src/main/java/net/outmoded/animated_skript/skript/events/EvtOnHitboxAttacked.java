@@ -5,7 +5,6 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
-import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.entity.Player;
@@ -14,13 +13,12 @@ import org.bukkit.event.Event;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class EvtOnHitboxInteract extends SkriptEvent {
+public class EvtOnHitboxAttacked extends SkriptEvent {
 
     static {
-        Skript.registerEvent("On Hitbox Interact", EvtOnHitboxInteract.class, ActiveModelHitboxInteract.class, "[animated-skript] hitbox interact");
+        Skript.registerEvent("On Hitbox Attacked", EvtOnHitboxAttacked.class, ActiveModelHitboxInteract.class, "[animated-skript] hitbox attacked");
 
         EventValues.registerEventValue(ActiveModelHitboxInteract.class, ModelClass.class, ActiveModelHitboxInteract::getActiveModel);
-        EventValues.registerEventValue(ActiveModelHitboxInteract.class, Player.class, ActiveModelHitboxInteract::getPlayer);
 
 
 

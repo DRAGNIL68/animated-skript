@@ -258,12 +258,12 @@ public class ModelManager {
     }
 
     public void loadModelData(JsonNode model, String modelName){ // terrible name, loads 3d model from json file
-        if (model.get("variant") == null){
+        if (model.get("variants") == null){
             return;
         }
 
 
-        JsonNode variants = model.get("variant");
+        JsonNode variants = model.get("variants");
         variants.forEach(variant -> {
 
             JsonNode models = variant.get("models");
@@ -328,7 +328,7 @@ public class ModelManager {
                 JsonNode valueAsJsonNode = models.get(key_field);
 
                 animatedSkript.createGenericFile(key_field + ".json","models/" + modelName + "/" + variant.get("name").asText() + "/", valueAsJsonNode.get("model").toString());
-                animatedSkript.writeJsonObject(new Model("animated-skript:" + modelName + "/" + variant.get("name").asText() + "/" + key_field), "items/" + modelName + "/" + variant.get("name").asText());
+                animatedSkript.writeJsonObject(new Model("animated-skript:"+modelName + "/" + variant.get("name").asText() + "/" + key_field), "items/" + modelName + "/" + variant.get("name").asText());
             }
         });
 
@@ -344,7 +344,7 @@ public class ModelManager {
         if (!event.isCancelled()) {
             resetErrorCount();
             resourcePack = new ResourcePack("animated-skript");
-
+            resourcePack.writeJsonObject(new McMeta("§3Animated-Skript", 46), "");
             animatedSkript = new Namespace("animated-skript", resourcePack); // <- creates new namespace
 
             loadedModels.clear();
@@ -383,7 +383,7 @@ public class ModelManager {
 
                             loadModelTextures(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
                             loadModelData(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
-                            resourcePack.writeJsonObject(new McMeta("§3Animated-Skript", 46), "");
+
                             if (debugMode()){
                                 final Component debug = MiniMessage.miniMessage().deserialize(
                                         "<dark_red>(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex)
