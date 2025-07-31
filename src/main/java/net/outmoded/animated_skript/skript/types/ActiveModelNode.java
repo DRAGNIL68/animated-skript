@@ -5,7 +5,7 @@ import ch.njol.skript.classes.Parser;
 import ch.njol.skript.expressions.base.EventValueExpression;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
-import net.outmoded.animated_skript.models.new_stuff.Node;
+import net.outmoded.animated_skript.models.nodes.Node;
 
 import javax.annotation.Nullable;
 

@@ -17,7 +17,6 @@ net\outmoded\animated_skript\skript\effects\tint\EffResetTint.class
 net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsLocation.class
 net\outmoded\animated_skript\skript\events\EvtOnModelRemoved.class
 net\outmoded\animated_skript\skript\expressions\ExprGetAllActiveModels.class
-net\outmoded\animated_skript\models\new_stuff\Node.class
 net\outmoded\animated_skript\skript\types\ActiveModelNode.class
 net\outmoded\animated_skript\skript\events\EvtOnHitboxInteract.class
 net\outmoded\animated_skript\models\ModelClass.class
@@ -30,10 +29,12 @@ net\outmoded\animated_skript\events\ModelRemovedEvent.class
 net\outmoded\animated_skript\skript\events\EvtOnAnimationResumed.class
 net\outmoded\animated_skript\events\ActiveModelHitboxInteract.class
 net\outmoded\animated_skript\models\ModelPersistence.class
+net\outmoded\animated_skript\skript\expressions\event\frameset\ExprEventGetEventNewFrame.class
 net\outmoded\animated_skript\skript\conditions\CondHasVariant1.class
 net\outmoded\animated_skript\skript\events\EvtOnAnimationPaused.class
 net\outmoded\animated_skript\pack\jsonObjects\TestNonWritableClass.class
 net\outmoded\animated_skript\skript\effects\scale\EffSetScale.class
+net\outmoded\animated_skript\models\nodes\Frame.class
 net\outmoded\animated_skript\skript\effects\EffSpawnLoadedModel.class
 net\outmoded\animated_skript\skript\effects\variant\EffSetActiveVariant.class
 net\outmoded\animated_skript\skript\effects\EffDefaultVisibility.class
@@ -42,13 +43,16 @@ net\outmoded\animated_skript\skript\expressions\ExprGetAnimationFrame.class
 net\outmoded\animated_skript\AnimatedSkript.class
 net\outmoded\animated_skript\events\ModelFrameSetAnimationEvent.class
 net\outmoded\animated_skript\skript\types\ActiveModel$1.class
+net\outmoded\animated_skript\models\nodes\Node.class
 net\outmoded\animated_skript\AnimatedSkript$1.class
 net\outmoded\animated_skript\models\jsonObjects\ModelJsonObject.class
 net\outmoded\animated_skript\skript\types\ActiveModelVariant$1.class
 net\outmoded\animated_skript\listeners\OnPlayerInteractEvent.class
 net\outmoded\animated_skript\skript\effects\EffReloadModels.class
+net\outmoded\animated_skript\skript\expressions\event\frameset\ExprEventGetEventCurrentFrame.class
 net\outmoded\animated_skript\skript\effects\EffTeleportActiveModel.class
 net\outmoded\animated_skript\events\ModelStartAnimationEvent.class
+net\outmoded\animated_skript\models\nodes\Variant.class
 net\outmoded\animated_skript\pack\jsonObjects\Writable.class
 net\outmoded\animated_skript\Config.class
 net\outmoded\animated_skript\events\ModelUnpauseAnimationEvent.class
@@ -61,6 +65,7 @@ net\outmoded\animated_skript\skript\expressions\node\ExprGetActiveModelsNode.cla
 net\outmoded\animated_skript\pack\jsonObjects\Model.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationLoopDelay.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationUuid.class
+net\outmoded\animated_skript\models\nodes\Animation.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetActiveModelsAnimations.class
 net\outmoded\animated_skript\skript\expressions\ExprGetActiveModel.class
 net\outmoded\animated_skript\skript\events\EvtOnAnimationStarted.class
@@ -78,14 +83,12 @@ net\outmoded\animated_skript\skript\events\EvtOnReload.class
 net\outmoded\animated_skript\commands\CommandsTabComplete.class
 net\outmoded\animated_skript\skript\conditions\CondHasAnimation.class
 net\outmoded\animated_skript\skript\expressions\variant\ExprGetVariantsName.class
-net\outmoded\animated_skript\models\new_stuff\Animation.class
 net\outmoded\animated_skript\pack\ZipFileUtil.class
 net\outmoded\animated_skript\skript\effects\EffPauseAnimation.class
 net\outmoded\animated_skript\skript\SkriptManager.class
 net\outmoded\animated_skript\pack\jsonObjects\NonWritable.class
 net\outmoded\animated_skript\events\ActiveModelHitboxAttack.class
 net\outmoded\animated_skript\events\ModelEndAnimationEvent.class
-net\outmoded\animated_skript\models\new_stuff\Variant.class
 net\outmoded\animated_skript\pack\jsonObjects\McMeta.class
 net\outmoded\animated_skript\skript\conditions\CondModelExists.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeUuid.class
@@ -98,7 +101,6 @@ net\outmoded\animated_skript\models\jsonObjects\WorldJsonObject.class
 net\outmoded\animated_skript\skript\conditions\CondHasVariant.class
 net\outmoded\animated_skript\skript\events\EvtOnHitboxAttacked.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetActiveModelsDisplayNodes.class
-net\outmoded\animated_skript\models\new_stuff\Frame.class
 net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventUuid.class
 net\outmoded\animated_skript\models\ModelManager.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeType.class
@@ -111,6 +113,7 @@ net\outmoded\animated_skript\skript\expressions\ExprGetOrigin.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationLoopMode.class
 net\outmoded\animated_skript\skript\effects\variant\EffResetActiveVariant.class
 net\outmoded\animated_skript\listeners\OnJoin.class
+net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamageCause.class
 net\outmoded\animated_skript\skript\types\ActiveModelVariant.class
 net\outmoded\animated_skript\events\ModelSpawnedEvent.class
 net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamage.class

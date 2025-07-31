@@ -4,15 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
-import io.papermc.paper.dialog.Dialog;
+import io.papermc.paper.entity.TeleportFlag;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.*;
-import net.outmoded.animated_skript.models.new_stuff.Animation;
-import net.outmoded.animated_skript.models.new_stuff.Frame;
-import net.outmoded.animated_skript.models.new_stuff.Node;
-import net.outmoded.animated_skript.models.new_stuff.Variant;
+import net.outmoded.animated_skript.models.nodes.Animation;
+import net.outmoded.animated_skript.models.nodes.Frame;
+import net.outmoded.animated_skript.models.nodes.Node;
+import net.outmoded.animated_skript.models.nodes.Variant;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -589,6 +590,7 @@ public class ModelClass {
                 applyTypeSpecificProperties(display);
                 display.setTransformation(applyScale(node.transformation, modelScale));
                 activeNodes.put(node.uuid, display);
+                origin.addPassenger(display);
             }
 
 
@@ -684,48 +686,14 @@ public class ModelClass {
     }
 
     public void teleport(Location location){
-        origin.teleport(location);
-        for (Display node: activeNodes.values()){
-            node.teleport(location);
+        origin.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
+        for (Display node: activeNodes.values()){ // this may not be needed
+            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
 
-        if (animation.frames.containsKey(currentFrameTime)){ // a bit janky but will be fixed
-
-            for (Node node : animation.frames.get(currentFrameTime).nodeTransforms){
-
-                if (activeHitboxes.containsKey(node.uuid)){
-                    Location originLocation = origin.getLocation().clone();
-
-                    Location location1 = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
-
-                    location1 = originLocation.add(location1);
-
-
-                    activeHitboxes.get(uuid).teleport(location1);
-                }
-
-
-            }
-        }
-        else {
-            for (Node node : nodeMap.values()){ // this just sets there normal pos
-
-                if (activeHitboxes.containsKey(node.uuid)){
-                    Location originLocation = origin.getLocation().clone();
-
-                    Location location1 = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
-
-                    location1 = originLocation.add(location1);
-
-
-                    activeHitboxes.get(uuid).teleport(location1);
-                }
-
-
-            }
-
-
+        for (Interaction node: activeHitboxes.values()){ // this may not be needed
+            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
 
     };

@@ -2,10 +2,9 @@ package net.outmoded.animated_skript.events;
 
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
-import net.outmoded.animated_skript.models.new_stuff.Animation;
+import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;

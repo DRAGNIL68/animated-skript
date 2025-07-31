@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.models.new_stuff;
+package net.outmoded.animated_skript.models.nodes;
 
 import java.util.HashMap;
 import java.util.Map;

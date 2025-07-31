@@ -1,11 +1,9 @@
-package net.outmoded.animated_skript.models.new_stuff;
+package net.outmoded.animated_skript.models.nodes;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.util.Transformation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 //skript can return type, name, uuid and transformation (%itemdisplaytransform%)
 public class Node {

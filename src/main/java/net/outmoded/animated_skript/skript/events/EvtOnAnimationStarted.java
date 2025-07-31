@@ -5,15 +5,12 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
-import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
 import net.outmoded.animated_skript.events.ModelStartAnimationEvent;
 import net.outmoded.animated_skript.models.ModelClass;
-import net.outmoded.animated_skript.models.new_stuff.Animation;
-import org.bukkit.entity.Player;
+import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class EvtOnAnimationStarted extends SkriptEvent {
 

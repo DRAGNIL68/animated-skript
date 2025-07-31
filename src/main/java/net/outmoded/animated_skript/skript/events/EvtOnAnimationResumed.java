@@ -6,9 +6,8 @@ import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import net.outmoded.animated_skript.events.ModelUnpauseAnimationEvent;
-import net.outmoded.animated_skript.events.ModelUnpauseAnimationEvent;
 import net.outmoded.animated_skript.models.ModelClass;
-import net.outmoded.animated_skript.models.new_stuff.Animation;
+import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

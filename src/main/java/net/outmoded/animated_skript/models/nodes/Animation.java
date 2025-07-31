@@ -1,6 +1,4 @@
-package net.outmoded.animated_skript.models.new_stuff;
-
-import com.fasterxml.jackson.databind.JsonNode;
+package net.outmoded.animated_skript.models.nodes;
 
 import java.util.HashMap;
 import java.util.Map;

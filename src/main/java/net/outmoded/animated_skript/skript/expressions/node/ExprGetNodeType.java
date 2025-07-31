@@ -6,7 +6,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.models.new_stuff.Node;
+import net.outmoded.animated_skript.models.nodes.Node;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

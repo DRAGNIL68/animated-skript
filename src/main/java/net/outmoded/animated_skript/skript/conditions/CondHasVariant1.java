@@ -6,7 +6,6 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
-import net.outmoded.animated_skript.models.new_stuff.Variant;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

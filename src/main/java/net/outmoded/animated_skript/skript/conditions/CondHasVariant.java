@@ -5,17 +5,11 @@ import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.ModelClass;
-import net.outmoded.animated_skript.models.ModelManager;
-import net.outmoded.animated_skript.models.new_stuff.Variant;
-import org.bukkit.ChatColor;
+import net.outmoded.animated_skript.models.nodes.Variant;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
-
-import static org.bukkit.Bukkit.getServer;
 
 
 public class CondHasVariant extends Condition {

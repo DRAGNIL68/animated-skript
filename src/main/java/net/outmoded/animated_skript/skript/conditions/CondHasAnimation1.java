@@ -6,10 +6,8 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
-import net.outmoded.animated_skript.models.new_stuff.Animation;
-import net.outmoded.animated_skript.models.new_stuff.Variant;
+import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
-import org.checkerframework.checker.units.qual.A;
 
 import javax.annotation.Nullable;
 

@@ -22,10 +22,10 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelClass.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelManager.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelPersistence.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\new_stuff\Animation.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\new_stuff\Frame.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\new_stuff\Node.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\new_stuff\Variant.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Animation.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Frame.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Node.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Variant.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\pack\jsonObjects\McMeta.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\pack\jsonObjects\Model.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\pack\jsonObjects\NonWritable.java
@@ -75,8 +75,11 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationMaxFrameTime.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationName.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationUuid.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\frameset\ExprEventGetEventCurrentFrame.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\frameset\ExprEventGetEventNewFrame.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventCritical.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamage.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamageCause.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamager.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventFinalDamage.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventUuid.java
