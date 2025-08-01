@@ -15,9 +15,10 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class OnEntityDismountEvent implements Listener {
 
-    @EventHandler
+    @EventHandler()
     public void onEntityDismountEvent(EntityDismountEvent event) { // this code may or may not actually work
         // this code checks if an entity is part of a model and if it is the code fixes it
+
         if (event.getDismounted() instanceof Display ) {
             if (event.getEntity() instanceof Display || event.getEntity() instanceof Interaction){
 
@@ -25,12 +26,18 @@ public class OnEntityDismountEvent implements Listener {
                 Display node = (Display) event.getEntity();
 
                 NamespacedKey key = new NamespacedKey(AnimatedSkript.getInstance(), "nodeType");
+                NamespacedKey key1 = new NamespacedKey(AnimatedSkript.getInstance(), "isTeleporting");
+
+                if (origin.getPersistentDataContainer().has(key1)){
+                    AnimatedSkript.getInstance().getLogger().warning("fuking bug1");
+                    return;
+                }
+
 
                 if (origin.getPersistentDataContainer().has(key)){
 
                     if (node.getPersistentDataContainer().has(key)){
-                        if (Config.debugMode())
-                            AnimatedSkript.getInstance().getLogger().warning("remounted model");
+                        AnimatedSkript.getInstance().getLogger().warning("fuking bug");
                         origin.addPassenger(node);
                     }
                 }

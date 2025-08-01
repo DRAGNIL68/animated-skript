@@ -686,7 +686,10 @@ public class ModelClass {
     }
 
     public void teleport(Location location){
-        origin.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        NamespacedKey key1 = new NamespacedKey(AnimatedSkript.getInstance(), "isTeleporting");
+        origin.getPersistentDataContainer().set(key1, PersistentDataType.BOOLEAN, true);
+
+
 
         for (Display node: activeNodes.values()){ // this may not be needed
             node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -696,6 +699,17 @@ public class ModelClass {
             node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
 
+        origin.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+
+        for (Display node: activeNodes.values()){ // this may not be needed
+            origin.addPassenger(node);
+        }
+
+
+
+        Bukkit.getScheduler().runTaskLater(AnimatedSkript.getInstance(), () -> {
+            origin.getPersistentDataContainer().remove(key1);
+        }, 1);
     };
 
     public Location getOriginLocation(){
