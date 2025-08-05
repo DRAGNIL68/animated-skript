@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public class ExprGetNodeTransformation extends SimpleExpression<Transformation> {
 
     static {
-        Skript.registerExpression(ExprGetNodeTransformation.class, Transformation.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelnode%('s|s) name");
+        Skript.registerExpression(ExprGetNodeTransformation.class, Transformation.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) name");
     }
 
     private Expression<Node> nodeExpression;
@@ -46,7 +46,7 @@ public class ExprGetNodeTransformation extends SimpleExpression<Transformation> 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override

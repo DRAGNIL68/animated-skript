@@ -6,6 +6,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.nodes.Node;
 import org.bukkit.event.Event;
 
@@ -16,7 +17,7 @@ import java.lang.String;
 public class ExprGetNodeName extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprGetNodeName.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelnode%('s|s) name");
+        Skript.registerExpression(ExprGetNodeName.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) name");
     }
 
     private Expression<Node> nodeExpression;
@@ -46,7 +47,7 @@ public class ExprGetNodeName extends SimpleExpression<String> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override
@@ -57,6 +58,7 @@ public class ExprGetNodeName extends SimpleExpression<String> {
 
 
         if (node != null && node.name != null){
+            AnimatedSkript.getInstance().getLogger().warning(node.name);
             return new String[] {node.name};
         }
 

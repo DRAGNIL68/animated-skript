@@ -6,7 +6,7 @@
 
     <groupId>net.outmoded</groupId>
     <artifactId>animated-skript</artifactId>
-    <version>1.0-test4</version>
+    <version>1.0-test5</version>
     <packaging>jar</packaging>
 
     <name>animated-skript</name>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.github.SkriptLang</groupId>
             <artifactId>Skript</artifactId>
-            <version>2.10.1</version>
+            <version>2.12.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

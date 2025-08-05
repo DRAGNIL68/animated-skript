@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ExprGetNodeUuid extends SimpleExpression<UUID> {
 
     static {
-        Skript.registerExpression(ExprGetNodeUuid.class, UUID.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelnode%('s|s) uuid");
+        Skript.registerExpression(ExprGetNodeUuid.class, UUID.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) uuid");
     }
 
     private Expression<Node> nodeExpression;
@@ -46,7 +46,7 @@ public class ExprGetNodeUuid extends SimpleExpression<UUID> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override

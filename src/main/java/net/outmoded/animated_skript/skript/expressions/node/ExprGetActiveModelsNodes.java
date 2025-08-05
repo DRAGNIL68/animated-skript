@@ -6,6 +6,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Node;
 import org.bukkit.event.Event;
@@ -52,8 +53,8 @@ public class ExprGetActiveModelsNodes extends SimpleExpression<Node> {
     protected Node[] get(Event event) {
         ModelClass modelClass1 = modelClass.getSingle(event);
         if (modelClass1 != null){
-
             return modelClass1.getAllNodes();
+
         }
 
 

@@ -694,10 +694,9 @@ public class ModelClass {
         for (Display node: activeNodes.values()){ // this may not be needed
             node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
-
-        for (Interaction node: activeHitboxes.values()){ // this may not be needed
-            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        }
+//        for (Interaction node: activeHitboxes.values()){ // this may not be needed
+//            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+//        }
 
         origin.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
@@ -705,11 +704,17 @@ public class ModelClass {
             origin.addPassenger(node);
         }
 
-
-
         Bukkit.getScheduler().runTaskLater(AnimatedSkript.getInstance(), () -> {
             origin.getPersistentDataContainer().remove(key1);
         }, 1);
+
+        Animation animation = this.animation;
+
+        currentFrameTime =-1;
+        isActive = true;
+        tickAnimation();
+        isActive = false;
+
     };
 
     public Location getOriginLocation(){
