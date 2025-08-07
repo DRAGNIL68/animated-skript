@@ -685,7 +685,7 @@ public class ModelClass {
 
     }
 
-    public void teleport(Location location){
+    public void teleport(Location location){ // really dont like this code, its way too hacky
         NamespacedKey key1 = new NamespacedKey(AnimatedSkript.getInstance(), "isTeleporting");
         origin.getPersistentDataContainer().set(key1, PersistentDataType.BOOLEAN, true);
 
@@ -743,7 +743,7 @@ public class ModelClass {
         return animation.name;
     };
 
-    public Animation getCurrentAnimation(){ // not a copy so people can mess with models to tether hearts content
+    public Animation getCurrentAnimation(){ // not a copy so people can mess with models to their hearts content
         return animation;
     };
 
@@ -1132,6 +1132,21 @@ public class ModelClass {
         isActive = true; // should tick once to update
 
     }
+
+    /*
+    sets the teleport duration for all the nodes in a model.
+    this will do strange things to hitboxes
+     */
+    public void setTeleportDuration(int duration){
+        origin.setTeleportDuration(duration);
+
+        for (Display display : activeNodes.values()){
+            display.setTeleportDuration(duration);
+        }
+
+
+    }
+
 
     private Transformation applyScale(Transformation originalTransformation, float modelScale){ // should probably be in a util class
 
