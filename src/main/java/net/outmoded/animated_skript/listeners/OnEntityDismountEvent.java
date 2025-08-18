@@ -29,7 +29,6 @@ public class OnEntityDismountEvent implements Listener {
                 NamespacedKey key1 = new NamespacedKey(AnimatedSkript.getInstance(), "isTeleporting");
 
                 if (origin.getPersistentDataContainer().has(key1)){
-                    AnimatedSkript.getInstance().getLogger().warning("fuking bug1");
                     return;
                 }
 
@@ -37,7 +36,6 @@ public class OnEntityDismountEvent implements Listener {
                 if (origin.getPersistentDataContainer().has(key)){
 
                     if (node.getPersistentDataContainer().has(key)){
-                        AnimatedSkript.getInstance().getLogger().warning("fuking bug");
                         origin.addPassenger(node);
                     }
                 }

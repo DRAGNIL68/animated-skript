@@ -6,39 +6,37 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
 
-public class ExprGetAnimationDuration extends SimpleExpression<Integer> {
+public class ExprGetActiveModelsActiveAnimations extends SimpleExpression<Animation> {
 
     static {
-        Skript.registerExpression(ExprGetAnimationDuration.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelanimation%('s|s) (max frame time|maxframetime)");
+        Skript.registerExpression(ExprGetActiveModelsActiveAnimations.class, Animation.class, ExpressionType.COMBINED, "[animated-skript] [get] [all|the] %activemodel%('s|s) active-animations");
     }
 
-    private Expression<Animation> animationExpression;
-
+    private Expression<ModelClass> modelClass;
 
     @Override
-    public Class<? extends Integer> getReturnType() {
+    public Class<? extends Animation> getReturnType() {
         //1
-        return Integer.class;
+        return Animation.class;
     }
 
     @Override
     public boolean isSingle() {
         //2
-        return true;
+        return false;
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        animationExpression = (Expression<Animation>) exprs[0];
+        modelClass = (Expression<ModelClass>) exprs[0];
 
-        if (animationExpression == null)
-            return false;
 
         return true;
     }
@@ -46,22 +44,20 @@ public class ExprGetAnimationDuration extends SimpleExpression<Integer> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         //4
-        return null;
+        return "";
     }
 
     @Override
     @Nullable
-    protected Integer[] get(Event event) {
+    protected Animation[] get(Event event) {
+        ModelClass modelClass1 = modelClass.getSingle(event);
+        if (modelClass1 != null){
 
-        Animation animation = animationExpression.getSingle(event);
-
-
-        if (animation != null && animation.duration != null){
-            return new Integer[] {animation.duration};
+            return modelClass1.getActiveAnimations();
         }
 
-        return null;
 
+        return null;
     }
 }
 

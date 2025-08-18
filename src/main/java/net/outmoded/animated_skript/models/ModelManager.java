@@ -19,10 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static net.outmoded.animated_skript.Config.debugMode;
@@ -80,6 +77,18 @@ public class ModelManager {
                 activeModels.put(uuid, newModel);
                 SkriptManager.setLastSpawnedModelClass(newModel);
 
+                // this block of code just adds the new model to the chunkmap for easy save data handling
+                String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
+                if (!ModelPersistenceNew.chunkMap.containsKey(chunk_id)){
+                    ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
+                    arrayList.add(newModel);
+
+                    ModelPersistenceNew.chunkMap.put(chunk_id, arrayList);
+                }
+                else{
+                    ModelPersistenceNew.chunkMap.get(chunk_id).add(newModel);
+
+                }
 
                 if (debugMode())
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
@@ -104,6 +113,21 @@ public class ModelManager {
                 Bukkit.getPluginManager().callEvent(event);
 
                 activeModels.put(uuid, newModel);
+
+                // this block of code just adds the new model to the chunkmap for easy save data handling
+                String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
+                if (!ModelPersistenceNew.chunkMap.containsKey(chunk_id)){
+                    ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
+                    arrayList.add(newModel);
+
+                    ModelPersistenceNew.chunkMap.put(chunk_id, arrayList);
+                }
+                else{
+                    ModelPersistenceNew.chunkMap.get(chunk_id).add(newModel);
+
+                }
+
+
                 SkriptManager.setLastSpawnedModelClass(newModel);
 
                 if (debugMode())

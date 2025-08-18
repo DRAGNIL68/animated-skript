@@ -10,10 +10,12 @@ import net.outmoded.animated_skript.commands.CommandsTabComplete;
 import net.outmoded.animated_skript.listeners.OnEntityDismountEvent;
 import net.outmoded.animated_skript.models.ModelManager;
 import net.outmoded.animated_skript.models.ModelPersistence;
+import net.outmoded.animated_skript.models.ModelPersistenceNew;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.common.returnsreceiver.qual.This;
+import org.joml.Quaternionf;
 
 import java.io.IOException;
 
@@ -45,7 +47,7 @@ public final class AnimatedSkript extends JavaPlugin {
         // ###########################
         // registering event listeners
         getServer().getPluginManager().registerEvents(new OnEntityDismountEvent(), this); // stops models from braking when they are teleported
-        getServer().getPluginManager().registerEvents(new ModelPersistence(), this); // model saving and loading
+        getServer().getPluginManager().registerEvents(ModelPersistenceNew.getInstance(), this); // model saving and loading
         // ###########################
         // commands
         getCommand("animated-skript").setExecutor(new Commands());
@@ -55,7 +57,8 @@ public final class AnimatedSkript extends JavaPlugin {
         Config.load();
         Config.loadLang();
         ModelManager.getInstance().loadModelConfigs();
-        ModelPersistence.loadLastConfig();
+        //ModelPersistence.loadLastConfig();
+        ModelPersistenceNew.getInstance().load();
         // ###########################
         final Component component = MiniMessage.miniMessage().deserialize(
                 Config.getLang("prefix")+"<color:#0dff1d>Loaded | Version "+AnimatedSkript.getInstance().getPluginMeta().getVersion()+" | Made by DRAGNIL68</color>"
@@ -99,8 +102,7 @@ public final class AnimatedSkript extends JavaPlugin {
         // updates save data
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
-                ModelPersistence.saveAllActiveModelsToCurrentConfig();
-                ModelPersistence.writeToDisk();
+                ModelPersistenceNew.getInstance().saveAllModels();
 
             }
         }, 3000, (long) Config.getAutoSaveTimer() * 20 * 60); // 5m * 60 = 300m, 300m * 20 = 6000T

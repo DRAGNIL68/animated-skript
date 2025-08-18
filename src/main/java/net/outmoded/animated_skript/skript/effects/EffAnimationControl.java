@@ -48,7 +48,7 @@ public class EffAnimationControl extends Effect {
 
                 }
                 else{
-                    modelClass.resetAnimation();
+                    modelClass.stopActiveAnimation(string1);
 
                 }
 

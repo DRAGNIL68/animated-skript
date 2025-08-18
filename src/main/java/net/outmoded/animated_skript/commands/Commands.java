@@ -123,7 +123,7 @@ public class Commands implements CommandExecutor {
                     }
 
 
-                    ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])).resetAnimation();
+                    ModelManager.getInstance().getActiveModel(UUID.fromString(args[1])).resetResetAllAnimations();
 
                     String message = Config.getLang("prefix")+Config.getLang("stopped_animation_command");
                     message = message.replace("{model_uuid}", args[1]);

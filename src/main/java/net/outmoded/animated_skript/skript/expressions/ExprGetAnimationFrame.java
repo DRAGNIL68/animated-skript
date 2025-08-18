@@ -15,9 +15,10 @@ import javax.annotation.Nullable;
 public class ExprGetAnimationFrame extends SimpleExpression<Integer> {
 
     static {
-        Skript.registerExpression(ExprGetAnimationFrame.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) current animation (:frame|max frame)");
+        Skript.registerExpression(ExprGetAnimationFrame.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) active animation %string% (:frame|max frame)");
     }
     private Expression<ModelClass> modelClass;
+    private Expression<String> stringExpression;
     private boolean type; // if true = frame, false = max frame
 
     @Override
@@ -35,6 +36,8 @@ public class ExprGetAnimationFrame extends SimpleExpression<Integer> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         type = parser.hasTag("frame");
+        modelClass = (Expression<ModelClass>) exprs[0];
+        stringExpression = (Expression<String>) exprs[1];
         return true;
     }
 
@@ -48,14 +51,16 @@ public class ExprGetAnimationFrame extends SimpleExpression<Integer> {
     @Nullable
     protected Integer[] get(Event event) {
         ModelClass modelClass1 = modelClass.getSingle(event);
-        if (modelClass1 != null){
-            if (!modelClass1.hasCurrentAnimation())
+        String s = stringExpression.getSingle(event);
+
+        if (modelClass1 != null && s != null){
+            if (!modelClass1.hasActiveAnimation(s))
                 return null;
 
             if (type)
-                return new Integer[] {modelClass1.getCurrentAnimationsFrame()};
+                return new Integer[] {modelClass1.getCurrentAnimation(s).currentFrameTime};
             else
-                return new Integer[] {modelClass1.getCurrentAnimationMaxFrame()};
+                return new Integer[] {modelClass1.getCurrentAnimation(s).animationReference.maxFrameTime};
 
         }
 

@@ -15,5 +15,7 @@ public class Animation {
     public Integer loopDelay;
     public Integer maxFrameTime = 0;
 
+
     public Animation(){}
+
 }

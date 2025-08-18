@@ -21,6 +21,12 @@ public class Node {
     public Node(){
 
     }
+    public Node clone(){
+        Node node = new Node();
+        node.uuid = this.uuid;
+        node.transformation = new Transformation(this.transformation.getTranslation(), this.transformation.getLeftRotation(), this.transformation.getScale(), this.transformation.getRightRotation());
+        return node;
+    }
 
 
 

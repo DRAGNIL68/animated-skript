@@ -4,13 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
-import io.papermc.paper.entity.TeleportFlag;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.*;
-import net.outmoded.animated_skript.models.nodes.Animation;
-import net.outmoded.animated_skript.models.nodes.Frame;
-import net.outmoded.animated_skript.models.nodes.Node;
-import net.outmoded.animated_skript.models.nodes.Variant;
+import net.outmoded.animated_skript.models.nodes.*;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -47,9 +43,9 @@ public class ModelClass {
     private String activeVariant = "default";
 
     //current animation info
-    Animation animation = null;
-    Integer currentFrameTime = 0; // in ticks 1T = 0.05S | 0.05 x 20 = 1S
-    boolean isActive = false;
+    public final Map<String, ActiveAnimation> activeAnimations = new HashMap<>();
+    // in ticks 1T = 0.05S | 0.05 x 20 = 1S
+    boolean isActive = false; // stops all animations
 
     protected ModelClass(@NotNull Location location, @NotNull String modelType, @NotNull UUID uuid) {
         this.modelType = modelType;
@@ -354,11 +350,21 @@ public class ModelClass {
                             animationMap.put(modelAnimation.name, modelAnimation);
                         }
 
-                        if (this.animation != null){ // this updates active animation if the model is reloaded
-                            if (animationMap.containsKey(this.animation.name)){
-                                this.animation = animationMap.get(this.animation.name);
 
+                        if (!this.activeAnimations.isEmpty()){ // this updates active animation if the model has been reloaded
+                            for (ActiveAnimation activeAnimation : activeAnimations.values()){
+
+                                if (animationMap.containsKey(activeAnimation.animationReference.name)){
+                                    ActiveAnimation activeAnimation1 = new ActiveAnimation(animationMap.get(activeAnimation.animationReference.name));
+                                    activeAnimations.put(activeAnimation.animationReference.name, activeAnimation1);
+
+                                }
+                                else{
+                                    activeAnimations.remove(activeAnimation.animationReference.name);
+
+                                }
                             }
+
 
                         }
 
@@ -606,9 +612,6 @@ public class ModelClass {
     private void applyTypeSpecificProperties(Display display){
 
 
-
-
-
     }
 
     @ApiStatus.Internal
@@ -624,68 +627,108 @@ public class ModelClass {
 
     }
 
+
     @ApiStatus.Internal
     public void tickAnimation(){
+
+
 
         if (!isActive){
             return;
         }
 
-        if (animation == null){ // TODO: stop models from ticking if they have no current animation
 
-            resetAnimation();
+        //resetResetAllAnimations();
+
+        if (activeAnimations.isEmpty()){ // TODO: stop models from ticking if they have no current animation
+
+            resetResetAllAnimations();
+
         }
+
 
         else {
-            if (animation.frames.containsKey(currentFrameTime)){ // should stop corrupted nodes form causing problems
 
-                for (Node node : animation.frames.get(currentFrameTime).nodeTransforms){
+            Map<UUID, Node> nodes = new HashMap<>();
+            Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator();
+            while (iter.hasNext()){
+                Map.Entry<String, ActiveAnimation> entry = iter.next();
+                ActiveAnimation animation = entry.getValue();
 
-                    if (activeNodes.containsKey(node.uuid)){
-                        activeNodes.get(node.uuid).setInterpolationDelay(0);
-                        activeNodes.get(node.uuid).setInterpolationDuration(1);
-                        activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+                if (animation.currentFrameTime >= animation.animationReference.duration) { // checks info about an animation
+
+                    if (animation.animationReference.loopMode.equals("loop")) {
+                        animation.currentFrameTime = 0;
+                    }
+                    else if (animation.animationReference.loopMode.equals("hold")){
+                        pauseActiveAnimation(animation.animationReference.name,true);
+
+                    } else {
+                        iter.remove();
 
                     }
-                    else if (activeHitboxes.containsKey(node.uuid)){
-                        Location originLocation = origin.getLocation().clone();
-                        Location location = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+                    ModelEndAnimationEvent event;
+                    event = new ModelEndAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
+                    Bukkit.getPluginManager().callEvent(event);
 
+                }
 
-                        activeHitboxes.get(node.uuid).teleport(location);
+                else if (animation.animationReference.frames.containsKey(animation.currentFrameTime)){ // compiles the transforms for this frame
+
+                    for (Node node : animation.animationReference.frames.get(animation.currentFrameTime).nodeTransforms){
+
+                        if (!nodes.containsKey(node.uuid)){
+                            nodes.put(node.uuid, node.clone());
+
+                        }
+                        else{
+
+                            Node animationNode = nodes.get(node.uuid);
+                            animationNode.transformation.getTranslation().add(node.transformation.getTranslation());
+                            animationNode.transformation.getLeftRotation().mul(node.transformation.getLeftRotation());
+                            animationNode.transformation.getScale().mul(node.transformation.getScale());
+
+                        }
                     }
-
-
                 }
             }
 
+            for (Node node : nodes.values()){ // applies the transforms for this frame
 
-        }
+                if (activeNodes.containsKey(node.uuid)){
 
-        if (animation != null){
-            if (currentFrameTime >= animation.duration) {
-                if (animation.loopMode.equals("loop")) {
-                    currentFrameTime = 0;
-                }
-                else if (animation.loopMode.equals("hold")){
-                    pauseCurrentAnimation(true);
+                    activeNodes.get(node.uuid).setInterpolationDelay(0);
+                    activeNodes.get(node.uuid).setInterpolationDuration(1);
 
-                } else {
-                    resetAnimation();
+                    activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+
 
                 }
+                else if (activeHitboxes.containsKey(node.uuid)){
+                    Location originLocation = origin.getLocation().clone();
+                    Location location = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+
+
+                    activeHitboxes.get(node.uuid).teleport(location);
+                }
+
+
             }
 
-            currentFrameTime += 1;
+            for (ActiveAnimation activeAnimation : activeAnimations.values()){
+
+                if (!activeAnimation.isPaused)
+                    activeAnimation.currentFrameTime += 1;
+            }
+
+
+
+
         }
-
-
-
-
 
     }
 
-    public void teleport(Location location){ // really dont like this code, its way too hacky
+    public void teleport(Location location){ // really don't like this code, It's way too hacky
         NamespacedKey key1 = new NamespacedKey(AnimatedSkript.getInstance(), "isTeleporting");
         origin.getPersistentDataContainer().set(key1, PersistentDataType.BOOLEAN, true);
 
@@ -708,12 +751,14 @@ public class ModelClass {
             origin.getPersistentDataContainer().remove(key1);
         }, 1);
 
-        Animation animation = this.animation;
 
-        currentFrameTime =-1;
-        isActive = true;
+        for (ActiveAnimation activeAnimation : activeAnimations.values()){
+            activeAnimation.currentFrameTime =-1;
+        }
+
+
         tickAnimation();
-        isActive = false;
+
 
     };
 
@@ -736,19 +781,11 @@ public class ModelClass {
     // ###############################################
     // animations
 
-    public String getCurrentAnimationName(){
-        if (animation == null)
-            return "none";
+    public ActiveAnimation getCurrentAnimation(String animationName){ // not a copy so people can mess with models to their hearts content
+        if (!activeAnimations.containsKey(animationName))
+            return null;
 
-        return animation.name;
-    };
-
-    public Animation getCurrentAnimation(){ // not a copy so people can mess with models to their hearts content
-        return animation;
-    };
-
-    public boolean hasCurrentAnimation(){
-        return animation != null;
+        return activeAnimations.get(animationName);
     };
 
     public String[] getAnimationNames(){
@@ -766,20 +803,8 @@ public class ModelClass {
         return null;
     };
 
-    public void resetAnimation(){
-
-
-        ModelEndAnimationEvent event;
-        if (animation == null){
-            event = new ModelEndAnimationEvent(uuid, modelType, "none", "none");
-
-        }else{
-            event = new ModelEndAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
-
-
-            this.animation = null;
-        }
-
+    public void resetResetAllAnimations(){ // resets back to the default pose
+        activeAnimations.clear();
         for (Node node : nodeMap.values()){
             if (activeNodes.containsKey(node.uuid)){
                 activeNodes.get(node.uuid).setInterpolationDelay(0);
@@ -798,76 +823,77 @@ public class ModelClass {
         }
 
 
-
-
         this.isActive = false;
-        Bukkit.getPluginManager().callEvent(event);
+
 
 
     };
 
-    public void pauseCurrentAnimation(Boolean bool){
-        if (animation == null)
+    public void stopActiveAnimation(String animationName){
+        activeAnimations.remove(animationName);
+    }
+
+    public void pauseActiveAnimation(String animationName,Boolean bool){
+        if (!activeAnimations.containsKey(animationName))
             return;
 
+        ActiveAnimation animation = activeAnimations.get(animationName);
+
         if (!bool){
-            ModelPauseAnimationEvent event = new ModelPauseAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
+            ModelPauseAnimationEvent event = new ModelPauseAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
             Bukkit.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
-                isActive = !bool;
+                animation.isPaused = !bool;
 
             }
 
         }
         else{
 
-            ModelUnpauseAnimationEvent event = new ModelUnpauseAnimationEvent(uuid, modelType, animation.name, animation.loopMode);
+            ModelUnpauseAnimationEvent event = new ModelUnpauseAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
             Bukkit.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
-                isActive = !bool;
+                animation.isPaused = !bool;
 
             }
         }
     };
 
-    public Boolean isCurrentAnimationPaused(){
-        return isActive;
+    public Boolean isActiveAnimationPaused(String animationName){
+        if (!activeAnimations.containsKey(animationName))
+            return false;
+
+
+        return activeAnimations.get(animationName).isPaused;
     }
 
-    public void setCurrentAnimationFrame(int ticks){
-        if (animation == null)
+    public void setActiveAnimationFrame(String animationName ,int ticks){
+        if (!activeAnimations.containsKey(animationName))
             return;
 
+        ActiveAnimation animation = activeAnimations.get(animationName);
 
-        if (ticks > animation.duration){
-            ticks = animation.duration;
+        if (ticks > animation.animationReference.duration){
+            ticks = animation.animationReference.duration;
         }
 
-        ModelFrameSetAnimationEvent event = new ModelFrameSetAnimationEvent(uuid, modelType, animation.name, animation.loopMode, currentFrameTime, ticks, animation.duration );
+        ModelFrameSetAnimationEvent event = new ModelFrameSetAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode, animation.currentFrameTime, ticks, animation.animationReference.duration );
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            currentFrameTime = ticks;
+            animation.currentFrameTime = ticks;
 
         }
     }
 
-    public Integer getCurrentAnimationsFrame(){
-        if (animation == null)
-            return -1;
-
-
-        return currentFrameTime;
+    public Animation[] getActiveAnimations(){
+        return activeAnimations.values().toArray(new Animation[0]);
     };
 
-    public int getCurrentAnimationMaxFrame(){ // returns max frame time
-        if (animation == null)
-            return -1;
-
-
-        return animation.duration;
+    public boolean hasActiveAnimation(String key){
+        return activeAnimations.containsKey(key);
     }
 
     public boolean hasAnimation(String key){
@@ -889,24 +915,25 @@ public class ModelClass {
 
             if (!event.isCancelled()) {
 
+                isActive = true; // makes the animation tick active
 
-                resetAnimation();
-                isActive = true;
                 //sets the animation
-                this.animation = animationMap.get(name);
-                currentFrameTime = 0;
+                ActiveAnimation activeAnimation = new ActiveAnimation(animationMap.get(name));
+                activeAnimations.put(name, activeAnimation);
 
                 if (debugMode())
-                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + name + " LoopMode: " + this.animation.loopMode + " AnimationTimeInTicks: " + this.animation.duration);
+                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "Animation Info: Name:" + name + " LoopMode: " + activeAnimation.animationReference.loopMode + " AnimationTimeInTicks: " + activeAnimation.animationReference.duration);
 
             }
 
         }
-        else {
-            resetAnimation();
-            this.animation = null;
-        }
     }
+
+    public void pauseAllActiveAnimations(){
+        isActive = false;
+    }
+
+
 
     // ###############################################
     // variant
@@ -1129,7 +1156,15 @@ public class ModelClass {
 
     public void setScale(float scale){
         modelScale = scale;
+
         isActive = true; // should tick once to update
+
+        for (ActiveAnimation activeAnimation : activeAnimations.values()){
+            activeAnimation.currentFrameTime =-1;
+        }
+
+        tickAnimation();
+
 
     }
 

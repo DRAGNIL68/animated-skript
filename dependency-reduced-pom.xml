@@ -4,7 +4,7 @@
   <groupId>net.outmoded</groupId>
   <artifactId>animated-skript</artifactId>
   <name>animated-skript</name>
-  <version>1.0-test5</version>
+  <version>1.0-test6</version>
   <build>
     <defaultGoal>clean package</defaultGoal>
     <resources>
@@ -37,7 +37,7 @@
           <relocations>
             <relocation>
               <pattern>org.bstats</pattern>
-              <shadedPattern>net.outmoded.frogs</shadedPattern>
+              <shadedPattern>net.outmoded.bstats</shadedPattern>
             </relocation>
           </relocations>
         </configuration>

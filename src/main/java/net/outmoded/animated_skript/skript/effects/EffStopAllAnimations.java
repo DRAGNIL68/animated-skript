@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public class EffStopAllAnimations extends Effect {
 
     static {
-        Skript.registerEffect(EffStopAllAnimations.class, "[animated-skript] stop current animation of %activemodel%");
+        Skript.registerEffect(EffStopAllAnimations.class, "[animated-skript] stop all of %activemodel%('s|s) current animations");
     }
 
     private Expression<ModelClass> activeModel;
@@ -35,7 +35,7 @@ public class EffStopAllAnimations extends Effect {
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
         if (modelClass != null){
-            modelClass.resetAnimation();
+            modelClass.resetResetAllAnimations();
         }
 
 

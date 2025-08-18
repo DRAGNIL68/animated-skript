@@ -1,17 +1,18 @@
 name: Animated-Skript
-version: '1.0-test5'
+version: '1.0-test6'
 main: net.outmoded.animated_skript.AnimatedSkript
 softdepend: [Skript]
 api-version: '1.21'
 author: DRAGNIL68
+libraries:
+  - com.mysql:mysql-connector-j:9.2.0
 description: a model engine made for skript
 commands:
   animated-skript:
     aliases: [as]
-    description: Insert Funny Text Here
+    description: Insert Text Here
     usage: /animated-skript help
-    permission: animated-skript.see_command
+    permission: animated-skript.commands
 
 animated-skript:
-  description: Allows a player to use all animated-skript commands
   default: op

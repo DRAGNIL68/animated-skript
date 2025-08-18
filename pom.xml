@@ -6,7 +6,7 @@
 
     <groupId>net.outmoded</groupId>
     <artifactId>animated-skript</artifactId>
-    <version>1.0-test5</version>
+    <version>1.0-test6</version>
     <packaging>jar</packaging>
 
     <name>animated-skript</name>
@@ -37,7 +37,7 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <!-- Replace this with your package! -->
-                            <shadedPattern>net.outmoded.frogs</shadedPattern>
+                            <shadedPattern>net.outmoded.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

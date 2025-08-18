@@ -29,7 +29,8 @@ public class ModelJsonObject {
         this.modelType = modelClass.getModelType();
         Location originLocation = modelClass.getOriginLocation();
         location = new Double[]{originLocation.getX(), originLocation.getY(), originLocation.getZ(), (double) originLocation.getPitch(), (double) originLocation.getYaw()} ;
-        this.currentAnimation = modelClass.getCurrentAnimationName();
+        //this.currentAnimation = modelClass.getCurrentAnimationName();
+        this.currentAnimation = null;
         locationAsLocation = originLocation;
     }
 
