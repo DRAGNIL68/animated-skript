@@ -70,6 +70,10 @@ public final class ModelFrameSetAnimationEvent extends Event implements Cancella
         return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public boolean isCancelled() {
         return false;

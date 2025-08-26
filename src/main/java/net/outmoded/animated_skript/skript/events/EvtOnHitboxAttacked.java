@@ -5,6 +5,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
+import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.entity.Player;
@@ -16,10 +17,10 @@ import java.util.UUID;
 public class EvtOnHitboxAttacked extends SkriptEvent {
 
     static {
-        Skript.registerEvent("On Hitbox Attacked", EvtOnHitboxAttacked.class, ActiveModelHitboxInteract.class, "[animated-skript] hitbox attacked");
+        Skript.registerEvent("On Hitbox Attacked", EvtOnHitboxAttacked.class, ActiveModelHitboxAttack.class, "[animated-skript] hitbox attacked");
 
-        EventValues.registerEventValue(ActiveModelHitboxInteract.class, ModelClass.class, ActiveModelHitboxInteract::getActiveModel);
-
+        EventValues.registerEventValue(ActiveModelHitboxAttack.class, ModelClass.class, ActiveModelHitboxAttack::getActiveModel);
+        EventValues.registerEventValue(ActiveModelHitboxInteract.class, Player.class, ActiveModelHitboxInteract::getPlayer);
 
 
 

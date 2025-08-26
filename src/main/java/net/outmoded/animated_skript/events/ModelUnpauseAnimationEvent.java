@@ -51,6 +51,10 @@ public final class ModelUnpauseAnimationEvent extends Event implements Cancellab
         return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public boolean isCancelled() {
         return false;

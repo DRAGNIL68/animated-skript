@@ -4,15 +4,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.*;
 import net.outmoded.animated_skript.models.nodes.*;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.StringUtil;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -121,8 +124,8 @@ public class ModelClass {
                             modelNode.typeSpecificProperties.put("shadow", node.get("shadow").asBoolean());
                             modelNode.typeSpecificProperties.put("see_through", node.get("see_through").asBoolean());
 
-                            if (node.get("config").has("billboard")) {
-                                modelNode.typeSpecificProperties.put("billboard", node.get("config").get("billboard").asText().toUpperCase());
+                            if (node.get("configs").has("billboard")) {
+                                modelNode.typeSpecificProperties.put("billboard", node.get("configs").get("billboard").asText().toUpperCase());
 
 
                             }
@@ -151,45 +154,53 @@ public class ModelClass {
 
                         }
 
-                        if (node.has("config")) {
+                        if (node.has("configs")) {
+                            for (JsonNode nodeConfig : node.get("configs")) {
 
-                            if (node.get("config").has("override_brightness")) {
-                                boolean overrideBrightness = node.get("config").get("override_brightness").asBoolean();
+                                if (nodeConfig.has("override_brightness")) {
+                                    boolean overrideBrightness = nodeConfig.get("override_brightness").asBoolean();
 
-                                if (overrideBrightness) {
+                                    if (overrideBrightness) {
 
-                                    if (node.get("config").has("brightness_override")) {
-                                        modelNode.typeSpecificProperties.put("brightness_override", node.get("config").get("brightness_override").asInt());
+                                        if (nodeConfig.has("brightness_override")) {
+                                            modelNode.typeSpecificProperties.put("brightness_override", nodeConfig.get("brightness_override").asInt());
+                                        }
                                     }
                                 }
-                            }
 
-                            if (node.get("config").has("shadow_radius")) {
-                                modelNode.typeSpecificProperties.put("shadow_radios", node.get("config").get("shadow_radius").asInt());
-                            }
-
-                            if (node.get("config").has("name")) {
-
-                                if (node.get("config").has("custom_name_visible")) {
-                                    modelNode.typeSpecificProperties.put("custom_name_visible", node.get("config").get("custom_name_visible").asBoolean());
-                                }
-                                if (node.get("config").has("custom_name")) {
-                                    modelNode.typeSpecificProperties.put("custom_name", node.get("config").get("name").asText());
+                                if (nodeConfig.has("shadow_radius")) {
+                                    modelNode.typeSpecificProperties.put("shadow_radios", nodeConfig.get("shadow_radius").asInt());
                                 }
 
-                            }
 
-                            if (node.get("config").has("glowing")) {
-                                modelNode.typeSpecificProperties.put("glowing", node.get("config").get("glowing").asBoolean());
-                            }
+                                if (nodeConfig.has("shadow_strength")) {
+                                    modelNode.typeSpecificProperties.put("shadow_strength", nodeConfig.get("shadow_strength").asInt());
+                                }
 
-                            if (node.get("config").has("glow_color")) {
-                                modelNode.typeSpecificProperties.put("glow_color", node.get("config").get("glow_color").asText());
-                            }
 
-                            if (node.get("config").has("invisible")) {
-                                modelNode.typeSpecificProperties.put("invisible", node.get("config").get("invisible").asBoolean());
+                                if (nodeConfig.has("custom_name_visible")) {
+                                    modelNode.typeSpecificProperties.put("custom_name_visible", nodeConfig.get("custom_name_visible").asBoolean());
+                                }
 
+                                if (nodeConfig.has("custom_name")) {
+                                    modelNode.typeSpecificProperties.put("custom_name", nodeConfig.get("custom_name").asText());
+                                }
+
+                                if (nodeConfig.has("glowing")) {
+                                    modelNode.typeSpecificProperties.put("glowing", nodeConfig.get("glowing").asBoolean());
+
+                                }
+
+                                if (nodeConfig.has("glow_color")) {
+                                    modelNode.typeSpecificProperties.put("glow_color", nodeConfig.get("glow_color").asText());
+                                }
+
+                                if (nodeConfig.has("invisible")) {
+                                    modelNode.typeSpecificProperties.put("invisible", nodeConfig.get("invisible").asBoolean());
+
+                                }
+
+                                // missing the enchanted option
                             }
 
                         }
@@ -440,7 +451,7 @@ public class ModelClass {
             switch (node.type) {
 
                 case "struct":
-
+                    if (debugMode()) {
                     ItemStack structItemStack = new ItemStack(Material.SKELETON_SKULL);
                     ItemDisplay structItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
                     structItemDisplay.setVisibleByDefault(false);
@@ -449,16 +460,15 @@ public class ModelClass {
 
                     structItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
 
-                    if (debugMode()) {
-                        structItemDisplay.setGlowing(true);
-                        structItemDisplay.setVisibleByDefault(true);
 
-                    }
+                    structItemDisplay.setGlowing(true);
+                    structItemDisplay.setVisibleByDefault(true);
+
 
 
                     display = structItemDisplay;
 
-
+                }
                     break;
                 case "bone":
 
@@ -562,8 +572,13 @@ public class ModelClass {
 
                     if (matchFound){
 
+
+
                         float width = Float.parseFloat(matcher.group(1));
                         float height = Float.parseFloat(matcher.group(2));
+
+                        node.typeSpecificProperties.put("hitbox_width", width);
+                        node.typeSpecificProperties.put("hitbox_height", height);
 
                         Interaction interaction = origin.getWorld().spawn(origin.getLocation(), Interaction.class);
                         interaction.getPersistentDataContainer().set(key, PersistentDataType.STRING, "hitbox");
@@ -593,10 +608,10 @@ public class ModelClass {
 
             if (display != null){
                 display.setPersistent(false);
-                applyTypeSpecificProperties(display);
                 display.setTransformation(applyScale(node.transformation, modelScale));
                 activeNodes.put(node.uuid, display);
                 origin.addPassenger(display);
+                applyTypeSpecificProperties(node);
             }
 
 
@@ -609,8 +624,79 @@ public class ModelClass {
         setTint(Color.WHITE); // this stops tinted parts of the model from not having a texture for some strange reason
     }
 
-    private void applyTypeSpecificProperties(Display display){
+    private void applyTypeSpecificProperties(Node node){
+        if (activeNodes.containsKey(node.uuid)){
 
+            Display display = activeNodes.get(node.uuid);
+
+            if (node.typeSpecificProperties.containsKey("override_brightness") && (boolean) node.typeSpecificProperties.get("override_brightness")){
+
+                if (node.typeSpecificProperties.containsKey("brightness_override")){
+                    int overrideBrightness = (int) node.typeSpecificProperties.get("brightness_override");
+
+                    Display.Brightness brightness = new Display.Brightness(overrideBrightness, overrideBrightness);
+                    display.setBrightness(brightness);
+
+                }
+
+
+            }
+
+            if (node.typeSpecificProperties.containsKey("shadow_radius")){
+
+                int shadowRadius = (int) node.typeSpecificProperties.get("shadow_radius");
+                display.setShadowRadius(shadowRadius);
+
+            }
+
+            if (node.typeSpecificProperties.containsKey("shadow_strength")){
+
+                int shadowStrength = (int) node.typeSpecificProperties.get("shadow_strength");
+                display.setShadowStrength(shadowStrength);
+
+            }
+
+            if (node.typeSpecificProperties.containsKey("custom_name_visible")){
+                boolean customNameVisible = (boolean) node.typeSpecificProperties.get("custom_name_visible");
+                display.setCustomNameVisible(customNameVisible);
+
+            }
+
+            if (node.typeSpecificProperties.containsKey("custom_name")){
+
+                String customName = (String) node.typeSpecificProperties.get("custom_name");
+                customName = customName.substring(1);
+                customName = StringUtils.removeEnd(customName, "\"");
+                display.customName(MiniMessage.miniMessage().deserialize(customName));
+
+            }
+
+            if (node.typeSpecificProperties.containsKey("glowing")){
+                boolean glowing = (boolean) node.typeSpecificProperties.get("glowing");
+                display.setGlowing(glowing);
+
+            }
+
+
+            if (node.typeSpecificProperties.containsKey("glow_color")){
+
+                String glowColor = (String) node.typeSpecificProperties.get("glow_color");
+
+
+                //display.setGlowColorOverride();
+                // not done yet if you want to contribute please do so on the GitHub
+
+            }
+
+            if (node.typeSpecificProperties.containsKey("invisible")){
+
+                boolean invisible = (boolean) node.typeSpecificProperties.get("invisible");
+                display.setInvisible(invisible);
+
+            }
+
+
+        }
 
     }
 
@@ -637,13 +723,8 @@ public class ModelClass {
             return;
         }
 
-
-        //resetResetAllAnimations();
-
-        if (activeAnimations.isEmpty()){ // TODO: stop models from ticking if they have no current animation
-
+        if (activeAnimations.isEmpty()){
             resetResetAllAnimations();
-
         }
 
 
@@ -678,7 +759,7 @@ public class ModelClass {
                     for (Node node : animation.animationReference.frames.get(animation.currentFrameTime).nodeTransforms){
 
                         if (!nodes.containsKey(node.uuid)){
-                            nodes.put(node.uuid, node.clone());
+                            nodes.put(node.uuid, node.lightClone());
 
                         }
                         else{
@@ -687,6 +768,11 @@ public class ModelClass {
                             animationNode.transformation.getTranslation().add(node.transformation.getTranslation());
                             animationNode.transformation.getLeftRotation().mul(node.transformation.getLeftRotation());
                             animationNode.transformation.getScale().mul(node.transformation.getScale());
+
+                            // I think that I should be using a location instead of a list
+                            animationNode.pos[0] += node.pos[0];
+                            animationNode.pos[1] += node.pos[1];
+                            animationNode.pos[2] += node.pos[2];
 
                         }
                     }
@@ -706,14 +792,23 @@ public class ModelClass {
                 }
                 else if (activeHitboxes.containsKey(node.uuid)){
                     Location originLocation = origin.getLocation().clone();
-                    Location location = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+                    Location location = originLocation.add(node.pos[0]*modelScale, node.pos[1]*modelScale, node.pos[2]*modelScale);
 
+                    Node originalNode = nodeMap.get(node.uuid);
+                    Float width = (Float) originalNode.typeSpecificProperties.get("hitbox_width");
+                    Float height = (Float) originalNode.typeSpecificProperties.get("hitbox_height");
 
+                    width = width*modelScale;
+                    height = height*modelScale;
+
+                    activeHitboxes.get(node.uuid).setInteractionWidth(width);
+                    activeHitboxes.get(node.uuid).setInteractionHeight(height);
                     activeHitboxes.get(node.uuid).teleport(location);
                 }
 
 
             }
+
 
             for (ActiveAnimation activeAnimation : activeAnimations.values()){
 
@@ -737,9 +832,10 @@ public class ModelClass {
         for (Display node: activeNodes.values()){ // this may not be needed
             node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
-//        for (Interaction node: activeHitboxes.values()){ // this may not be needed
-//            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-//        }
+
+        for (Interaction node: activeHitboxes.values()){ // this may not be needed
+            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
 
         origin.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
@@ -760,23 +856,23 @@ public class ModelClass {
         tickAnimation();
 
 
-    };
+    }
 
     public Location getOriginLocation(){
         return origin.getLocation();
-    };
+    }
 
     public ItemDisplay getOrigin(){
         return origin;
-    };
+    }
 
     public String getModelType(){
         return modelType;
-    };
+    }
 
     public UUID getUuid(){
         return uuid;
-    };
+    }
 
     // ###############################################
     // animations
@@ -786,15 +882,15 @@ public class ModelClass {
             return null;
 
         return activeAnimations.get(animationName);
-    };
+    }
 
     public String[] getAnimationNames(){
         return animationMap.keySet().toArray(String[]::new);
-    };
+    }
 
     public Animation[] getAnimations(){
         return animationMap.values().toArray(Animation[]::new);
-    };
+    }
 
     public Animation getAnimation(String name){
         if (animationMap.containsKey(name))
@@ -814,11 +910,21 @@ public class ModelClass {
 
             }
             else if (activeHitboxes.containsKey(node.uuid)){
+
                 Location originLocation = origin.getLocation().clone();
+                Location location = originLocation.add(node.pos[0]*modelScale, node.pos[1]*modelScale, node.pos[2]*modelScale);
 
-                Location location = originLocation.add(node.pos[0], node.pos[1], node.pos[2]);
+                Node originalNode = nodeMap.get(node.uuid);
+                Float width = (Float) originalNode.typeSpecificProperties.get("hitbox_width");
+                Float height = (Float) originalNode.typeSpecificProperties.get("hitbox_height");
 
+                width = width*modelScale;
+                height = height*modelScale;
+
+                activeHitboxes.get(node.uuid).setInteractionWidth(width);
+                activeHitboxes.get(node.uuid).setInteractionHeight(height);
                 activeHitboxes.get(node.uuid).teleport(location);
+
             }
         }
 
@@ -839,26 +945,15 @@ public class ModelClass {
 
         ActiveAnimation animation = activeAnimations.get(animationName);
 
-        if (!bool){
-            ModelPauseAnimationEvent event = new ModelPauseAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
-            Bukkit.getPluginManager().callEvent(event);
+        ModelPauseAnimationEvent event = new ModelPauseAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
+        Bukkit.getPluginManager().callEvent(event);
 
-            if (!event.isCancelled()) {
-                animation.isPaused = !bool;
-
-            }
+        if (!event.isCancelled()) {
+            animation.isPaused = bool;
 
         }
-        else{
 
-            ModelUnpauseAnimationEvent event = new ModelUnpauseAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
-            Bukkit.getPluginManager().callEvent(event);
 
-            if (!event.isCancelled()) {
-                animation.isPaused = !bool;
-
-            }
-        }
     };
 
     public Boolean isActiveAnimationPaused(String animationName){
@@ -888,9 +983,9 @@ public class ModelClass {
         }
     }
 
-    public Animation[] getActiveAnimations(){
-        return activeAnimations.values().toArray(new Animation[0]);
-    };
+    public ActiveAnimation[] getActiveAnimations(){
+        return activeAnimations.values().toArray(new ActiveAnimation[0]);
+    }
 
     public boolean hasActiveAnimation(String key){
         return activeAnimations.containsKey(key);
@@ -939,11 +1034,11 @@ public class ModelClass {
     // variant
     public Variant[] getAllVariants(){
         return variants.values().toArray(new Variant[0]);
-    };
+    }
 
     public String getActiveVariant(){
         return activeVariant;
-    };
+    }
 
     public boolean hasVariant(String variant) {
         if (variant == null)

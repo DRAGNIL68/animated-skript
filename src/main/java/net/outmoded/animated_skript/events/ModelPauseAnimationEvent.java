@@ -48,9 +48,11 @@ public final class ModelPauseAnimationEvent extends Event implements Cancellable
         return loopMode;
     }
 
-
-
     public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 

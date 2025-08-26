@@ -36,8 +36,11 @@ public final class ActiveModelHitboxInteract extends Event{
         return player;
     }
 
-
     public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 

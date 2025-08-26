@@ -7,10 +7,12 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 
 public class ExprGetActiveModelsActiveAnimations extends SimpleExpression<Animation> {
@@ -52,8 +54,22 @@ public class ExprGetActiveModelsActiveAnimations extends SimpleExpression<Animat
     protected Animation[] get(Event event) {
         ModelClass modelClass1 = modelClass.getSingle(event);
         if (modelClass1 != null){
+            ArrayList<Animation> animations = new ArrayList<>();
 
-            return modelClass1.getActiveAnimations();
+            for (ActiveAnimation animation : modelClass1.getActiveAnimations()){
+                // this is a mega hacky fix
+                Animation newAnimation = new Animation();
+                newAnimation.name = animation.animationReference.name;
+                newAnimation.loopDelay = animation.animationReference.loopDelay;
+                newAnimation.uuid = animation.animationReference.uuid;
+                newAnimation.maxFrameTime = animation.animationReference.maxFrameTime;
+                newAnimation.loopMode = animation.animationReference.loopMode;
+                newAnimation.currentFrameTime = animation.currentFrameTime;
+                newAnimation.isPaused = animation.isPaused;
+
+                animations.add(newAnimation);
+            }
+            return animations.toArray(new Animation[0]);
         }
 
 

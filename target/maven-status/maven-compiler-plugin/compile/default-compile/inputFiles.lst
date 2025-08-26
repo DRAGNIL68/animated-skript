@@ -22,7 +22,6 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelClass.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelManager.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelPersistence.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelPersistenceNew.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\ActiveAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Animation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Frame.java
@@ -80,6 +79,8 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationMaxFrameTime.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationName.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationUuid.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetCurrentAnimationsCurrentFrameTime.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetCurrentAnimationsIsPaused.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\frameset\ExprEventGetEventCurrentFrame.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\frameset\ExprEventGetEventNewFrame.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventCritical.java

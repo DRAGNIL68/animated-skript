@@ -45,6 +45,7 @@ public final class ModelStartAnimationEvent extends Event implements Cancellable
         return handlers;
     }
 
+
     public static HandlerList getHandlerList() {
         return handlers;
     }

@@ -16,6 +16,12 @@ public class Animation {
     public Integer maxFrameTime = 0;
 
 
+
+    // this is a hacky fix for a skript effect
+    public Boolean isPaused = false;
+    public Integer currentFrameTime = null;
+
+
     public Animation(){}
 
 }

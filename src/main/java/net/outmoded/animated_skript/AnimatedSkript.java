@@ -2,20 +2,18 @@ package net.outmoded.animated_skript;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
-import com.google.errorprone.annotations.Keep;
+import ch.njol.skript.update.UpdateChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.commands.Commands;
 import net.outmoded.animated_skript.commands.CommandsTabComplete;
 import net.outmoded.animated_skript.listeners.OnEntityDismountEvent;
+import net.outmoded.animated_skript.listeners.OnPlayerInteractEvent;
 import net.outmoded.animated_skript.models.ModelManager;
 import net.outmoded.animated_skript.models.ModelPersistence;
-import net.outmoded.animated_skript.models.ModelPersistenceNew;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.common.returnsreceiver.qual.This;
-import org.joml.Quaternionf;
 
 import java.io.IOException;
 
@@ -31,7 +29,7 @@ public final class AnimatedSkript extends JavaPlugin {
 
         // ###########################
         // bstats
-        int pluginId = 25094;
+        int pluginId = 26976;
         Metrics metrics = new Metrics(this, pluginId);
         // ###########################
         // checks version
@@ -47,7 +45,8 @@ public final class AnimatedSkript extends JavaPlugin {
         // ###########################
         // registering event listeners
         getServer().getPluginManager().registerEvents(new OnEntityDismountEvent(), this); // stops models from braking when they are teleported
-        getServer().getPluginManager().registerEvents(ModelPersistenceNew.getInstance(), this); // model saving and loading
+        getServer().getPluginManager().registerEvents(ModelPersistence.getInstance(), this); // model saving and loading
+        getServer().getPluginManager().registerEvents(new OnPlayerInteractEvent(), this); // model saving and loading
         // ###########################
         // commands
         getCommand("animated-skript").setExecutor(new Commands());
@@ -58,7 +57,7 @@ public final class AnimatedSkript extends JavaPlugin {
         Config.loadLang();
         ModelManager.getInstance().loadModelConfigs();
         //ModelPersistence.loadLastConfig();
-        ModelPersistenceNew.getInstance().load();
+        ModelPersistence.getInstance().load();
         // ###########################
         final Component component = MiniMessage.miniMessage().deserialize(
                 Config.getLang("prefix")+"<color:#0dff1d>Loaded | Version "+AnimatedSkript.getInstance().getPluginMeta().getVersion()+" | Made by DRAGNIL68</color>"
@@ -102,7 +101,7 @@ public final class AnimatedSkript extends JavaPlugin {
         // updates save data
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
-                ModelPersistenceNew.getInstance().saveAllModels();
+                ModelPersistence.getInstance().saveAllModels();
 
             }
         }, 3000, (long) Config.getAutoSaveTimer() * 20 * 60); // 5m * 60 = 300m, 300m * 20 = 6000T
@@ -113,8 +112,8 @@ public final class AnimatedSkript extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        ModelPersistence.saveAllActiveModelsToCurrentConfig();
-        ModelPersistence.writeToDisk();
+        ModelPersistence.getInstance().saveAllModels();
+
 
     }
 

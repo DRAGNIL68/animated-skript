@@ -79,14 +79,14 @@ public class ModelManager {
 
                 // this block of code just adds the new model to the chunkmap for easy save data handling
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
-                if (!ModelPersistenceNew.chunkMap.containsKey(chunk_id)){
+                if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
                     ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
                     arrayList.add(newModel);
 
-                    ModelPersistenceNew.chunkMap.put(chunk_id, arrayList);
+                    ModelPersistence.chunkMap.put(chunk_id, arrayList);
                 }
                 else{
-                    ModelPersistenceNew.chunkMap.get(chunk_id).add(newModel);
+                    ModelPersistence.chunkMap.get(chunk_id).add(newModel);
 
                 }
 
@@ -116,14 +116,14 @@ public class ModelManager {
 
                 // this block of code just adds the new model to the chunkmap for easy save data handling
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
-                if (!ModelPersistenceNew.chunkMap.containsKey(chunk_id)){
+                if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
                     ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
                     arrayList.add(newModel);
 
-                    ModelPersistenceNew.chunkMap.put(chunk_id, arrayList);
+                    ModelPersistence.chunkMap.put(chunk_id, arrayList);
                 }
                 else{
-                    ModelPersistenceNew.chunkMap.get(chunk_id).add(newModel);
+                    ModelPersistence.chunkMap.get(chunk_id).add(newModel);
 
                 }
 
@@ -148,7 +148,7 @@ public class ModelManager {
         }
     } // TODO: this dose not work because of the pack gen code
 
-    public void tickAllAnimations() { // TODO: needs recoding
+    public void tickAllAnimations() {
         for (ModelClass model : activeModels.values()) {
             model.tickAnimation();
         }

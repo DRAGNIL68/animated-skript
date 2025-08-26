@@ -51,4 +51,8 @@ public final class ModelEndAnimationEvent extends Event{
         return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
 }

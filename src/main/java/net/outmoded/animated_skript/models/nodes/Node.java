@@ -21,10 +21,19 @@ public class Node {
     public Node(){
 
     }
-    public Node clone(){
+    public Node lightClone(){
         Node node = new Node();
+        node.type = this.type;
+        node.name = this.name;
         node.uuid = this.uuid;
+
+        node.leftRotation = this.leftRotation.clone();
+        node.scale = this.scale.clone();
+        node.pos = this.pos.clone();
+
         node.transformation = new Transformation(this.transformation.getTranslation(), this.transformation.getLeftRotation(), this.transformation.getScale(), this.transformation.getRightRotation());
+
+
         return node;
     }
 
