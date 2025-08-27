@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public class EvtOnReload extends SkriptEvent {
 
     static {
-        Skript.registerEvent("On Reload", EvtOnReload.class, AnimatedSkriptReload.class, "animated-skript reloaded");
+        Skript.registerEvent("Reload", EvtOnReload.class, AnimatedSkriptReload.class, "animated-skript reloaded");
 
     }
 

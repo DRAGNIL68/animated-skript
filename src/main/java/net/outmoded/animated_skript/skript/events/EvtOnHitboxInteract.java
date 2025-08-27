@@ -17,7 +17,7 @@ import java.util.UUID;
 public class EvtOnHitboxInteract extends SkriptEvent {
 
     static {
-        Skript.registerEvent("On Hitbox Interact", EvtOnHitboxInteract.class, ActiveModelHitboxInteract.class, "[animated-skript] hitbox interact");
+        Skript.registerEvent("Hitbox Interact", EvtOnHitboxInteract.class, ActiveModelHitboxInteract.class, "[animated-skript] hitbox interact");
 
         EventValues.registerEventValue(ActiveModelHitboxInteract.class, ModelClass.class, ActiveModelHitboxInteract::getActiveModel);
         EventValues.registerEventValue(ActiveModelHitboxInteract.class, Player.class, ActiveModelHitboxInteract::getPlayer);

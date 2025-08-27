@@ -13,17 +13,17 @@ import javax.annotation.Nullable;
 public class EffSetScale extends Effect {
 
     static {
-        Skript.registerEffect(EffSetScale.class, "[animated-skript] set %activemodel%('s|s) scale to %double/integer%");
+        Skript.registerEffect(EffSetScale.class, "[animated-skript] set %activemodel%('s|s) scale to %double%");
     }
 
     private Expression<ModelClass> activeModel;
-    private Expression<?> expression;
+    private Expression<Double> expression;
     
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         activeModel = (Expression<ModelClass>) expressions[0];
-        expression = (Expression<?>) expressions[1];
+        expression = (Expression<Double>) expressions[1];
 
         //if (!(expression.getReturnType() == Double.class) || !(expression.getReturnType() == Integer.class))
             //return false;
@@ -46,18 +46,12 @@ public class EffSetScale extends Effect {
         }
 
         if (expression.getReturnType() == Double.class){
-            Double aDouble = (Double) expression.getSingle(event);
+            Double aDouble = expression.getSingle(event);
             if (aDouble != null ){
                 modelClass.setScale(aDouble.floatValue());
 
             }
 
-        }else {
-            Integer integer = (Integer) expression.getSingle(event);
-            if (integer != null ){
-                modelClass.setScale(integer.floatValue());
-
-            }
         }
 
 

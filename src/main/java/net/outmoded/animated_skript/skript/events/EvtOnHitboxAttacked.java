@@ -17,10 +17,9 @@ import java.util.UUID;
 public class EvtOnHitboxAttacked extends SkriptEvent {
 
     static {
-        Skript.registerEvent("On Hitbox Attacked", EvtOnHitboxAttacked.class, ActiveModelHitboxAttack.class, "[animated-skript] hitbox attacked");
+        Skript.registerEvent("Hitbox Attacked", EvtOnHitboxAttacked.class, ActiveModelHitboxAttack.class, "[animated-skript] hitbox attacked");
 
         EventValues.registerEventValue(ActiveModelHitboxAttack.class, ModelClass.class, ActiveModelHitboxAttack::getActiveModel);
-        EventValues.registerEventValue(ActiveModelHitboxInteract.class, Player.class, ActiveModelHitboxInteract::getPlayer);
 
 
 

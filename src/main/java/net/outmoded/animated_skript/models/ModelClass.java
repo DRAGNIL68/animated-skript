@@ -1263,6 +1263,10 @@ public class ModelClass {
 
     }
 
+    public Float getScale(){
+        return modelScale;
+    }
+
     /*
     sets the teleport duration for all the nodes in a model.
     this will do strange things to hitboxes
