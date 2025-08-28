@@ -1239,9 +1239,32 @@ public class ModelClass {
 
     public void setVisibilityForPlayer(Player player, boolean visibility){ // sets visibility for the entire model for a player
         player.showEntity(AnimatedSkript.getInstance(), origin);
-        for (Display display : activeNodes.values()){
-            player.showEntity(AnimatedSkript.getInstance(), display);
+        if (visibility){
+            for (Display display : activeNodes.values()){
+                player.showEntity(AnimatedSkript.getInstance(), display);
+
+            }
+        }else {
+            for (Display display : activeNodes.values()){
+                player.hideEntity(AnimatedSkript.getInstance(), display);
+
+            }
+
         }
+
+        if (visibility){
+            for (Interaction interaction : activeHitboxes.values()){
+                player.showEntity(AnimatedSkript.getInstance(), interaction);
+
+            }
+        }else {
+            for (Interaction interaction : activeHitboxes.values()){
+                player.hideEntity(AnimatedSkript.getInstance(), interaction);
+
+            }
+
+        }
+
 
         Location location = player.getLocation(); // or any Location
         World world = location.getWorld();

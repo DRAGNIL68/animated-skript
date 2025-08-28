@@ -48,6 +48,7 @@ net\outmoded\animated_skript\AnimatedSkript.class
 net\outmoded\animated_skript\events\ModelFrameSetAnimationEvent.class
 net\outmoded\animated_skript\skript\types\ActiveModel$1.class
 net\outmoded\animated_skript\models\nodes\Node.class
+net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsScale.class
 net\outmoded\animated_skript\AnimatedSkript$1.class
 net\outmoded\animated_skript\models\jsonObjects\ModelJsonObject.class
 net\outmoded\animated_skript\skript\types\ActiveModelVariant$1.class

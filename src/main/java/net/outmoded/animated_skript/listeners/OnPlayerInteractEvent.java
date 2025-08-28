@@ -56,7 +56,6 @@ public class OnPlayerInteractEvent implements Listener {
 
                 ActiveModelHitboxAttack activeModelHitboxAttack = new ActiveModelHitboxAttack(modelClass, hitboxUuid, event.getDamager(), event.isCritical(), event.getDamageSource(), event.getCause(), event.getDamage() ,event.getFinalDamage());
                 Bukkit.getPluginManager().callEvent(activeModelHitboxAttack);
-
                 if (activeModelHitboxAttack.isCancelled()){
                     event.setCancelled(true);
                 }

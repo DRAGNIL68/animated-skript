@@ -7,6 +7,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -57,10 +58,20 @@ public class ExprGetAnimationFrame extends SimpleExpression<Integer> {
             if (!modelClass1.hasActiveAnimation(s))
                 return null;
 
-            if (type)
-                return new Integer[] {modelClass1.getCurrentAnimation(s).currentFrameTime};
-            else
-                return new Integer[] {modelClass1.getCurrentAnimation(s).animationReference.maxFrameTime};
+            ActiveAnimation animation = modelClass1.getCurrentAnimation(s);
+            if (animation == null)
+                return new Integer[] {-1};
+
+            if (type){
+
+                return new Integer[] {animation.currentFrameTime};
+            }
+
+            else{
+
+                return new Integer[] {animation.animationReference.maxFrameTime};
+
+            }
 
         }
 

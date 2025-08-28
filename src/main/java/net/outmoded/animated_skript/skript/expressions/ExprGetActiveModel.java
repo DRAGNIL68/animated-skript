@@ -17,47 +17,6 @@ import java.util.UUID;
 
 import static net.outmoded.animated_skript.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
-/*
-
-   Expressions return info
-   Effects don't return anything
-
-
-   MODELMANAGER:
-   [animated-skript] all [the] loaded-models: String[] - Expression
-   [animated-skript] all [the] active-models: UUID[] - Expression
-
-   [animated-skript] loaded-model "String" exits : Bool - Expression
-   [animated-skript] active-model "String -> UUID" exits: Bool - Expression
-   [animated-skript] [the] active-model "String -> UUID": ModelClass - Expression
-
-   [animated-skript] spawn [the] loaded-model "String": null - Effect
-   [animated-skript] remove [the] active model "String -> UUID": null - Effect
-
-   [animated-skript] reload (models-config||active-models): null - Effect
-
-
-   [animated-skript] %active-model%'s/s location: location - Expression
-   [animated-skript] (teleport||tp) %active-model%: null - Effect
-
-
-
-   MODELCLASS:
-
-       NODES:
-       [animated-skript] get [the||all] nodes of %active-model%: Display[] - Expression
-       [animated-skript] get [the] node "String" of %active-model% "String -> UUID": Display - Expression
-
-       ANIMATION:
-       [animated-skript] get [all] %active-model%s / 's animations: String[] - Expression
-       [animated-skript] active-model has animation: Bool - Expression
-
-       [animated-skript] play animation "String" of [the] %active-model% "String -> UUID": null - Effect
-       [animated-skript] stop all animations of [the] active-model "String -> UUID": null - Effect
-       [animated-skript] stop animation %number% of [the] active-model "String -> UUID": null - Effect
-
-
- */
 
 
 public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
@@ -85,10 +44,6 @@ public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
         text = (Expression<String>) exprs[0];
 
         return text != null;
-
-        //if (!getParser().isCurrentEvent(ModelSpawnedEvent.class)){ // TODO: don't forget this is here you fucking retard
-            //return false;
-        //}
     }
 
     @Override
@@ -105,20 +60,22 @@ public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
         UUID uuid = null;
 
         try {
+            if (uuidAsString == null)
+                return new ModelClass[] {};
+
             uuid = UUID.fromString(uuidAsString);
 
         }catch (IllegalArgumentException e){
             if (debugMode())
-                getServer().getConsoleSender().sendMessage(ChatColor.GREEN+" model uuid is broken for some reason: "+uuidAsString);
-
-            return null;
+                getServer().getConsoleSender().sendMessage(ChatColor.GREEN+" model uuid is broken for some reason");
+            return new ModelClass[] {};
 
         }
 
         if (ModelManager.getInstance().activeModelExists(uuid))
             return new ModelClass[] {ModelManager.getInstance().getActiveModel(uuid)};
 
-        return null;
+        return new ModelClass[] {};
     }
 }
 

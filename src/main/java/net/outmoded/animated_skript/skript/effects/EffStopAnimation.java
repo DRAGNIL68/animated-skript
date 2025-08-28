@@ -1,4 +1,4 @@
-package net.outmoded.animated_skript.skript.effects.variant;
+package net.outmoded.animated_skript.skript.effects;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Effect;

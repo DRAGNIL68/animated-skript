@@ -91,6 +91,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventUuid.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsLocation.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsScale.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsType.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsUuid.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetAllActiveModels.java
