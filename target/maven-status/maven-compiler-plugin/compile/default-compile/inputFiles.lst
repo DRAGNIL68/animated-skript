@@ -53,6 +53,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffSetVisibility.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffSpawnLoadedModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffStopAllAnimations.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffStopAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffTeleportActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\scale\EffResetScale.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\scale\EffSetScale.java
@@ -60,7 +61,6 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\tint\EffSetTint.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\variant\EffResetActiveVariant.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\variant\EffSetActiveVariant.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\variant\EffStopAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\events\EvtOnAnimationEnded.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\events\EvtOnAnimationFrameSet.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\events\EvtOnAnimationPaused.java

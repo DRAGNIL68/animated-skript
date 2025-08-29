@@ -27,8 +27,6 @@ import static org.bukkit.Bukkit.getServer;
 
 public class ModelManager {
 
-    private ModelManager instance;
-
     private final Map<String, JsonNode> loadedModels = new HashMap<>(); // stores all model types I.e. there configs: key = file name
     private final Map<UUID, ModelClass> activeModels = new HashMap<>(); // stores all models that are active on the server
     private ResourcePack resourcePack;

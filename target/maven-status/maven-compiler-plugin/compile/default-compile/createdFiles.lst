@@ -62,6 +62,7 @@ net\outmoded\animated_skript\pack\jsonObjects\Writable.class
 net\outmoded\animated_skript\Config.class
 net\outmoded\animated_skript\events\ModelUnpauseAnimationEvent.class
 net\outmoded\animated_skript\skript\types\ActiveModelNode$1.class
+net\outmoded\animated_skript\skript\effects\EffStopAnimation.class
 net\outmoded\animated_skript\skript\effects\EffSetPersistence.class
 net\outmoded\animated_skript\skript\expressions\ExprGetAllLoadedModels.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetActiveModelsDisplayNode.class
@@ -102,7 +103,6 @@ net\outmoded\animated_skript\skript\types\ActiveModelAnimation.class
 net\outmoded\animated_skript\models\ModelPersistence$DatabaseLocation.class
 net\outmoded\animated_skript\models\jsonObjects\ChunkJsonObject.class
 net\outmoded\animated_skript\models\jsonObjects\FileJsonObject.class
-net\outmoded\animated_skript\skript\effects\variant\EffStopAnimation.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationName.class
 net\outmoded\animated_skript\listeners\OnEntityDismountEvent.class
 net\outmoded\animated_skript\models\jsonObjects\WorldJsonObject.class

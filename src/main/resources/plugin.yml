@@ -1,5 +1,5 @@
 name: Animated-Skript
-version: '1.0-test9'
+version: '1.0'
 main: net.outmoded.animated_skript.AnimatedSkript
 softdepend: [Skript]
 api-version: '1.21'
