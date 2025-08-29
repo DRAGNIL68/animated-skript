@@ -35,6 +35,9 @@ public final class ModelPersistence implements Listener {
         if (chunkMap.containsKey(chunk_id)){
 
             for(ModelClass modelClass : chunkMap.get(chunk_id)) {
+                if (!modelClass.isPersistent)
+                    continue;
+
                 SAVEDATA_DATABASE.removeModel(modelClass.uuid);
                 SAVEDATA_DATABASE.addModel(modelClass);
                 ModelManager.getInstance().removeActiveModel(modelClass.uuid);
