@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class ExprGetAnimationDuration extends SimpleExpression<Integer> {
 
     static {
-        Skript.registerExpression(ExprGetAnimationDuration.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelanimation%('s|s) (max frame time|maxframetime)");
+        Skript.registerExpression(ExprGetAnimationDuration.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelanimation%('s|s) duration");
     }
 
     private Expression<Animation> animationExpression;
