@@ -138,13 +138,12 @@ public final class ModelPersistence implements Listener {
                     "model_type NOT NULL," +
                     // this is for the origin of the model
                     "chunk_id NOT NULL," + // world|x-4|z-4
-                    "chunk_id NOT NULL," +
                     "location NOT NULL," + // stores json :sob:
-                    "animations NOT NULL" + // stores json for the current animations and what time they are on
+                    "animations" + // stores json for the current animations and what time they are on
                     ")");
 
             // Create index for faster lookups
-            statement.execute("CREATE INDEX IF NOT EXISTS idx_chunk_ids ON save_data (chunk_id)");
+            statement.execute("CREATE INDEX IF NOT EXISTS chunk_ids ON save_data (chunk_id)");
 
 
 
