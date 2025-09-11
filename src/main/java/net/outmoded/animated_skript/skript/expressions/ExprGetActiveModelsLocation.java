@@ -60,7 +60,7 @@ public class ExprGetActiveModelsLocation extends SimpleExpression<Location> {
             return new Location[] {location};
 
         }
-        return null;
+        return new Location[] {};
     }
 }
 

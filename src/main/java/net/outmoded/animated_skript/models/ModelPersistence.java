@@ -1,15 +1,16 @@
 package net.outmoded.animated_skript.models;
 
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
-import net.outmoded.animated_skript.models.nodes.Animation;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -176,6 +177,9 @@ public final class ModelPersistence implements Listener {
     }
 
     public boolean addModel(ModelClass modelClass) {
+        if (modelClass.getPersistence() == false)
+            return false;
+
         synchronized (this.connection) {
             try {
 

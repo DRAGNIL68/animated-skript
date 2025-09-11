@@ -427,6 +427,38 @@ public class ModelClass {
 
     public void setPersistence(Boolean persistence) {
         isPersistent = persistence;
+
+        String chunk_id = getOriginLocation().getWorld().getName()+"|x-"+getOriginLocation().getChunk().getX()+"|z-"+getOriginLocation().getChunk().getZ(); // world|x-3|z-4
+        if (!persistence){
+
+            ModelPersistence.getInstance().removeModel(this.uuid);
+            if ( ModelPersistence.chunkMap.containsKey(chunk_id)){
+                ModelPersistence.chunkMap.get(chunk_id).remove(this);
+
+            }
+
+
+
+        }
+        else if (persistence){
+
+            ModelPersistence.getInstance().addModel(this);
+
+            if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
+                ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
+                arrayList.add(this);
+
+                ModelPersistence.chunkMap.put(chunk_id, arrayList);
+            }
+            else{
+                ModelPersistence.chunkMap.get(chunk_id).add(this);
+
+            }
+
+
+
+        }
+
     }
 
     public Boolean getPersistence() {

@@ -73,7 +73,7 @@ public class ModelManager {
                 Bukkit.getPluginManager().callEvent(event);
 
                 activeModels.put(uuid, newModel);
-                SkriptManager.setLastSpawnedModelClass(newModel);
+
 
                 // this block of code just adds the new model to the chunkmap for easy save data handling
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
@@ -87,6 +87,9 @@ public class ModelManager {
                     ModelPersistence.chunkMap.get(chunk_id).add(newModel);
 
                 }
+
+                ModelPersistence.getInstance().addModel(newModel);
+                SkriptManager.setLastSpawnedModelClass(newModel);
 
                 if (debugMode())
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
@@ -125,7 +128,7 @@ public class ModelManager {
 
                 }
 
-
+                ModelPersistence.getInstance().addModel(newModel);
                 SkriptManager.setLastSpawnedModelClass(newModel);
 
                 if (debugMode())
@@ -238,6 +241,12 @@ public class ModelManager {
             model.deleteModelNodes();
             model.getOrigin().remove();
             activeModels.remove(uuid);
+            String chunk_id = model.getOriginLocation().getWorld().getName()+"|x-"+model.getOriginLocation().getChunk().getX()+"|z-"+model.getOriginLocation().getChunk().getZ();
+            if (ModelPersistence.chunkMap.containsKey(chunk_id)){
+                ModelPersistence.chunkMap.get(chunk_id).remove(model);
+
+            }
+            ModelPersistence.getInstance().removeModel(model.uuid);
 
         }
 
