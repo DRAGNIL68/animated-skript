@@ -50,7 +50,6 @@ public final class ModelPersistence implements Listener {
 
                 SAVEDATA_DATABASE.addModel(modelClass);
                 ModelManager.getInstance().removeActiveModelFromWorld(modelClass.uuid);
-                getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "tester save model");
             }
 
             chunkMap.remove(chunk_id);
@@ -331,7 +330,6 @@ public final class ModelPersistence implements Listener {
 
             databaseAnimations.add(databaseAnimation);
 
-            AnimatedSkript.getInstance().getLogger().warning("animation converted from json: "+databaseAnimation.animationName);
 
 
         }
