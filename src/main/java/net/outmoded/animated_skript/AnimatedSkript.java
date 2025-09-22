@@ -31,6 +31,7 @@ public final class AnimatedSkript extends JavaPlugin {
         // bstats
         int pluginId = 26976;
         Metrics metrics = new Metrics(this, pluginId);
+
         // ###########################
         // checks version
         String version = Bukkit.getMinecraftVersion();
@@ -102,6 +103,7 @@ public final class AnimatedSkript extends JavaPlugin {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
                 ModelPersistence.getInstance().saveAllModels();
+                ModelPersistence.getInstance().load();
 
             }
         }, 3000, (long) Config.getAutoSaveTimer() * 20 * 60); // 5m * 60 = 300m, 300m * 20 = 6000T
@@ -113,6 +115,7 @@ public final class AnimatedSkript extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         ModelPersistence.getInstance().saveAllModels();
+        ModelPersistence.getInstance().close();
 
 
     }

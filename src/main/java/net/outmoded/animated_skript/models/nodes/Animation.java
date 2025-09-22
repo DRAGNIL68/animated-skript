@@ -17,9 +17,9 @@ public class Animation {
 
 
 
-    // this is a hacky fix for a skript effect
-    public Boolean isPaused = false;
-    public Integer currentFrameTime = null;
+    // this is a hacky fix for a skript effect and SHOULD ONLY BE USE FOR THE SKRIPT EFFECTS
+    public Boolean isPausedSkript = false;
+    public Integer currentFrameTimeSkript = null;
 
 
     public Animation(){}

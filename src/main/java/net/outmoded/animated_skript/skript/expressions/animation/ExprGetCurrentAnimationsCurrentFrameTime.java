@@ -6,6 +6,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
 
@@ -52,7 +53,7 @@ public class ExprGetCurrentAnimationsCurrentFrameTime extends SimpleExpression<I
         Animation animation = animationExpression.getSingle(event);
         if (animation != null){
 
-            return new Integer[]{animation.currentFrameTime};
+            return new Integer[]{animation.currentFrameTimeSkript};
         }
 
 

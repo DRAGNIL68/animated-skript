@@ -445,13 +445,13 @@ public class ModelClass {
             ModelPersistence.getInstance().addModel(this);
 
             if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
-                ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
-                arrayList.add(this);
+                ArrayList<UUID> arrayList = new ArrayList<UUID>();
+                arrayList.add(this.uuid);
 
                 ModelPersistence.chunkMap.put(chunk_id, arrayList);
             }
             else{
-                ModelPersistence.chunkMap.get(chunk_id).add(this);
+                ModelPersistence.chunkMap.get(chunk_id).add(this.uuid);
 
             }
 
@@ -661,7 +661,7 @@ public class ModelClass {
 
             Display display = activeNodes.get(node.uuid);
 
-            if (node.typeSpecificProperties.containsKey("override_brightness") && (boolean) node.typeSpecificProperties.get("override_brightness")){
+            if (node.typeSpecificProperties.containsKey("override_brightness")){
 
                 if (node.typeSpecificProperties.containsKey("brightness_override")){
                     int overrideBrightness = (int) node.typeSpecificProperties.get("brightness_override");
@@ -744,7 +744,6 @@ public class ModelClass {
         }
 
     }
-
 
     @ApiStatus.Internal
     public void tickAnimation(){
@@ -1060,8 +1059,6 @@ public class ModelClass {
         isActive = false;
     }
 
-
-
     // ###############################################
     // variant
     public Variant[] getAllVariants(){
@@ -1180,7 +1177,6 @@ public class ModelClass {
         return nodeMap.keySet().toArray(UUID[]::new);
     }
 
-
     public Node getNode(UUID uuid){
         if (nodeMap.containsKey(uuid)){
             return nodeMap.get(uuid);
@@ -1219,9 +1215,6 @@ public class ModelClass {
     public Boolean hasHitbox(UUID uuid){
         return nodeMap.containsKey(uuid);
     }
-
-
-
 
     // ############################################### camera stuff, does not work because I am stupid
 
@@ -1335,7 +1328,6 @@ public class ModelClass {
 
 
     }
-
 
     private Transformation applyScale(Transformation originalTransformation, float modelScale){ // should probably be in a util class
 

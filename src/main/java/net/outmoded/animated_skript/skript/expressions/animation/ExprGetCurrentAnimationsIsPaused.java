@@ -52,7 +52,7 @@ public class ExprGetCurrentAnimationsIsPaused extends SimpleExpression<Boolean> 
         Animation animation = animationExpression.getSingle(event);
         if (animation != null){
             
-            return new Boolean[]{animation.isPaused};
+            return new Boolean[]{animation.isPausedSkript};
         }
 
 

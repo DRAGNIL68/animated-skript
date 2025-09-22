@@ -78,13 +78,15 @@ public class ModelManager {
                 // this block of code just adds the new model to the chunkmap for easy save data handling
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
                 if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
-                    ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
-                    arrayList.add(newModel);
+                    ArrayList<UUID> arrayList = new ArrayList<UUID>();
+                    arrayList.add(newModel.uuid);
 
                     ModelPersistence.chunkMap.put(chunk_id, arrayList);
+                    ModelPersistence.getInstance().addModel(newModel);
                 }
                 else{
-                    ModelPersistence.chunkMap.get(chunk_id).add(newModel);
+                    ModelPersistence.chunkMap.get(chunk_id).add(newModel.uuid);
+                    ModelPersistence.getInstance().addModel(newModel);
 
                 }
 
@@ -118,13 +120,13 @@ public class ModelManager {
                 // this block of code just adds the new model to the chunkmap for easy save data handling
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
                 if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
-                    ArrayList<ModelClass> arrayList = new ArrayList<ModelClass>();
-                    arrayList.add(newModel);
+                    ArrayList<UUID> arrayList = new ArrayList<>();
+                    arrayList.add(newModel.uuid);
 
                     ModelPersistence.chunkMap.put(chunk_id, arrayList);
                 }
                 else{
-                    ModelPersistence.chunkMap.get(chunk_id).add(newModel);
+                    ModelPersistence.chunkMap.get(chunk_id).add(newModel.uuid);
 
                 }
 
@@ -241,9 +243,10 @@ public class ModelManager {
             model.deleteModelNodes();
             model.getOrigin().remove();
             activeModels.remove(uuid);
+
             String chunk_id = model.getOriginLocation().getWorld().getName()+"|x-"+model.getOriginLocation().getChunk().getX()+"|z-"+model.getOriginLocation().getChunk().getZ();
             if (ModelPersistence.chunkMap.containsKey(chunk_id)){
-                ModelPersistence.chunkMap.get(chunk_id).remove(model);
+                ModelPersistence.chunkMap.get(chunk_id).remove(model.uuid);
 
             }
             ModelPersistence.getInstance().removeModel(model.uuid);
@@ -252,6 +255,28 @@ public class ModelManager {
 
 
     } // deletes an active model
+
+    /*
+    deletes the model only from the world not the savedata.
+    this exists because I am retarded
+     */
+    public void removeActiveModelFromWorld(UUID uuid) {
+        if (!activeModels.containsKey(uuid)){
+            return;
+        }
+        ModelClass model = activeModels.get(uuid);
+        ModelRemovedEvent event = new ModelRemovedEvent(uuid, model.getModelType(), model);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (!event.isCancelled()) {
+            model.deleteModelNodes();
+            model.getOrigin().remove();
+            activeModels.remove(uuid);
+
+        }
+
+
+    }
 
 
     // ########################################### TODO: needs recoding

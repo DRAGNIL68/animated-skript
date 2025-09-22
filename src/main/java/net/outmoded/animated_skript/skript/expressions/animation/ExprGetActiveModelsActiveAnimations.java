@@ -64,8 +64,8 @@ public class ExprGetActiveModelsActiveAnimations extends SimpleExpression<Animat
                 newAnimation.uuid = animation.animationReference.uuid;
                 newAnimation.maxFrameTime = animation.animationReference.maxFrameTime;
                 newAnimation.loopMode = animation.animationReference.loopMode;
-                newAnimation.currentFrameTime = animation.currentFrameTime;
-                newAnimation.isPaused = animation.isPaused;
+                newAnimation.currentFrameTimeSkript = animation.currentFrameTime;
+                newAnimation.isPausedSkript = animation.isPaused;
 
                 animations.add(newAnimation);
             }

@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.EntitiesUnloadEvent;
 
 import java.io.File;
@@ -24,24 +25,32 @@ import static net.outmoded.animated_skript.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
 
 public final class ModelPersistence implements Listener {
-    public static Map<String, ArrayList<ModelClass>> chunkMap = new HashMap<>();
+    protected static Map<String, ArrayList<UUID>> chunkMap = new HashMap<>();
 
     private static final ModelPersistence SAVEDATA_DATABASE = new ModelPersistence();
     protected Connection connection;
 
 
     @EventHandler
-    private static void onEntitiesUnload(EntitiesUnloadEvent event){
+    private static void onChunkUnload(ChunkUnloadEvent event){
         String chunk_id = event.getChunk().getWorld().getName()+"|x-"+event.getChunk().getX()+"|z-"+event.getChunk().getZ(); // world|x-3|z-4
         if (chunkMap.containsKey(chunk_id)){
 
-            for(ModelClass modelClass : chunkMap.get(chunk_id)) {
+
+
+            for (UUID uuid : chunkMap.get(chunk_id)) {
+
+                if (!ModelManager.getInstance().activeModelExists(uuid))
+                    return;
+
+                ModelClass modelClass = ModelManager.getInstance().getActiveModel(uuid);
+
                 if (!modelClass.isPersistent)
                     continue;
 
-                SAVEDATA_DATABASE.removeModel(modelClass.uuid);
                 SAVEDATA_DATABASE.addModel(modelClass);
-                ModelManager.getInstance().removeActiveModel(modelClass.uuid);
+                ModelManager.getInstance().removeActiveModelFromWorld(modelClass.uuid);
+                getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "tester save model");
             }
 
             chunkMap.remove(chunk_id);
@@ -54,7 +63,6 @@ public final class ModelPersistence implements Listener {
 
     public void saveAllModels(){
         for(ModelClass modelClass : ModelManager.getInstance().getAllActiveModels()) {
-            SAVEDATA_DATABASE.removeModel(modelClass.uuid);
             SAVEDATA_DATABASE.addModel(modelClass);
         }
     }
@@ -64,32 +72,26 @@ public final class ModelPersistence implements Listener {
         String chunk_id = event.getChunk().getWorld().getName()+"|x-"+event.getChunk().getX()+"|z-"+event.getChunk().getZ(); // world|x-3|z-4
         // get all entries with the corresponding chunk_id
         for (DatabaseModelClass databaseModelClass : SAVEDATA_DATABASE.getModelsInChunk(chunk_id)){
-
             if (ModelManager.getInstance().activeModelExists(databaseModelClass.uuid)){
                 continue;
             }
-
             if (!ModelManager.getInstance().loadedModelExists(databaseModelClass.type)){
                 continue;
             }
 
-
-
             ModelClass modelClass = ModelManager.getInstance().spawnNewModel(databaseModelClass.type, databaseModelClass.location, databaseModelClass.uuid);
+            modelClass.setActiveVariant(databaseModelClass.variant);
 
             if (databaseModelClass.databaseAnimations != null){
                 for (DatabaseAnimation databaseAnimation : databaseModelClass.databaseAnimations){
                     modelClass.playAnimation(databaseAnimation.animationName);
                     modelClass.setActiveAnimationFrame(databaseAnimation.animationName, databaseAnimation.currentFrame);
                     modelClass.pauseActiveAnimation(databaseAnimation.animationName, databaseAnimation.isPaused);
-
-
                 }
 
 
             }
 
-            SAVEDATA_DATABASE.removeModel(databaseModelClass.uuid);
 
             if (debugMode())
                 getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "animated-skript: model loaded from save data");
@@ -140,6 +142,7 @@ public final class ModelPersistence implements Listener {
                     // this is for the origin of the model
                     "chunk_id NOT NULL," + // world|x-4|z-4
                     "location NOT NULL," + // stores json :sob:
+                    "variant,"+
                     "animations" + // stores json for the current animations and what time they are on
                     ")");
 
@@ -182,18 +185,20 @@ public final class ModelPersistence implements Listener {
 
         synchronized (this.connection) {
             try {
-
+                removeModel(modelClass.uuid);
                 Location location = modelClass.getOriginLocation();
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ();
 
                 final PreparedStatement statement = this.connection.prepareStatement(
-                        "INSERT INTO save_data (model_uuid, model_type, chunk_id, location, animations ) VALUES (?, ?, ?, ?, ?)");
+                        "INSERT INTO save_data (model_uuid, model_type, chunk_id, location, variant, animations ) VALUES (?, ?, ?, ?, ?, ?)");
 
                 statement.setString(1, modelClass.getUuid().toString());
                 statement.setString(2, modelClass.modelType);
                 statement.setString(3, chunk_id);
                 statement.setString(4, encodeLocationAsJson(location));
-                statement.setString(5, databaseAnimationToJson(modelClass));
+                statement.setString(5, modelClass.getActiveVariant());
+
+                statement.setString(6, databaseAnimationToJson(modelClass));
 
                 final int rows = statement.executeUpdate();
                 statement.close();
@@ -286,11 +291,13 @@ public final class ModelPersistence implements Listener {
         for (ActiveAnimation animation : modelClass.getActiveAnimations()){
             DatabaseAnimation newAnimation = new DatabaseAnimation();
             newAnimation.animationName = animation.animationReference.name;
-            newAnimation.currentFrame = animation.animationReference.currentFrameTime;
-            newAnimation.isPaused = animation.animationReference.isPaused;
+            newAnimation.currentFrame = animation.currentFrameTime;
+            newAnimation.isPaused = animation.isPaused;
             databaseAnimations.add(newAnimation);
 
+
         }
+
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -319,10 +326,12 @@ public final class ModelPersistence implements Listener {
             DatabaseAnimation databaseAnimation = new DatabaseAnimation();
 
             databaseAnimation.animationName = node.get("animationName").asText();
-            databaseAnimation.currentFrame = node.get("currentFrame").asInt();
+            databaseAnimation.currentFrame = node.get("currentFrame").asInt(0);
             databaseAnimation.isPaused = node.get("isPaused").asBoolean(false);
 
             databaseAnimations.add(databaseAnimation);
+
+            AnimatedSkript.getInstance().getLogger().warning("animation converted from json: "+databaseAnimation.animationName);
 
 
         }
@@ -335,14 +344,16 @@ public final class ModelPersistence implements Listener {
         public final String type;
         public final String chunkId;
         public final Location location;
+        public final String variant;
         public final DatabaseAnimation[] databaseAnimations;
 
 
-        DatabaseModelClass(UUID uuid, String type, String chunkId, String location, String animations){
+        DatabaseModelClass(UUID uuid, String type, String chunkId, String location, String variant ,String animations){
             this.uuid = uuid;
             this.type = type;
             this.chunkId = chunkId;
             this.location = decodeJsonAsLocation(location);
+            this.variant = variant;
             this.databaseAnimations = jsonToDatabaseAnimations(animations);
 
 
@@ -355,6 +366,7 @@ public final class ModelPersistence implements Listener {
                     row.getString("model_type"),
                     row.getString("chunk_id"),
                     row.getString("location"),
+                    row.getString("variant"),
                     row.getString("animations"));
         }
 
