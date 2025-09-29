@@ -61,48 +61,7 @@ public class ModelManager {
 
 
     public ModelClass spawnNewModel(String modelType, Location location){
-        try{
-
-            if (loadedModelExists(modelType)) {
-
-                UUID uuid = UUID.randomUUID();
-
-                ModelClass newModel = new ModelClass(location, modelType, uuid);
-
-                ModelSpawnedEvent event = new ModelSpawnedEvent(uuid, modelType, newModel);
-                Bukkit.getPluginManager().callEvent(event);
-
-                activeModels.put(uuid, newModel);
-
-
-                // this block of code just adds the new model to the chunkmap for easy save data handling
-                String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
-                if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
-                    ArrayList<UUID> arrayList = new ArrayList<UUID>();
-                    arrayList.add(newModel.uuid);
-
-                    ModelPersistence.chunkMap.put(chunk_id, arrayList);
-                    ModelPersistence.getInstance().addModel(newModel);
-                }
-                else{
-                    ModelPersistence.chunkMap.get(chunk_id).add(newModel.uuid);
-                    ModelPersistence.getInstance().addModel(newModel);
-
-                }
-
-                ModelPersistence.getInstance().addModel(newModel);
-                SkriptManager.setLastSpawnedModelClass(newModel);
-
-                if (debugMode())
-                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "New Model " + ChatColor.WHITE + modelType + ChatColor.GREEN + " With Uuid " + ChatColor.WHITE + uuid);
-
-                return newModel;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
+        return spawnNewModel(modelType, location, UUID.randomUUID()); // as shrimple as that
     }
 
     public ModelClass spawnNewModel(String modelType, Location location, UUID uuid){ // this one lets you set the uuid of the model
@@ -119,6 +78,7 @@ public class ModelManager {
 
                 // this block of code just adds the new model to the chunkmap for easy save data handling
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ(); // world|x-3|z-4
+
                 if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
                     ArrayList<UUID> arrayList = new ArrayList<>();
                     arrayList.add(newModel.uuid);
@@ -210,10 +170,7 @@ public class ModelManager {
     }
 
     public boolean loadedModelExists(String uuid) {
-        if (loadedModels.containsKey(uuid)) {
-            return true;
-        }
-        return false;
+        return loadedModels.containsKey(uuid);
     }
 
     public JsonNode getLoadedModel(String name) {
@@ -230,7 +187,6 @@ public class ModelManager {
 
     }
 
-
     public void removeActiveModel(UUID uuid) { // TODO: needs recoding
         if (!activeModels.containsKey(uuid)){
             return;
@@ -242,15 +198,17 @@ public class ModelManager {
         if (!event.isCancelled()) {
             model.deleteModelNodes();
             model.getOrigin().remove();
-            activeModels.remove(uuid);
+
 
             String chunk_id = model.getOriginLocation().getWorld().getName()+"|x-"+model.getOriginLocation().getChunk().getX()+"|z-"+model.getOriginLocation().getChunk().getZ();
             if (ModelPersistence.chunkMap.containsKey(chunk_id)){
                 ModelPersistence.chunkMap.get(chunk_id).remove(model.uuid);
-
+                AnimatedSkript.getInstance().getLogger().warning("frog`1123");
             }
+
             ModelPersistence.getInstance().removeModel(model.uuid);
 
+            activeModels.remove(uuid);
         }
 
 
@@ -264,20 +222,16 @@ public class ModelManager {
         if (!activeModels.containsKey(uuid)){
             return;
         }
+
         ModelClass model = activeModels.get(uuid);
-        ModelRemovedEvent event = new ModelRemovedEvent(uuid, model.getModelType(), model);
-        Bukkit.getPluginManager().callEvent(event);
+        model.deleteModelNodes();
+        model.getOrigin().remove();
+        activeModels.remove(uuid);
 
-        if (!event.isCancelled()) {
-            model.deleteModelNodes();
-            model.getOrigin().remove();
-            activeModels.remove(uuid);
 
-        }
 
 
     }
-
 
     // ########################################### TODO: needs recoding
     // model gen stuff still terrible but works more or less

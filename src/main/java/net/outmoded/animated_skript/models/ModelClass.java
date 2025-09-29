@@ -847,9 +847,6 @@ public class ModelClass {
                     activeAnimation.currentFrameTime += 1;
             }
 
-
-
-
         }
 
     }
@@ -995,7 +992,7 @@ public class ModelClass {
         return activeAnimations.get(animationName).isPaused;
     }
 
-    public void setActiveAnimationFrame(String animationName ,int ticks){
+    public void setActiveAnimationFrame(String animationName, int ticks){
         if (!activeAnimations.containsKey(animationName))
             return;
 

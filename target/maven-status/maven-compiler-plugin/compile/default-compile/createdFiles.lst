@@ -5,6 +5,7 @@ net\outmoded\animated_skript\skript\types\ActiveModel.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetCurrentAnimationsCurrentFrameTime.class
 net\outmoded\animated_skript\skript\effects\EffCameraControl.class
 net\outmoded\animated_skript\skript\expressions\variant\ExprGetVariantsDisplayName.class
+net\outmoded\animated_skript\models\ModelPersistence$1.class
 net\outmoded\animated_skript\skript\expressions\variant\ExprGetVariantsUuid.class
 net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsUuid.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationDuration.class

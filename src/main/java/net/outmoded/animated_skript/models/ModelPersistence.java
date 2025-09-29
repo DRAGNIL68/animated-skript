@@ -36,12 +36,10 @@ public final class ModelPersistence implements Listener {
         String chunk_id = event.getChunk().getWorld().getName()+"|x-"+event.getChunk().getX()+"|z-"+event.getChunk().getZ(); // world|x-3|z-4
         if (chunkMap.containsKey(chunk_id)){
 
-
-
             for (UUID uuid : chunkMap.get(chunk_id)) {
 
                 if (!ModelManager.getInstance().activeModelExists(uuid))
-                    return;
+                    continue;
 
                 ModelClass modelClass = ModelManager.getInstance().getActiveModel(uuid);
 
@@ -71,9 +69,11 @@ public final class ModelPersistence implements Listener {
         String chunk_id = event.getChunk().getWorld().getName()+"|x-"+event.getChunk().getX()+"|z-"+event.getChunk().getZ(); // world|x-3|z-4
         // get all entries with the corresponding chunk_id
         for (DatabaseModelClass databaseModelClass : SAVEDATA_DATABASE.getModelsInChunk(chunk_id)){
+
             if (ModelManager.getInstance().activeModelExists(databaseModelClass.uuid)){
                 continue;
             }
+
             if (!ModelManager.getInstance().loadedModelExists(databaseModelClass.type)){
                 continue;
             }
@@ -81,15 +81,22 @@ public final class ModelPersistence implements Listener {
             ModelClass modelClass = ModelManager.getInstance().spawnNewModel(databaseModelClass.type, databaseModelClass.location, databaseModelClass.uuid);
             modelClass.setActiveVariant(databaseModelClass.variant);
 
-            if (databaseModelClass.databaseAnimations != null){
-                for (DatabaseAnimation databaseAnimation : databaseModelClass.databaseAnimations){
-                    modelClass.playAnimation(databaseAnimation.animationName);
-                    modelClass.setActiveAnimationFrame(databaseAnimation.animationName, databaseAnimation.currentFrame);
-                    modelClass.pauseActiveAnimation(databaseAnimation.animationName, databaseAnimation.isPaused);
+            modelClass.loadConfig();
+            Bukkit.getScheduler().runTaskLater(AnimatedSkript.getInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    if (databaseModelClass.databaseAnimations != null){
+                        for (DatabaseAnimation databaseAnimation : databaseModelClass.databaseAnimations){
+                            modelClass.playAnimation(databaseAnimation.animationName);
+                            modelClass.setActiveAnimationFrame(databaseAnimation.animationName, databaseAnimation.currentFrame);
+                            modelClass.pauseActiveAnimation(databaseAnimation.animationName, databaseAnimation.isPaused);
+                        }
+
+
+                    }
                 }
+            }, 1L);
 
-
-            }
 
 
             if (debugMode())
@@ -293,7 +300,6 @@ public final class ModelPersistence implements Listener {
             newAnimation.currentFrame = animation.currentFrameTime;
             newAnimation.isPaused = animation.isPaused;
             databaseAnimations.add(newAnimation);
-
 
         }
 
