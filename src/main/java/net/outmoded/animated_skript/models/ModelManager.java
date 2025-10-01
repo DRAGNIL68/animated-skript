@@ -203,7 +203,6 @@ public class ModelManager {
             String chunk_id = model.getOriginLocation().getWorld().getName()+"|x-"+model.getOriginLocation().getChunk().getX()+"|z-"+model.getOriginLocation().getChunk().getZ();
             if (ModelPersistence.chunkMap.containsKey(chunk_id)){
                 ModelPersistence.chunkMap.get(chunk_id).remove(model.uuid);
-                AnimatedSkript.getInstance().getLogger().warning("frog`1123");
             }
 
             ModelPersistence.getInstance().removeModel(model.uuid);
