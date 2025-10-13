@@ -1,4 +1,5 @@
 net\outmoded\animated_skript\pack\ResourcePack.class
+net\outmoded\animated_skript\skript\conditions\CondActiveModelExists.class
 net\outmoded\animated_skript\skript\effects\EffRemoveActiveModel.class
 net\outmoded\animated_skript\skript\events\EvtOnModelSpawned.class
 net\outmoded\animated_skript\skript\types\ActiveModel.class
@@ -98,7 +99,6 @@ net\outmoded\animated_skript\pack\jsonObjects\NonWritable.class
 net\outmoded\animated_skript\events\ActiveModelHitboxAttack.class
 net\outmoded\animated_skript\events\ModelEndAnimationEvent.class
 net\outmoded\animated_skript\pack\jsonObjects\McMeta.class
-net\outmoded\animated_skript\skript\conditions\CondModelExists.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeUuid.class
 net\outmoded\animated_skript\skript\types\ActiveModelAnimation.class
 net\outmoded\animated_skript\models\ModelPersistence$DatabaseLocation.class
@@ -115,6 +115,7 @@ net\outmoded\animated_skript\models\ModelManager.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeType.class
 net\outmoded\animated_skript\skript\expressions\ExprLastSpawnedActiveModel.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeTransformation.class
+net\outmoded\animated_skript\skript\conditions\CondLoadedModelExists.class
 net\outmoded\animated_skript\skript\effects\tint\EffSetTint.class
 net\outmoded\animated_skript\skript\expressions\variant\ExprGetActiveModelsActiveVariant.class
 net\outmoded\animated_skript\skript\effects\EffAnimationControl.class

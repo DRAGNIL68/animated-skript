@@ -857,17 +857,17 @@ public class ModelClass {
 
 
 
-        for (Display node: activeNodes.values()){ // this may not be needed
-            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        for (Display node: activeNodes.values()){
+            node.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
 
-        for (Interaction node: activeHitboxes.values()){ // this may not be needed
-            node.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        for (Interaction node: activeHitboxes.values()){
+            node.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
 
-        origin.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        origin.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-        for (Display node: activeNodes.values()){ // this may not be needed
+        for (Display node: activeNodes.values()){
             origin.addPassenger(node);
         }
 
