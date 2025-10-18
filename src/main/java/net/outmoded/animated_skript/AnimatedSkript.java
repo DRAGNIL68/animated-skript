@@ -65,7 +65,7 @@ public final class AnimatedSkript extends JavaPlugin {
         );
 
         getServer().getConsoleSender().sendMessage(component);
-        getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("alpha_warning")));
+        getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("auto_save_timer")));
 
 
         // ###########################
@@ -105,6 +105,8 @@ public final class AnimatedSkript extends JavaPlugin {
                 ModelPersistence.getInstance().saveAllModels();
                 ModelPersistence.getInstance().load();
 
+                if (!Config.isMuteAutoSaveTimer())
+                    getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("auto_save_timer")));
             }
         }, 3000, (long) Config.getAutoSaveTimer() * 20 * 60); // 5m * 60 = 300m, 300m * 20 = 6000T
         // ###########################

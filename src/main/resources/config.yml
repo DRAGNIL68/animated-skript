@@ -1,3 +1,4 @@
 debug: false
 auto_save_timer: 5 # in minutes
+mute_auto_save_timer: false
 generate_resource_pack: true

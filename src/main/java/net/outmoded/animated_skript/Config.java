@@ -11,6 +11,7 @@ import static org.bukkit.Bukkit.getServer;
 
 public class Config {
     private static boolean debug = true;
+    private static boolean muteAutoSaveTimer = false;
     private static boolean generatePack = true;
     private static int autoSaveTimer = 5;
     private static final HashMap<String, String> lang = new HashMap<>();
@@ -80,6 +81,7 @@ public class Config {
            debug = Boolean.valueOf(configYml.getString("debug"));
            autoSaveTimer = Integer.valueOf(configYml.getString("auto_save_timer"));
            generatePack = Boolean.valueOf(configYml.getString("generate_resource_pack"));
+           muteAutoSaveTimer = Boolean.valueOf(configYml.getString("mute_auto_save_timer"));
 
        } catch (Exception e) {
             e.printStackTrace();
@@ -91,6 +93,10 @@ public class Config {
  
     public static boolean debugMode(){
         return debug;
+    }
+
+    public static boolean isMuteAutoSaveTimer(){
+        return muteAutoSaveTimer;
     }
 
     public static int getAutoSaveTimer(){
