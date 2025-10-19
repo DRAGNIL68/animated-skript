@@ -13,6 +13,5 @@ Join the discord if you want help: https://discord.gg/yNYMndDP9N
 
 Docs: https://outmoded.gitbook.io/plugins/plugins/animated-skript
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/eYZxxiFmmsU?si=iTPhtq5vCygmkBSY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+[![Watch the video](https://img.youtube.com/vi/eYZxxiFmmsU/hqdefault.jpg)](https://www.youtube.com/embed/eYZxxiFmmsU)
 <img width="673" height="481" alt="upload_2025-3-17_20-40-22" src="https://github.com/user-attachments/assets/c5227982-bd6a-437d-9987-ff6d43444751" />
