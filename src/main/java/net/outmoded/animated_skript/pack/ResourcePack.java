@@ -18,7 +18,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResourcePack {
+public class  ResourcePack {
     FileSystem fileSystem;
     private final Map<String, Namespace> namespaces = new HashMap<>();
     private final String name;

@@ -13,11 +13,9 @@ public class CommandsTabComplete implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("model_engine"))
-            return null;
 
         if (args.length == 1){
-            return Arrays.asList("list_loaded_models", "list_active_models", "help", "reload", "spawn", "remove", "play_animation", "stop_animation");
+            return Arrays.asList("list_loaded_models", "list_active_models", "help", "reload", "reload-resource-pack", "spawn", "remove", "play_animation", "stop_animation");
         }
         if (args.length == 2){
 

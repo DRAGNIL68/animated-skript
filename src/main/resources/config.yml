@@ -2,3 +2,6 @@ debug: false
 auto_save_timer: 5 # in minutes
 mute_auto_save_timer: false
 generate_resource_pack: true
+self_host_pack: true # REQUIRES the outmodedlib to work https://github.com/DRAGNIL68/outmodedlib
+
+

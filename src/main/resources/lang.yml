@@ -7,4 +7,5 @@ reload_command: "<color:#1235ff>Reloaded All Models"
 help_command: "<red>Type /animation help for list of commands"
 spawn_model_command: "Spawned Model: {model_uuid}" # can use {model_type}
 removed_model_command: "Removed Model: {model_uuid}" # can use {model_type}
-auto_save_timer: "saving loaded to disk"
+auto_save_timer: "Saving Active-Models To Disk"
+outmodedlib_pack_hosting: "<color:#1235ff>Enabling Self Pack Hosting"

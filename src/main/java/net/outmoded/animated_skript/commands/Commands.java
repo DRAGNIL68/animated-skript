@@ -4,14 +4,15 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
+import net.outmoded.outmodedlib.packer.ResourcePackServer.ResourcePackManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
+import java.nio.file.Path;
+import java.util.*;
 
 public class Commands implements CommandExecutor {
 
@@ -50,13 +51,36 @@ public class Commands implements CommandExecutor {
                     ModelManager.getInstance().reloadAllActiveModels();
 
 
+
+
                     //ModelPersistence.saveModels();
                     String message = Config.getLang("prefix")+Config.getLang("reload_command");
                     sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
 
                     return true;
 
-                } else {
+                }
+                else if (Objects.equals(args[0], "reload-resource-pack")) {
+
+                    Path path1 = Path.of("plugins/Animated-Skript/output/animated-skript.zip");
+                    if (path1.toFile().exists()){
+                        ResourcePackManager.getInstance().registerResourcePack("animated-skript", path1, true);
+                    }
+                    else{
+
+                        return true;
+                    }
+
+                    List<Player> list = new ArrayList<>(Bukkit.getOnlinePlayers());
+
+                    for (Player player : list){
+                        ResourcePackManager.getInstance().applyAllResourcePacksToPlayer(player);
+
+                    }
+
+
+                }
+                else {
                     sender.sendMessage(ChatColor.RED + "Type /animated-skript help for list of commands");
                     return true;
                 }

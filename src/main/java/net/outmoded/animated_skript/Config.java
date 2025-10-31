@@ -14,6 +14,7 @@ public class Config {
     private static boolean muteAutoSaveTimer = false;
     private static boolean generatePack = true;
     private static int autoSaveTimer = 5;
+    private static boolean selfHost = true;
     private static final HashMap<String, String> lang = new HashMap<>();
     private static YamlConfiguration configYml;
 
@@ -82,6 +83,7 @@ public class Config {
            autoSaveTimer = Integer.valueOf(configYml.getString("auto_save_timer"));
            generatePack = Boolean.valueOf(configYml.getString("generate_resource_pack"));
            muteAutoSaveTimer = Boolean.valueOf(configYml.getString("mute_auto_save_timer"));
+           selfHost = Boolean.valueOf(configYml.getString("self_host_pack"));
 
        } catch (Exception e) {
             e.printStackTrace();
@@ -93,6 +95,10 @@ public class Config {
  
     public static boolean debugMode(){
         return debug;
+    }
+
+    public static boolean selfHost(){
+        return selfHost;
     }
 
     public static boolean isMuteAutoSaveTimer(){

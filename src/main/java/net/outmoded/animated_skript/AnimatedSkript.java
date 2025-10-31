@@ -11,11 +11,13 @@ import net.outmoded.animated_skript.listeners.OnEntityDismountEvent;
 import net.outmoded.animated_skript.listeners.OnPlayerInteractEvent;
 import net.outmoded.animated_skript.models.ModelManager;
 import net.outmoded.animated_skript.models.ModelPersistence;
+import net.outmoded.outmodedlib.packer.ResourcePackServer.ResourcePackManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 
 public final class AnimatedSkript extends JavaPlugin {
@@ -27,6 +29,7 @@ public final class AnimatedSkript extends JavaPlugin {
     @Override
     public void onEnable() {
 
+
         // ###########################
         // bstats
         int pluginId = 26976;
@@ -36,10 +39,10 @@ public final class AnimatedSkript extends JavaPlugin {
         // checks version
         String version = Bukkit.getMinecraftVersion();
 
-        if (version.equals("1.21.4") || version.equals("1.21.6") || version.equals("1.21.7")){
+        if (version.equals("1.21.4") || version.equals("1.21.6") || version.equals("1.21.7") || version.equals("1.21.8")){
         }
         else {
-            AnimatedSkript.getInstance().getLogger().warning("you are running a unsupported version: supported version = 1.21.4/1.21.6/1.21.7");
+            AnimatedSkript.getInstance().getLogger().warning("you are running a unsupported version: supported version = 1.21.4/1.21.6/1.21.7/1.21.8");
         }
 
 
@@ -64,8 +67,6 @@ public final class AnimatedSkript extends JavaPlugin {
                 Config.getLang("prefix")+"<color:#0dff1d>Loaded | Version "+AnimatedSkript.getInstance().getPluginMeta().getVersion()+" | Made by DRAGNIL68</color>"
         );
 
-        getServer().getConsoleSender().sendMessage(component);
-        getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("auto_save_timer")));
 
 
         // ###########################
@@ -84,6 +85,22 @@ public final class AnimatedSkript extends JavaPlugin {
         else {
 
             getServer().getConsoleSender().sendMessage( MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("skript_syntax_disabled")));
+
+        }
+
+        if (getServer().getPluginManager().getPlugin("outmodedlib") != null){
+            if (Config.selfHost()){
+
+                Path path1 = Path.of("plugins/Animated-Skript/output/animated-skript.zip");
+
+                if (path1.toFile().exists()){
+                    ResourcePackManager.getInstance().registerResourcePack("animated-skript", path1, true);
+                }
+
+                getServer().getConsoleSender().sendMessage( MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("outmodedlib_pack_hosting")));
+
+
+            }
 
         }
 

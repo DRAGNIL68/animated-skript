@@ -871,13 +871,14 @@ public class ModelClass {
             origin.addPassenger(node);
         }
 
-        Bukkit.getScheduler().runTaskLater(AnimatedSkript.getInstance(), () -> {
-            origin.getPersistentDataContainer().remove(key1);
-        }, 1);
+//        Bukkit.getScheduler().runTaskLater(AnimatedSkript.getInstance(), () -> {
+//            origin.getPersistentDataContainer().remove(key1);
+//        }, 1);
 
+        origin.getPersistentDataContainer().remove(key1);
 
         for (ActiveAnimation activeAnimation : activeAnimations.values()){
-            activeAnimation.currentFrameTime =-1;
+            activeAnimation.currentFrameTime = activeAnimation.currentFrameTime - 1;
         }
 
 
