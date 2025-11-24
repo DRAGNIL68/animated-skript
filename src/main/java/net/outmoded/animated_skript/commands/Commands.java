@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import java.nio.file.Path;
 import java.util.*;
 
+import static org.bukkit.Bukkit.getServer;
+
 public class Commands implements CommandExecutor {
 
     @Override
@@ -61,6 +63,11 @@ public class Commands implements CommandExecutor {
 
                 }
                 else if (Objects.equals(args[0], "reload-resource-pack")) {
+                    if (getServer().getPluginManager().getPlugin("outmodedlib") == null){
+                        sender.sendMessage(ChatColor.RED + "Type /animated-skript help for list of commands");
+                        return true;
+                    }
+
 
                     Path path1 = Path.of("plugins/Animated-Skript/output/animated-skript.zip");
                     if (path1.toFile().exists()){
