@@ -42,7 +42,7 @@ public final class AnimatedSkript extends JavaPlugin {
         if (version.equals("1.21.4") || version.equals("1.21.6") || version.equals("1.21.7") || version.equals("1.21.8")){
         }
         else {
-            AnimatedSkript.getInstance().getLogger().warning("you are running a unsupported version: supported version = 1.21.4/1.21.6/1.21.7/1.21.8");
+            AnimatedSkript.getInstance().getLogger().warning("you are running a unsupported version: supported versions = 1.21.4/1.21.6/1.21.7/1.21.8");
         }
 
 
