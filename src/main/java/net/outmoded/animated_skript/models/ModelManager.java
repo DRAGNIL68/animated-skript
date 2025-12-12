@@ -19,6 +19,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -234,7 +237,7 @@ public class ModelManager {
 
     // ########################################### TODO: needs recoding
     // model gen stuff still terrible but works more or less
-    public void loadModelTextures(JsonNode model, String modelName){ // TODO: needs recoding
+    public void loadModelTextures(JsonNode model, String modelPath){ // TODO: needs recoding
         if (model.get("textures") == null){
             return;
         }
@@ -248,7 +251,7 @@ public class ModelManager {
                 );
 
                 final Component warning = MiniMessage.miniMessage().deserialize(
-                        "<red>"+modelName+" contains a texture ("+textureName+") name with special charters use only a-z 0-9 and _"
+                        "<red>"+modelPath+" contains a texture ("+textureName+") name with special charters use only a-z 0-9 and _"
                 );
                 getServer().getConsoleSender().sendMessage(logo.append(warning));
                 increaseErrorCount();
@@ -258,7 +261,7 @@ public class ModelManager {
 
             String textureSrc = texture.get("src").asText().replace("data:image/png;base64,", "");
 
-            resourcePack.base64ToTexture(textureName, animatedSkript.getNamespacePathAsString() + "textures/item/" + modelName + "/", textureSrc);
+            resourcePack.base64ToTexture(textureName, animatedSkript.getNamespacePathAsString() + "textures/item/" + modelPath + "/", textureSrc);
             //resourcePack.base64ToTexture("frog.png", "assets/", textureSrc);
 
         }
@@ -266,7 +269,7 @@ public class ModelManager {
 
     }
 
-    public void loadModelData(JsonNode model, String modelName){ // terrible name, loads 3d model from json file
+    public void loadModelData(JsonNode model, String modelPath){ // terrible name, loads 3d model from json file
         if (model.get("variants") == null){
             return;
         }
@@ -290,7 +293,7 @@ public class ModelManager {
                 while (itr.hasNext()) {
                     String key_field = itr.next(); // this is the key for a texture
                     String value = textures.get(key_field).asText();
-                    String newVal = animatedSkript.getNamespaceAsString() + ":item/" + modelName + "/" + value.substring(value.lastIndexOf("/") + 1);
+                    String newVal = animatedSkript.getNamespaceAsString() + ":item/" + modelPath + "/" + value.substring(value.lastIndexOf("/") + 1);
                     update.put(key_field, newVal);
 
 
@@ -309,7 +312,7 @@ public class ModelManager {
                     // modifying parent
                     // "animated_java:item/frog/bone" -> animated-skript:item/{model_name}/{bone_uuid}
 
-                    String parentNewVal = animatedSkript.getNamespaceAsString() + ":" + modelName + "/default/" + modelUuidKey;
+                    String parentNewVal = animatedSkript.getNamespaceAsString() + ":" + modelPath + "/default/" + modelUuidKey;
                     ((ObjectNode) modelModelData).put("parent", parentNewVal);
 
                 }
@@ -319,15 +322,6 @@ public class ModelManager {
 
             models.forEach(modelUuid -> {
 
-
-
-
-
-
-
-
-
-
             });
             // this code uses the old (0.1) version of the pack gen from the outmodedlib, it is terrible and is very hard to use or understand.
             Iterator<String> itr = models.fieldNames(); // this code writes model data to the resource pack.
@@ -336,15 +330,103 @@ public class ModelManager {
                 String value = models.get(key_field).asText();
                 JsonNode valueAsJsonNode = models.get(key_field);
 
-                animatedSkript.createGenericFile(key_field + ".json","models/" + modelName + "/" + variant.get("name").asText() + "/", valueAsJsonNode.get("model").toString());
-                animatedSkript.writeJsonObject(new Model("animated-skript:"+modelName + "/" + variant.get("name").asText() + "/" + key_field), "items/" + modelName + "/" + variant.get("name").asText());
+
+                animatedSkript.createGenericFile(key_field + ".json","models/" + modelPath + "/" + variant.get("name").asText() + "/", valueAsJsonNode.get("model").toString());
+                animatedSkript.writeJsonObject(new Model("animated-skript:"+modelPath + "/" + variant.get("name").asText() + "/" + key_field), "items/" + modelPath + "/" + variant.get("name").asText());
             }
         });
 
 
     }
 
-    public void loadModelConfigs() { // loads json configs for models into memory
+
+    public void loadModelRecursive(File path){
+        ObjectMapper objectMapper = new ObjectMapper();
+        File dataFolder = new File(AnimatedSkript.getInstance().getDataFolder(), "contents");
+
+        final Component logo = MiniMessage.miniMessage().deserialize(
+                "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
+        );
+
+        try {
+            File[] listedFiles = path.listFiles();
+
+            if (listedFiles != null) {
+                for (File modelfile : listedFiles) {
+
+                    File realPathForName = dataFolder.toPath().relativize(modelfile.toPath()).toFile(); // <- this should be a war crime lmao
+
+
+
+
+                    // this method is full of jank it was one of the first things I coded, and It uses
+                    // File not Files/Path this is very silly and is going to cause problems at some point
+
+                    if (modelfile.isDirectory()){ // this block of code checks that the path has something in it
+                        String[] files = modelfile.list();
+                        if (files != null){
+                            loadModelRecursive(modelfile);
+
+                        }
+                        continue;
+                    }
+
+
+                    // this code loads textures and models and configs for the models into the resource pack and adds the config to the loadedModels (HashMap)
+
+
+
+                    int dotIndex = realPathForName.getName().lastIndexOf(".");
+
+                    if (dotIndex >= 0) { // i don't know what this code dose lmao
+                        if (!realPathForName.getName().endsWith("json")){
+                            continue;
+                        }
+                    }
+
+                    JsonNode modelFileAsJsonNode = objectMapper.readTree(modelfile);
+
+                    int lastJsonIndex = realPathForName.getName().lastIndexOf(".json");
+                    //String substring = realPathForName.toPath().toString().substring(0, lastJsonIndex);
+                    String substring = realPathForName.toPath().toString().replace(".json", "");
+
+                    if (!loadedModels.containsKey(substring)) {
+
+                        substring = substring.replace("\\", "/");
+                        loadedModels.put(substring, modelFileAsJsonNode);
+
+                        loadModelTextures(modelFileAsJsonNode, substring);
+                        loadModelData(modelFileAsJsonNode, substring);
+
+                        if (debugMode()){
+                            final Component debug = MiniMessage.miniMessage().deserialize(
+                                    "<dark_red>(Debug) File Name: " + realPathForName.toPath() + " Name: " + realPathForName.getName().substring(0, lastJsonIndex)
+                            );
+                            getServer().getConsoleSender().sendMessage(logo.append(debug));
+
+                        }
+
+
+                    } else {
+                        increaseErrorCount();
+
+                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "Model Already Has The Name " + realPathForName.getName().substring(0, lastJsonIndex)); // this can never happen
+
+                    }
+
+                }
+
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void loadModelConfigs() { // loads JSON configs for models into memory
 
         AnimatedSkriptReload event = new AnimatedSkriptReload();
 
@@ -357,72 +439,21 @@ public class ModelManager {
             animatedSkript = new Namespace("animated-skript", resourcePack); // <- creates new namespace
 
             loadedModels.clear();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            File dataFolder = AnimatedSkript.getInstance().getDataFolder();
-
-
             File contentsFolder = new File(AnimatedSkript.getInstance().getDataFolder(), "contents");
+            loadModelRecursive(contentsFolder);
+
+            resourcePack.build(AnimatedSkript.getInstance().getDataFolder().getPath() + "/output/" + resourcePack.getName() + ".zip"); // TODO: separate out pack gen
+
+            final Component text = MiniMessage.miniMessage().deserialize(
+                    "<color:#0dff1d>Finished Loading Models with</color> <dark_red>" + getErrorCount() + " <color:#0dff1d>Error(s)</color>"
+            );
+
             final Component logo = MiniMessage.miniMessage().deserialize(
                     "<color:#1235ff>[</color><color:#3daeff>animated-skript</color><color:#1235ff>]</color> "
             );
 
-            try {
-                File[] listedFiles = contentsFolder.listFiles();
-                int errors = 0;
-                if (listedFiles != null) {
-                    for (File modelfile : listedFiles) {
-                        if (!modelfile.getAbsoluteFile().isFile()) // TODO: fix this
-                            return;
+            getServer().getConsoleSender().sendMessage(logo.append(text));
 
-
-                        int dotIndex = modelfile.getName().lastIndexOf(".");
-
-                        if (dotIndex >= 0) {
-                            if (!modelfile.getName().endsWith("json")){
-                                return;
-                            }
-                        }
-
-                        JsonNode modelFileAsJsonNode = objectMapper.readTree(modelfile);
-                        if (!loadedModels.containsKey(modelfile.getName())) {
-
-                            int lastJsonIndex = modelfile.getName().lastIndexOf(".json");
-                            loadedModels.put(modelfile.getName().substring(0, lastJsonIndex), modelFileAsJsonNode);
-
-                            loadModelTextures(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
-                            loadModelData(modelFileAsJsonNode, modelfile.getName().substring(0, lastJsonIndex));
-
-                            if (debugMode()){
-                                final Component debug = MiniMessage.miniMessage().deserialize(
-                                        "<dark_red>(Debug) File Name: " + modelfile.getName() + " Name: " + modelfile.getName().substring(0, lastJsonIndex)
-                                );
-                                getServer().getConsoleSender().sendMessage(logo.append(debug));
-
-
-                            }
-
-
-                        } else {
-                            errors++;
-                            int lastJsonIndex = modelfile.getName().lastIndexOf(".json");
-                            getServer().getConsoleSender().sendMessage(ChatColor.RED + "Model Already Has The Name " + modelfile.getName().substring(0, lastJsonIndex)); // this can never happen
-
-                        }
-
-                    }
-
-                    final Component text = MiniMessage.miniMessage().deserialize(
-                            "<color:#0dff1d>Finished Loading Models with</color> <dark_red>" + getErrorCount() + " <color:#0dff1d>Error(s)</color>"
-                    );
-
-                    getServer().getConsoleSender().sendMessage(logo.append(text));
-                }
-                resourcePack.build(AnimatedSkript.getInstance().getDataFolder().getPath() + "/output/" + resourcePack.getName() + ".zip"); // TODO: separate out pack gen
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
     // ###########################################

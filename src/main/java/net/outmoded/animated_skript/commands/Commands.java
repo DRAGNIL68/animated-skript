@@ -1,9 +1,11 @@
 package net.outmoded.animated_skript.commands;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
+import net.outmoded.animated_skript.models.ModelPersistence;
 import net.outmoded.outmodedlib.packer.ResourcePackServer.ResourcePackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,6 +53,7 @@ public class Commands implements CommandExecutor {
                     Config.loadLang();
                     ModelManager.getInstance().loadModelConfigs();
                     ModelManager.getInstance().reloadAllActiveModels();
+                    ModelPersistence.getInstance().saveAllModels();
 
 
 
@@ -108,13 +111,6 @@ public class Commands implements CommandExecutor {
                     location.setPitch(0);
 
                     ModelClass modelClass = ModelManager.getInstance().spawnNewModel(args[1], location);
-
-                    if (modelClass == null){
-                        String message = Config.getLang("prefix")+Config.getLang("model_invalid_command");
-                        sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
-                        return true;
-                    }
-
 
                     String modelType = modelClass.modelType;
                     String message = Config.getLang("prefix")+Config.getLang("spawn_model_command");

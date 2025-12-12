@@ -120,7 +120,6 @@ public final class AnimatedSkript extends JavaPlugin {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
             public void run(){
                 ModelPersistence.getInstance().saveAllModels();
-                ModelPersistence.getInstance().load();
 
                 if (!Config.isMuteAutoSaveTimer())
                     getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("auto_save_timer")));

@@ -67,9 +67,10 @@ public final class ModelPersistence implements Listener {
     private static void onChunkLoad(ChunkLoadEvent event){
         String chunk_id = event.getChunk().getWorld().getName()+"|x-"+event.getChunk().getX()+"|z-"+event.getChunk().getZ(); // world|x-3|z-4
         // get all entries with the corresponding chunk_id
+
         for (DatabaseModelClass databaseModelClass : SAVEDATA_DATABASE.getModelsInChunk(chunk_id)){
 
-            if (ModelManager.getInstance().activeModelExists(databaseModelClass.uuid)){
+            if (ModelManager.getInstance().activeModelExists(databaseModelClass.uuid)){ // checks if it still exists
                 continue;
             }
 

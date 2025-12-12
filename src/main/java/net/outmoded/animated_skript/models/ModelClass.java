@@ -207,7 +207,7 @@ public class ModelClass {
 
                         Quaternionf quaternion = new Quaternionf(modelNode.leftRotation[0], modelNode.leftRotation[1], modelNode.leftRotation[2], modelNode.leftRotation[3]); // fuck math
                         // TODO: NOTE Blockbench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯
-                        // TODO: NOTE Mr Aj has made custom textured models actually face north for some reason block displays still face south
+                        // TODO: NOTE Mr Aj has made custom textured models actually face north for some reason, block displays still face south
 
                         if (modelNode.type.equals("bone")){
                             AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation

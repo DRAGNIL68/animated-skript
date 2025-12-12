@@ -5,6 +5,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.event.Event;
 
