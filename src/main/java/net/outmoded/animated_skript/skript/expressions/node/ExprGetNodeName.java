@@ -57,8 +57,9 @@ public class ExprGetNodeName extends SimpleExpression<String> {
         Node node = nodeExpression.getSingle(event);
 
 
-        if (node != null && node.name != null){
-            AnimatedSkript.getInstance().getLogger().warning(node.name);
+        if (node != null && node.name != null)
+
+        {
             return new String[] {node.name};
         }
 

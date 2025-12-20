@@ -88,9 +88,14 @@ public final class ModelPersistence implements Listener {
                     if (databaseModelClass.databaseAnimations != null){
                         for (DatabaseAnimation databaseAnimation : databaseModelClass.databaseAnimations){
                             modelClass.playAnimation(databaseAnimation.animationName);
-                            modelClass.setActiveAnimationFrame(databaseAnimation.animationName, databaseAnimation.currentFrame);
+                            modelClass.setActiveAnimationFrame(databaseAnimation.animationName, (databaseAnimation.currentFrame));
                             modelClass.pauseActiveAnimation(databaseAnimation.animationName, databaseAnimation.isPaused);
+
+
                         }
+
+                        modelClass.deleteModelNodes();
+                        modelClass.spawnModelNodes();
 
 
                     }

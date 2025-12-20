@@ -49,7 +49,7 @@ public class CommandsTabComplete implements TabCompleter {
                 UUID uuid;
 
                 if (args[1] == null)
-                    return Collections.emptyList();
+                    return new ArrayList<>();
 
                 uuid = UUID.fromString(args[1]);
 
@@ -57,21 +57,22 @@ public class CommandsTabComplete implements TabCompleter {
 
                 if (!ModelManager.getInstance().activeModelExists(uuid)){
 
-                    return Collections.emptyList();
+                    return new ArrayList<>();
                 }
 
                 ModelClass model = ModelManager.getInstance().getActiveModel(uuid);
 
                 if (model == null) {
-                    return Collections.emptyList();
+                    return new ArrayList<>();
                 }
 
                 if (model.getAnimations().length == 0) {
-                    return Collections.emptyList();
+                    return new ArrayList<>();
                 }
                 return Arrays.asList(model.getAnimationNames());
             }
 
+            return new ArrayList<>();
 
         }
 

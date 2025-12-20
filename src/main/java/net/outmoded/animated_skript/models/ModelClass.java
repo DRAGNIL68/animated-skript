@@ -124,11 +124,16 @@ public class ModelClass {
                             modelNode.typeSpecificProperties.put("shadow", node.get("shadow").asBoolean());
                             modelNode.typeSpecificProperties.put("see_through", node.get("see_through").asBoolean());
 
-                            if (node.get("configs").has("billboard")) {
-                                modelNode.typeSpecificProperties.put("billboard", node.get("configs").get("billboard").asText().toUpperCase());
 
 
+                            if (node.has("config")){
+                                if (node.get("config").has("billboard")) {
+                                    modelNode.typeSpecificProperties.put("billboard", node.get("config").get("billboard").asText().toUpperCase());
+
+
+                                }
                             }
+
                         }
                         else if (modelNode.type.equals("camera")) {
                                 // do nothing
@@ -763,6 +768,7 @@ public class ModelClass {
 
             Map<UUID, Node> nodes = new HashMap<>();
             Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator();
+
             while (iter.hasNext()){
                 Map.Entry<String, ActiveAnimation> entry = iter.next();
                 ActiveAnimation animation = entry.getValue();
@@ -979,6 +985,7 @@ public class ModelClass {
 
         if (!event.isCancelled()) {
             animation.isPaused = bool;
+
 
         }
 
@@ -1341,6 +1348,11 @@ public class ModelClass {
         );
 
         return transformation;
+    }
+
+    public void setIsActive(boolean b){
+        isActive = b;
+
     }
 
 }
