@@ -174,7 +174,7 @@ public class ModelClass {
                                 }
 
                                 if (nodeConfig.has("shadow_radius")) {
-                                    modelNode.typeSpecificProperties.put("shadow_radios", nodeConfig.get("shadow_radius").asInt());
+                                    modelNode.typeSpecificProperties.put("shadow_radius", nodeConfig.get("shadow_radius").asInt());
                                 }
 
 
