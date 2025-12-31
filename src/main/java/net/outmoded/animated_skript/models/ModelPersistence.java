@@ -80,6 +80,7 @@ public final class ModelPersistence implements Listener {
 
             ModelClass modelClass = ModelManager.getInstance().spawnNewModel(databaseModelClass.type, databaseModelClass.location, databaseModelClass.uuid);
             modelClass.setActiveVariant(databaseModelClass.variant);
+            modelClass.setScale(databaseModelClass.scale);
 
             modelClass.loadConfig();
             Bukkit.getScheduler().runTaskLater(AnimatedSkript.getInstance(), new Runnable() {
@@ -154,7 +155,9 @@ public final class ModelPersistence implements Listener {
                     "chunk_id NOT NULL," + // world|x-4|z-4
                     "location NOT NULL," + // stores json :sob:
                     "variant,"+
-                    "animations" + // stores json for the current animations and what time they are on
+                    "animations," + // stores json for the current animations and what time they are on
+                    "scale," +
+                    "extra_info" +
                     ")");
 
             // Create index for faster lookups
@@ -201,7 +204,7 @@ public final class ModelPersistence implements Listener {
                 String chunk_id = location.getWorld().getName()+"|x-"+location.getChunk().getX()+"|z-"+location.getChunk().getZ();
 
                 final PreparedStatement statement = this.connection.prepareStatement(
-                        "INSERT INTO save_data (model_uuid, model_type, chunk_id, location, variant, animations ) VALUES (?, ?, ?, ?, ?, ?)");
+                        "INSERT INTO save_data (model_uuid, model_type, chunk_id, location, variant, animations, scale) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
                 statement.setString(1, modelClass.getUuid().toString());
                 statement.setString(2, modelClass.modelType);
@@ -210,6 +213,7 @@ public final class ModelPersistence implements Listener {
                 statement.setString(5, modelClass.getActiveVariant());
 
                 statement.setString(6, databaseAnimationToJson(modelClass));
+                statement.setString(7, modelClass.getScale().toString());
 
                 final int rows = statement.executeUpdate();
                 statement.close();
@@ -355,16 +359,17 @@ public final class ModelPersistence implements Listener {
         public final Location location;
         public final String variant;
         public final DatabaseAnimation[] databaseAnimations;
+        public final float scale;
 
 
-        DatabaseModelClass(UUID uuid, String type, String chunkId, String location, String variant ,String animations){
+        DatabaseModelClass(UUID uuid, String type, String chunkId, String location, String variant ,String animations, String scale){
             this.uuid = uuid;
             this.type = type;
             this.chunkId = chunkId;
             this.location = decodeJsonAsLocation(location);
             this.variant = variant;
             this.databaseAnimations = jsonToDatabaseAnimations(animations);
-
+            this.scale = Float.parseFloat(scale);
 
         }
 
@@ -376,7 +381,8 @@ public final class ModelPersistence implements Listener {
                     row.getString("chunk_id"),
                     row.getString("location"),
                     row.getString("variant"),
-                    row.getString("animations"));
+                    row.getString("animations"),
+                    row.getString("scale"));
         }
 
 

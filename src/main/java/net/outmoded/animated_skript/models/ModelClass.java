@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.StringUtil;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +31,7 @@ import static org.bukkit.Bukkit.getServer;
 
 public class ModelClass {
     public final Map<String, Variant> variants = new HashMap<>();
-    public final Map<String, UUID> activeCameras = new HashMap<>(); // stores a reference to a camera by name
+    public final Map<String, UUID> activeLocators = new HashMap<>(); // stores a reference to a camera by name
     public final Map<UUID, Node> nodeMap = new HashMap<>();
     public final Map<String, Animation> animationMap = new HashMap<>();
     public final Map<UUID, Display> activeNodes = new HashMap<>();
@@ -153,6 +152,11 @@ public class ModelClass {
 
                                 modelNode.typeSpecificProperties.put("hitbox_width", width);
                                 modelNode.typeSpecificProperties.put("hitbox_height", height);
+
+                            }
+
+                            else { // locators
+                                modelNode.type ="locator";
 
                             }
 
@@ -474,7 +478,7 @@ public class ModelClass {
     public void spawnModelNodes(){
 
         deleteModelNodes();
-        activeCameras.clear();
+        activeLocators.clear();
         activeNodes.clear();
         activeHitboxes.clear();
 
@@ -585,19 +589,19 @@ public class ModelClass {
                     display = textDisplay;
 
                     break;
-                case "camera":
+                case "locator":
 
                     ItemDisplay itemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
                     itemDisplay.setItemStack(new ItemStack(Material.WITHER_SKELETON_SKULL));
 
-                    itemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "camera");
+                    itemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "locator");
 
                     display = itemDisplay;
 
                     Display.Brightness brightness = new Display.Brightness(15, 15);
                     display.setBrightness(brightness);
 
-                    activeCameras.put(node.name, node.uuid);
+                    activeLocators.put(node.name, node.uuid);
 
                     break;
                 case "hitbox":
@@ -1225,21 +1229,21 @@ public class ModelClass {
 
     @ApiStatus.Experimental
     public Display getActiveCamera(String name){
-        if (activeCameras.containsKey(name))
-            return activeNodes.get(activeCameras.get(name));
+        if (activeLocators.containsKey(name))
+            return activeNodes.get(activeLocators.get(name));
         return null;
 
     }
 
     @ApiStatus.Experimental
     public boolean hasActiveCamera(String name){
-        return activeCameras.containsKey(name);
+        return activeLocators.containsKey(name);
     }
 
     @ApiStatus.Experimental
     public UUID getUuidFromActiveCamera(String name){
-        if (activeCameras.containsKey(name)){
-            return activeCameras.get(name);
+        if (activeLocators.containsKey(name)){
+            return activeLocators.get(name);
         }
         return null;
     }
