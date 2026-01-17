@@ -106,6 +106,7 @@ public class Commands implements CommandExecutor {
                         sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
                         return true;
                     }
+
                     Location location = ((Player) sender).getLocation();
                     location.setYaw(0);
                     location.setPitch(0);

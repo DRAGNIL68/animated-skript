@@ -53,8 +53,6 @@ public class CommandsTabComplete implements TabCompleter {
 
                 uuid = UUID.fromString(args[1]);
 
-                sender.sendMessage(args[1]);
-
                 if (!ModelManager.getInstance().activeModelExists(uuid)){
 
                     return new ArrayList<>();
