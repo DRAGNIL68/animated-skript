@@ -789,8 +789,8 @@ public class ModelClass {
                         iter.remove();
 
                     }
-                    ModelEndAnimationEvent event;
-                    event = new ModelEndAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
+                    ModelAnimationEndEvent event;
+                    event = new ModelAnimationEndEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
                     Bukkit.getPluginManager().callEvent(event);
 
                 }
@@ -984,7 +984,7 @@ public class ModelClass {
 
         ActiveAnimation animation = activeAnimations.get(animationName);
 
-        ModelPauseAnimationEvent event = new ModelPauseAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
+        ModelAnimationPauseEvent event = new ModelAnimationPauseEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
@@ -1014,7 +1014,7 @@ public class ModelClass {
             ticks = animation.animationReference.duration;
         }
 
-        ModelFrameSetAnimationEvent event = new ModelFrameSetAnimationEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode, animation.currentFrameTime, ticks, animation.animationReference.duration );
+        ModelAnimationFrameSetEvent event = new ModelAnimationFrameSetEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode, animation.currentFrameTime, ticks, animation.animationReference.duration );
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
@@ -1045,7 +1045,7 @@ public class ModelClass {
 
         if (animationMap.containsKey(name)){
 
-            ModelStartAnimationEvent event = new ModelStartAnimationEvent(uuid, modelType, name);
+            ModelAnimationStartEvent event = new ModelAnimationStartEvent(uuid, modelType, name);
             Bukkit.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {

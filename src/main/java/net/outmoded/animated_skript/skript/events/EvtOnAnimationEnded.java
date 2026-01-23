@@ -5,7 +5,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
-import net.outmoded.animated_skript.events.ModelEndAnimationEvent;
+import net.outmoded.animated_skript.events.ModelAnimationEndEvent;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
 public class EvtOnAnimationEnded extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Animation Ended", EvtOnAnimationEnded.class, ModelEndAnimationEvent.class, "[animated-skript] animation ended");
-        EventValues.registerEventValue(ModelEndAnimationEvent.class, ModelClass.class, ModelEndAnimationEvent::getActiveModel);
-        EventValues.registerEventValue(ModelEndAnimationEvent.class, Animation.class, ModelEndAnimationEvent::getAnimation);
+        Skript.registerEvent("Animation Ended", EvtOnAnimationEnded.class, ModelAnimationEndEvent.class, "[animated-skript] animation ended");
+        EventValues.registerEventValue(ModelAnimationEndEvent.class, ModelClass.class, ModelAnimationEndEvent::getActiveModel);
+        EventValues.registerEventValue(ModelAnimationEndEvent.class, Animation.class, ModelAnimationEndEvent::getAnimation);
 
     }
 

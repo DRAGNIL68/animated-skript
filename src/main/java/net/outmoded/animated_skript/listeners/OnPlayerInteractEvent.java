@@ -2,7 +2,6 @@ package net.outmoded.animated_skript.listeners;
 
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
-import net.outmoded.animated_skript.events.ModelFrameSetAnimationEvent;
 import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;

@@ -5,7 +5,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
-import net.outmoded.animated_skript.events.ModelStartAnimationEvent;
+import net.outmoded.animated_skript.events.ModelAnimationStartEvent;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
@@ -15,10 +15,10 @@ import javax.annotation.Nullable;
 public class EvtOnAnimationStarted extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Animation Started", EvtOnAnimationStarted.class, ModelStartAnimationEvent.class, "[animated-skript] animation started");
+        Skript.registerEvent("Animation Started", EvtOnAnimationStarted.class, ModelAnimationStartEvent.class, "[animated-skript] animation started");
 
-        EventValues.registerEventValue(ModelStartAnimationEvent.class, ModelClass.class, ModelStartAnimationEvent::getActiveModel);
-        EventValues.registerEventValue(ModelStartAnimationEvent.class, Animation.class, ModelStartAnimationEvent::getAnimation);
+        EventValues.registerEventValue(ModelAnimationStartEvent.class, ModelClass.class, ModelAnimationStartEvent::getActiveModel);
+        EventValues.registerEventValue(ModelAnimationStartEvent.class, Animation.class, ModelAnimationStartEvent::getAnimation);
 
     }
 

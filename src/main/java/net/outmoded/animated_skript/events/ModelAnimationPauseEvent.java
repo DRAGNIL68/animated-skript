@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public final class ModelPauseAnimationEvent extends Event implements Cancellable {
+public final class ModelAnimationPauseEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
     private UUID uuid;
@@ -19,7 +19,7 @@ public final class ModelPauseAnimationEvent extends Event implements Cancellable
     private String loopMode;
     private ModelClass modelClass;
 
-    public ModelPauseAnimationEvent(UUID uuid, String type, String animationName, String loopMode) {
+    public ModelAnimationPauseEvent(UUID uuid, String type, String animationName, String loopMode) {
         this.uuid = uuid;
         modelType = type;
         animation = animationName;

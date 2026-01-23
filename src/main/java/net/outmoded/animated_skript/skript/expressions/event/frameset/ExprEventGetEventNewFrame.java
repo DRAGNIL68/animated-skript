@@ -6,8 +6,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
-import net.outmoded.animated_skript.events.ModelFrameSetAnimationEvent;
+import net.outmoded.animated_skript.events.ModelAnimationFrameSetEvent;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ public class ExprEventGetEventNewFrame extends SimpleExpression<Integer> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
 
-        if (getParser().isCurrentEvent(ModelFrameSetAnimationEvent.class)){
+        if (getParser().isCurrentEvent(ModelAnimationFrameSetEvent.class)){
             return true;
         }
 
@@ -52,7 +51,7 @@ public class ExprEventGetEventNewFrame extends SimpleExpression<Integer> {
     protected Integer[] get(Event event) {
 
         // there is a better way to do this, but I don't care.
-        if (event instanceof ModelFrameSetAnimationEvent event1){
+        if (event instanceof ModelAnimationFrameSetEvent event1){
             return new Integer[] {event1.getFutureFrameTime()};
 
         }

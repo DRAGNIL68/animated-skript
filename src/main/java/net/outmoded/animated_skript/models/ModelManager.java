@@ -190,7 +190,14 @@ public class ModelManager {
 
     }
 
-    public void removeActiveModel(UUID uuid) { // TODO: needs recoding
+    public void removeActiveModel(ModelClass modelClass) {
+        if (modelClass == null)
+            return;
+
+        removeActiveModel(modelClass.uuid);
+    }
+
+    public void removeActiveModel(UUID uuid) { // DON'T TOUCH this is part of save data system and is really sketchy
         if (!activeModels.containsKey(uuid)){
             return;
         }
