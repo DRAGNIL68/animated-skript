@@ -39,10 +39,10 @@ public final class AnimatedSkript extends JavaPlugin {
         // checks version
         String version = Bukkit.getMinecraftVersion();
 
-        if (version.equals("1.21.4") || version.equals("1.21.6") || version.equals("1.21.7") || version.equals("1.21.8")){
+        if (version.equals("1.21.7") || version.equals("1.21.8") || version.equals("1.21.10") || version.equals("1.21.11")){
         }
         else {
-            AnimatedSkript.getInstance().getLogger().warning("you are running a unsupported version: supported versions = 1.21.4/1.21.6/1.21.7/1.21.8");
+            AnimatedSkript.getInstance().getLogger().warning("you are running a unsupported version: supported versions = 1.21.7/1.21.8/1.21.10/1.21.11");
         }
 
 
