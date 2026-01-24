@@ -827,6 +827,11 @@ public class ModelClass {
                         }
                     }
                 }
+
+                if (!animation.isPaused) {
+                    animation.currentFrameTime += 1;
+                }
+
             }
 
             for (Node node : nodes.values()){ // applies the transforms for this frame
@@ -859,12 +864,6 @@ public class ModelClass {
 
             }
 
-
-            for (ActiveAnimation activeAnimation : activeAnimations.values()){
-
-                if (!activeAnimation.isPaused)
-                    activeAnimation.currentFrameTime += 1;
-            }
 
             deferredActions.forEach(Runnable::run); // this is a neat trick I found via Google
             deferredEvents.forEach(Runnable::run);

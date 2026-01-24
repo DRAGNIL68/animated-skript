@@ -9,6 +9,7 @@ import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.ModelRemovedEvent;
 import net.outmoded.animated_skript.events.ModelSpawnedEvent;
 import net.outmoded.animated_skript.events.AnimatedSkriptReload;
+import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import net.outmoded.animated_skript.pack.Namespace;
 import net.outmoded.animated_skript.pack.ResourcePack;
 import net.outmoded.animated_skript.pack.jsonObjects.McMeta;
@@ -23,6 +24,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import static net.outmoded.animated_skript.Config.debugMode;
@@ -30,8 +32,8 @@ import static org.bukkit.Bukkit.getServer;
 
 public class ModelManager {
 
-    private final Map<String, JsonNode> loadedModels = new HashMap<>(); // stores all model types I.e. there configs: key = file name
-    private final Map<UUID, ModelClass> activeModels = new HashMap<>(); // stores all models that are active on the server
+    private final ConcurrentHashMap<String, JsonNode> loadedModels = new ConcurrentHashMap<>(); // stores all model types I.e. there configs: key = file name
+    private final ConcurrentHashMap<UUID, ModelClass> activeModels = new ConcurrentHashMap <>(); // stores all models that are active on the server
     private ResourcePack resourcePack;
     private Namespace animatedSkript;
     private int errorCount = 0;
@@ -115,9 +117,16 @@ public class ModelManager {
     } // TODO: this dose not work because of the pack gen code
 
     public void tickAllAnimations() {
-        for (ModelClass model : activeModels.values()) {
-            model.tickAnimation();
+
+
+        Iterator<ModelClass> iter = activeModels.values().iterator();
+
+        while (iter.hasNext()){
+
+            iter.next().tickAnimation();
+
         }
+
 
     } // loops animations of all active models
 
