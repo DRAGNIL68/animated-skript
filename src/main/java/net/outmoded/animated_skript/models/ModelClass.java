@@ -773,6 +773,10 @@ public class ModelClass {
             Map<UUID, Node> nodes = new HashMap<>();
             Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator();
 
+            ArrayList<ActiveAnimation> animationsThatEnded = new ArrayList<>();
+            List<Runnable> deferredActions = new ArrayList<>();
+            List<Runnable> deferredEvents = new ArrayList<>();
+
             while (iter.hasNext()){
                 Map.Entry<String, ActiveAnimation> entry = iter.next();
                 ActiveAnimation animation = entry.getValue();
@@ -783,15 +787,20 @@ public class ModelClass {
                         animation.currentFrameTime = 0;
                     }
                     else if (animation.animationReference.loopMode.equals("hold")){
-                        pauseActiveAnimation(animation.animationReference.name,true);
+                        deferredActions.add(() -> pauseActiveAnimation(animation.animationReference.name, true));
 
                     } else {
                         iter.remove();
 
                     }
-                    ModelAnimationEndEvent event;
-                    event = new ModelAnimationEndEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
-                    Bukkit.getPluginManager().callEvent(event);
+
+                    deferredEvents.add(() -> {
+                        ModelAnimationEndEvent event;
+                        event = new ModelAnimationEndEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
+                        Bukkit.getPluginManager().callEvent(event);
+                    });
+
+                    animationsThatEnded.add(animation);
 
                 }
 
@@ -857,7 +866,13 @@ public class ModelClass {
                     activeAnimation.currentFrameTime += 1;
             }
 
+            deferredActions.forEach(Runnable::run); // this is a neat trick I found via Google
+            deferredEvents.forEach(Runnable::run);
+
         }
+
+
+
 
     }
 
@@ -978,7 +993,7 @@ public class ModelClass {
         activeAnimations.remove(animationName);
     }
 
-    public void pauseActiveAnimation(String animationName,Boolean bool){
+    public void pauseActiveAnimation(String animationName, Boolean bool){
         if (!activeAnimations.containsKey(animationName))
             return;
 
