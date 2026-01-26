@@ -839,7 +839,7 @@ public class ModelClass {
                 if (activeNodes.containsKey(node.uuid)){
 
                     activeNodes.get(node.uuid).setInterpolationDelay(0);
-                    activeNodes.get(node.uuid).setInterpolationDuration(1);
+                    activeNodes.get(node.uuid).setInterpolationDuration(2);
 
                     activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
 
