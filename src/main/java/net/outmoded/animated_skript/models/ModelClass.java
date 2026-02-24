@@ -76,6 +76,11 @@ public class ModelClass {
 
     @ApiStatus.Internal
     public void loadJsonConfig(){
+        // TODO this entire method should be moved to the file load event I SHOULD NOT be running this here
+        // TODO this method causes 90% of the lag in the dammed plugin, lets just ignore how slow the code for loading files and generating packs is
+
+
+
         try{
             if (ModelManager.getInstance().loadedModelExists(modelType)) {
                 nodeMap.clear();
@@ -215,13 +220,42 @@ public class ModelClass {
                         }
 
                         Quaternionf quaternion = new Quaternionf(modelNode.leftRotation[0], modelNode.leftRotation[1], modelNode.leftRotation[2], modelNode.leftRotation[3]); // fuck math
-                        // TODO: NOTE Blockbench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯
+                        // TODO: NOTE BlockBench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯ edit: I fixed it
                         // TODO: NOTE Mr Aj has made custom textured models actually face north for some reason, block displays still face south
 
                         if (modelNode.type.equals("bone")){
-                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
+
+                            Pattern pattern = Pattern.compile("player\\{type:([a-z]*)}", Pattern.CASE_INSENSITIVE);
+                            Matcher matcher = pattern.matcher(modelNode.name);
+                            boolean matchFound = matcher.find();
+
+
+                            if (matchFound){
+                                modelNode.type = "player_bone";
+                                String part = matcher.group(1);
+
+                                try {
+
+                                    StablePlayerDisplayOffset offset = StablePlayerDisplayOffset.valueOf(part.toUpperCase());
+
+                                    modelNode.typeSpecificProperties.put("player_part", offset);
+
+                                } catch (IllegalArgumentException ignored){
+                                    // this is silly
+
+                                }
+
+
+
+
+                            }
+
+
+                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
                             quaternion.mul(new Quaternionf(additionalRotation));
                         }
+
+
 
                         if (modelNode.type.equals("struct") && debugMode()) {
 
@@ -235,8 +269,6 @@ public class ModelClass {
                             modelNode.transformation = transformation;
                         }
                         else {
-
-
 
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
@@ -255,6 +287,7 @@ public class ModelClass {
                     }
                 }
             }
+
             else {
                 ModelManager.getInstance().removeActiveModel(uuid);
 
@@ -489,34 +522,35 @@ public class ModelClass {
         for (Node node : nodeMap.values()){
 
             Display display = null;
+
+            NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + "default" + "/" + node.uuid);
+
             switch (node.type) {
 
                 case "struct":
                     if (debugMode()) {
-                    ItemStack structItemStack = new ItemStack(Material.SKELETON_SKULL);
-                    ItemDisplay structItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
-                    structItemDisplay.setVisibleByDefault(false);
-                    structItemDisplay.setItemStack(structItemStack);
+                        ItemStack structItemStack = new ItemStack(Material.SKELETON_SKULL);
+                        ItemDisplay structItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                        structItemDisplay.setVisibleByDefault(false);
+                        structItemDisplay.setItemStack(structItemStack);
 
 
-                    structItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
+                        structItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
 
 
-                    structItemDisplay.setGlowing(true);
-                    structItemDisplay.setVisibleByDefault(true);
+                        structItemDisplay.setGlowing(true);
+                        structItemDisplay.setVisibleByDefault(true);
 
 
 
-                    display = structItemDisplay;
+                        display = structItemDisplay;
 
-                }
+                    }
                     break;
                 case "bone":
 
                     ItemStack boneItemStack = new ItemStack(Material.PAPER);
 
-
-                    NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + "default" + "/" + node.uuid);
                     ItemMeta meta = boneItemStack.getItemMeta();
                     meta.setItemModel(modelKey);
                     boneItemStack.setItemMeta(meta);
@@ -530,6 +564,7 @@ public class ModelClass {
 
 
                     break;
+
 
                 case "block_display":
 
@@ -640,6 +675,24 @@ public class ModelClass {
 
 
                     }
+                    break;
+                case "player_bone":
+
+                    ItemStack playerBoneItemStack = new ItemStack(Material.PAPER);
+
+
+                    ItemMeta playerBoneMeta = playerBoneItemStack.getItemMeta();
+                    playerBoneMeta.setItemModel(modelKey);
+                    playerBoneItemStack.setItemMeta(playerBoneMeta);
+
+                    ItemDisplay playerBoneItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+
+                    playerBoneItemDisplay.setItemStack(playerBoneItemStack);
+                    playerBoneItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "player_bone");
+
+                    display = playerBoneItemDisplay;
+
+
                     break;
 
                 default:
@@ -777,6 +830,8 @@ public class ModelClass {
             List<Runnable> deferredActions = new ArrayList<>();
             List<Runnable> deferredEvents = new ArrayList<>();
 
+
+
             while (iter.hasNext()){
                 Map.Entry<String, ActiveAnimation> entry = iter.next();
                 ActiveAnimation animation = entry.getValue();
@@ -784,8 +839,11 @@ public class ModelClass {
                 if (animation.currentFrameTime >= animation.animationReference.duration) { // checks info about an animation
 
                     if (animation.animationReference.loopMode.equals("loop")) {
+                        this.deleteModelNodes();
+                        this.spawnModelNodes();
                         animation.currentFrameTime = 0;
                     }
+
                     else if (animation.animationReference.loopMode.equals("hold")){
                         deferredActions.add(() -> pauseActiveAnimation(animation.animationReference.name, true));
 
@@ -839,9 +897,12 @@ public class ModelClass {
                 if (activeNodes.containsKey(node.uuid)){
 
                     activeNodes.get(node.uuid).setInterpolationDelay(0);
-                    activeNodes.get(node.uuid).setInterpolationDuration(2);
+                    activeNodes.get(node.uuid).setInterpolationDuration(1);
 
                     activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+
+
+
 
 
                 }

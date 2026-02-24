@@ -31,6 +31,9 @@ public class  ResourcePack {
         Namespace minecraft = new Namespace("minecraft", this);
         copyFileFromResources(AnimatedSkript.getInstance().getResource("logo.png"), "pack.png");
 
+        copyFileFromResources(AnimatedSkript.getInstance().getResource("shaders/entity.fsh"), "assets/minecraft/shaders/core/entity.fsh");
+        copyFileFromResources(AnimatedSkript.getInstance().getResource("shaders/entity.vsh"), "assets/minecraft/shaders/core/entity.vsh");
+
     }
     public String getName(){
         return name;

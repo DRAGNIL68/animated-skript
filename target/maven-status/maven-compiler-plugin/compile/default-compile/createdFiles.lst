@@ -34,6 +34,7 @@ net\outmoded\animated_skript\models\nodes\ActiveAnimation.class
 net\outmoded\animated_skript\skript\events\EvtOnAnimationResumed.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetActiveModelsActiveAnimations.class
 net\outmoded\animated_skript\events\ActiveModelHitboxInteract.class
+net\outmoded\animated_skript\models\StablePlayerDisplayOffset.class
 net\outmoded\animated_skript\models\ModelPersistence.class
 net\outmoded\animated_skript\skript\expressions\event\frameset\ExprEventGetEventNewFrame.class
 net\outmoded\animated_skript\skript\conditions\CondHasVariant1.class
