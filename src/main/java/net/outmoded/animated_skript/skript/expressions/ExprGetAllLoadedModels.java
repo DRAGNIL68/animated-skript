@@ -6,18 +6,28 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class ExprGetAllLoadedModels extends SimpleExpression<String> {
 
-    static {
-        Skript.registerExpression(ExprGetAllLoadedModels.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] all [the] loaded-models");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetAllLoadedModels.class, String.class)
+                        .addPatterns(
+                                "[animated-skript] [get] all [the] loaded-models"
+                        )
+                        .supplier(ExprGetAllLoadedModels::new)
+                        .build());
+
     }
-
-
 
     @Override
     public Class<? extends String> getReturnType() {

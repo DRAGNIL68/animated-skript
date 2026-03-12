@@ -8,14 +8,24 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetAnimationName extends SimpleExpression<String> {
 
-    static {
-        Skript.registerExpression(ExprGetAnimationName.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelanimation%('s|s) name");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetAnimationName.class, String.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] %activemodelanimation%('s|s) name"
+                        )
+                        .supplier(ExprGetAnimationName::new)
+                        .build());
+
     }
 
     private Expression<Animation> animationExpression;

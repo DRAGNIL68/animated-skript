@@ -7,14 +7,24 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class CondHasAnimation extends Condition {
 
-    static {
-        Skript.registerCondition(CondHasAnimation.class, "[animated-skript] %activemodel% has animation %string%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.CONDITION,
+                SyntaxInfo.builder(CondHasAnimation.class)
+                        .addPatterns(
+                                "[animated-skript] %activemodel% has animation %string%"
+                        )
+                        .supplier(CondHasAnimation::new)
+                        .build());
+
     }
 
     private Expression<String> stringExpression;

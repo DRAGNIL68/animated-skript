@@ -5,20 +5,27 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
+import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
 import net.outmoded.animated_skript.events.ModelRemovedEvent;
 import net.outmoded.animated_skript.events.ModelRemovedEvent;
 import net.outmoded.animated_skript.models.ModelClass;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EvtOnModelRemoved extends SkriptEvent {
 
-    static {
-        Skript.registerEvent("Model Removed", EvtOnModelRemoved.class, ModelRemovedEvent.class, "[animated-skript] model spawned");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnModelRemoved.class, "Model Removed")
+                .supplier(EvtOnModelRemoved::new)
+                .addEvent(ModelRemovedEvent.class)
+                .addPatterns("[animated-skript] model spawned")
+                .build());
 
         EventValues.registerEventValue(ModelRemovedEvent.class, ModelClass.class, ModelRemovedEvent::getActiveModel);
-
     }
 
     @SuppressWarnings("unchecked")

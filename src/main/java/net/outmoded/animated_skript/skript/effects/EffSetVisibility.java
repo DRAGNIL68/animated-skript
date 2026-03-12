@@ -8,13 +8,23 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffSetVisibility extends Effect {
 
-    static {
-        Skript.registerEffect(EffSetVisibility.class, "[animated-skript] set %activemodel%('s|s) visibility [to] %boolean% for %player%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffSetVisibility.class)
+                        .addPatterns(
+                                "[animated-skript] set %activemodel%('s|s) visibility [to] %boolean% for %player%"
+                        )
+                        .supplier(EffSetVisibility::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

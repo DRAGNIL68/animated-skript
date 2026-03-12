@@ -9,16 +9,26 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.lang.Double;
 
 public class ExprEventGetEventDamage extends SimpleExpression<Double> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventDamage.class, Double.class, ExpressionType.COMBINED, "[animated-skript] event-damage");
-    }
 
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventDamage.class, Double.class)
+                        .addPatterns(
+                                "[animated-skript] event-damage"
+                        )
+                        .supplier(ExprEventGetEventDamage::new)
+                        .build());
+
+    }
 
 
     @Override

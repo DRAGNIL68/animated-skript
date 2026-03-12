@@ -8,18 +8,30 @@ import ch.njol.skript.registrations.EventValues;
 import net.outmoded.animated_skript.events.ModelAnimationEndEvent;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Animation;
+import net.outmoded.animated_skript.skript.conditions.CondLoadedModelExists;
+import net.outmoded.animated_skript.skript.expressions.animation.ExprGetCurrentAnimationsIsPaused;
+import org.bukkit.World;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EvtOnAnimationEnded extends SkriptEvent {
 
-    static {
-        Skript.registerEvent("Animation Ended", EvtOnAnimationEnded.class, ModelAnimationEndEvent.class, "[animated-skript] animation ended");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnAnimationEnded.class, "Animation Ended")
+                .supplier(EvtOnAnimationEnded::new)
+                .addEvent(ModelAnimationEndEvent.class)
+                .addPatterns("[animated-skript] animation ended")
+                .build());
+
         EventValues.registerEventValue(ModelAnimationEndEvent.class, ModelClass.class, ModelAnimationEndEvent::getActiveModel);
         EventValues.registerEventValue(ModelAnimationEndEvent.class, Animation.class, ModelAnimationEndEvent::getAnimation);
-
     }
+
+
 
     @SuppressWarnings("unchecked")
     @Override

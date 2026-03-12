@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 public class ActiveModelAnimation {
 
-    static {
+    public static void register(){
         Classes.registerClass(new ClassInfo<>(Animation.class, "activemodelanimation")
                 .user("animations?")
                 .name("animation")
@@ -46,6 +46,7 @@ public class ActiveModelAnimation {
 
 
                 }));
+
     }
 
 

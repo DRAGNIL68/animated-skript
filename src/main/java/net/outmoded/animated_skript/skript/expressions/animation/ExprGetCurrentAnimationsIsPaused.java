@@ -8,14 +8,24 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetCurrentAnimationsIsPaused extends SimpleExpression<Boolean> {
-    
-    static {
-        Skript.registerExpression(ExprGetCurrentAnimationsIsPaused.class, Boolean.class, ExpressionType.COMBINED, "[animated-skript] [get] current-animation %activemodelanimation%('s|s) paused state");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetCurrentAnimationsIsPaused.class, Boolean.class)
+                        .addPatterns(
+                                "[animated-skript] [get] current-animation %activemodelanimation%('s|s) paused state"
+                        )
+                        .supplier(ExprGetCurrentAnimationsIsPaused::new)
+                        .build());
+
     }
 
     private Expression<Animation> animationExpression;

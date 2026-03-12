@@ -9,7 +9,10 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -19,8 +22,16 @@ import static org.bukkit.Bukkit.getServer;
 
 public class ExprGetActiveModelsScale extends SimpleExpression<Double> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsScale.class, Double.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) scale");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsScale.class, Double.class)
+                        .addPatterns(
+                                "[animated-skript] [get] %activemodel%('s|s) scale"
+                        )
+                        .supplier(ExprGetActiveModelsScale::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClassExpression; // if true = loaded-models | if false = active-models
@@ -55,9 +66,13 @@ public class ExprGetActiveModelsScale extends SimpleExpression<Double> {
     @Nullable
     protected Double[] get(Event event) {
         ModelClass modelClass = modelClassExpression.getSingle(event);
-        return new Double[]{modelClass.getScale().doubleValue()};
+        if (modelClass != null){
+
+            return new Double[]{modelClass.getScale().doubleValue()};
+        }
 
 
+        return new Double[]{};
     }
 }
 

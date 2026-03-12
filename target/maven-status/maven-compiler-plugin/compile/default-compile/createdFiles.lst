@@ -93,11 +93,13 @@ net\outmoded\animated_skript\commands\CommandsTabComplete.class
 net\outmoded\animated_skript\skript\conditions\CondHasAnimation.class
 net\outmoded\animated_skript\skript\expressions\variant\ExprGetVariantsName.class
 net\outmoded\animated_skript\pack\ZipFileUtil.class
+net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationFromActiveModel.class
 net\outmoded\animated_skript\skript\effects\EffPauseAnimation.class
 net\outmoded\animated_skript\skript\SkriptManager.class
 net\outmoded\animated_skript\pack\jsonObjects\NonWritable.class
 net\outmoded\animated_skript\events\ActiveModelHitboxAttack.class
 net\outmoded\animated_skript\pack\jsonObjects\McMeta.class
+net\outmoded\animated_skript\skript\effects\rotation\EffSetRotation.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeUuid.class
 net\outmoded\animated_skript\skript\types\ActiveModelAnimation.class
 net\outmoded\animated_skript\models\ModelPersistence$DatabaseLocation.class
@@ -110,6 +112,7 @@ net\outmoded\animated_skript\skript\conditions\CondHasVariant.class
 net\outmoded\animated_skript\skript\events\EvtOnHitboxAttacked.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetActiveModelsDisplayNodes.class
 net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventUuid.class
+net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsRotation.class
 net\outmoded\animated_skript\models\ModelManager.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeType.class
 net\outmoded\animated_skript\events\ModelAnimationFrameSetEvent.class
@@ -117,6 +120,7 @@ net\outmoded\animated_skript\skript\expressions\ExprLastSpawnedActiveModel.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeTransformation.class
 net\outmoded\animated_skript\events\ModelAnimationStartEvent.class
 net\outmoded\animated_skript\skript\conditions\CondLoadedModelExists.class
+net\outmoded\animated_skript\skript\effects\rotation\EffResetRotation.class
 net\outmoded\animated_skript\skript\effects\tint\EffSetTint.class
 net\outmoded\animated_skript\skript\expressions\variant\ExprGetActiveModelsActiveVariant.class
 net\outmoded\animated_skript\skript\effects\EffAnimationControl.class
@@ -127,6 +131,7 @@ net\outmoded\animated_skript\skript\effects\variant\EffResetActiveVariant.class
 net\outmoded\animated_skript\listeners\OnJoin.class
 net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamageCause.class
 net\outmoded\animated_skript\models\ModelPersistence$DatabaseModelClass.class
+net\outmoded\animated_skript\SyntaxRegistration.class
 net\outmoded\animated_skript\skript\types\ActiveModelVariant.class
 net\outmoded\animated_skript\events\ModelSpawnedEvent.class
 net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamage.class

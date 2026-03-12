@@ -7,13 +7,23 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffPauseAnimation extends Effect {
 
-    static {
-        Skript.registerEffect(EffPauseAnimation.class, "[animated-skript] (:pause||unpause||resume) the active animation %string% of [the] %activemodel%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffPauseAnimation.class)
+                        .addPatterns(
+                                "[animated-skript] (:pause||unpause||resume) the active animation %string% of [the] %activemodel%"
+                        )
+                        .supplier(EffPauseAnimation::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

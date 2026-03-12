@@ -7,13 +7,23 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffStopAllAnimations extends Effect {
 
-    static {
-        Skript.registerEffect(EffStopAllAnimations.class, "[animated-skript] stop all of %activemodel%('s|s) current animations");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffStopAllAnimations.class)
+                        .addPatterns(
+                                "[animated-skript] stop all of %activemodel%('s|s) current animations"
+                        )
+                        .supplier(EffStopAllAnimations::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

@@ -7,14 +7,24 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class CondHasVariant1 extends Condition {
 
-    static {
-        Skript.registerCondition(CondHasVariant1.class, "[animated-skript] %activemodel% has [the] variant %activemodelvariant%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.CONDITION,
+                SyntaxInfo.builder(CondHasVariant1.class)
+                        .addPatterns(
+                                "[animated-skript] %activemodel% has [the] variant %activemodelvariant%"
+                        )
+                        .supplier(CondHasVariant1::new)
+                        .build());
+
     }
 
     private Expression<String> variantExpression;

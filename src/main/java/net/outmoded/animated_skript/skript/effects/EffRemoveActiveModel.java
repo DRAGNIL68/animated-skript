@@ -9,13 +9,23 @@ import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffRemoveActiveModel extends Effect {
 
-    static {
-        Skript.registerEffect(EffRemoveActiveModel.class, "[animated-skript] remove [the] active-model %activemodel%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffRemoveActiveModel.class)
+                        .addPatterns(
+                                "[animated-skript] remove [the] active-model %activemodel%"
+                        )
+                        .supplier(EffRemoveActiveModel::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

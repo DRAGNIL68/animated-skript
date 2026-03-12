@@ -8,14 +8,26 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.nodes.Node;
 import org.bukkit.event.Event;
+import org.bukkit.util.Transformation;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetNodeType extends SimpleExpression<String> {
 
-    static {
-        Skript.registerExpression(ExprGetNodeType.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) type");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetNodeType.class, String.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) type"
+                        )
+                        .supplier(ExprGetNodeType::new)
+                        .build());
+
     }
 
     private Expression<Node> nodeExpression;

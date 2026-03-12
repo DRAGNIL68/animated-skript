@@ -8,17 +8,27 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.*;
 import net.outmoded.animated_skript.skript.events.EvtOnHitboxAttacked;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class ExprEventGetEventUuid extends SimpleExpression<UUID> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventUuid.class, UUID.class, ExpressionType.COMBINED, "[animated-skript] event-hitbox uuid");
-    }
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventUuid.class, UUID.class)
+                        .addPatterns(
+                                "[animated-skript] event-hitbox uuid"
+                        )
+                        .supplier(ExprEventGetEventUuid::new)
+                        .build());
 
+    }
 
 
     @Override

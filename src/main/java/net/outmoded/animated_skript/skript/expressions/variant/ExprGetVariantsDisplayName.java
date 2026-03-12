@@ -8,14 +8,25 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.nodes.Variant;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetVariantsDisplayName extends SimpleExpression<String> {
 
-    static {
-        Skript.registerExpression(ExprGetVariantsDisplayName.class, String.class, ExpressionType.COMBINED, "[animated-skript] get %activemodelvariant%('s|s) display name");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetVariantsDisplayName.class, String.class)
+                        .addPatterns(
+                                "[animated-skript] get %activemodelvariant%('s|s) display name"
+                        )
+                        .supplier(ExprGetVariantsDisplayName::new)
+                        .build());
+
     }
 
     private Expression<Variant> variantExpression; // if true = loaded-models | if false = active-models

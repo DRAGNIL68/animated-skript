@@ -9,14 +9,24 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.nodes.Node;
 import org.bukkit.event.Event;
 import org.bukkit.util.Transformation;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetNodeTransformation extends SimpleExpression<Transformation> {
 
-    static {
-        Skript.registerExpression(ExprGetNodeTransformation.class, Transformation.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) transform");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetNodeTransformation.class, Transformation.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) transform"
+                        )
+                        .supplier(ExprGetNodeTransformation::new)
+                        .build());
+
     }
 
     private Expression<Node> nodeExpression;

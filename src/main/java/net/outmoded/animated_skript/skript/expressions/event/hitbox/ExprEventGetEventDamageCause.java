@@ -9,13 +9,24 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class ExprEventGetEventDamageCause extends SimpleExpression<EntityDamageEvent.DamageCause> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventDamageCause.class, EntityDamageEvent.DamageCause.class, ExpressionType.COMBINED, "[animated-skript] event-damage cause");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventDamageCause.class, EntityDamageEvent.DamageCause.class)
+                        .addPatterns(
+                                "[animated-skript] event-damage cause"
+                        )
+                        .supplier(ExprEventGetEventDamageCause::new)
+                        .build());
+
     }
 
 

@@ -8,15 +8,27 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
+import net.outmoded.animated_skript.skript.expressions.event.frameset.ExprEventGetEventNewFrame;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprEventGetEventCritical extends SimpleExpression<Boolean> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventCritical.class, Boolean.class, ExpressionType.COMBINED, "[animated-skript] event-is critical");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventCritical.class, Boolean.class)
+                        .addPatterns(
+                                "[animated-skript] event-is critical"
+                        )
+                        .supplier(ExprEventGetEventCritical::new)
+                        .build());
+
     }
 
 

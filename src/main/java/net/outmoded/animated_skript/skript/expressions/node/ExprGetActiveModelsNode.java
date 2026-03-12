@@ -8,7 +8,10 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Node;
+import org.bukkit.entity.Display;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -16,8 +19,17 @@ import java.util.UUID;
 
 public class ExprGetActiveModelsNode extends SimpleExpression<Node> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsNode.class, Node.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] node %string% of %activemodel%");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsNode.class, Node.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] node %string% of %activemodel%"
+                        )
+                        .supplier(ExprGetActiveModelsNode::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClass;

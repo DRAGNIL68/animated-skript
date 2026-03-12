@@ -9,14 +9,24 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Variant;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetActiveModelsVariants extends SimpleExpression<Variant> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsVariants.class, Variant.class, ExpressionType.COMBINED, "[animated-skript] get all %activemodel%('s|s) variant");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsVariants.class, Variant.class)
+                        .addPatterns(
+                                "[animated-skript] get all %activemodel%('s|s) variant"
+                        )
+                        .supplier(ExprGetActiveModelsVariants::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClass;

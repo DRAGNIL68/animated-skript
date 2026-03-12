@@ -8,6 +8,8 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.nodes.Node;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -15,8 +17,16 @@ import java.util.UUID;
 
 public class ExprGetNodeUuid extends SimpleExpression<UUID> {
 
-    static {
-        Skript.registerExpression(ExprGetNodeUuid.class, UUID.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) uuid");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetNodeUuid.class, UUID.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] active-node %activemodelnode%('s|s) uuid"
+                        )
+                        .supplier(ExprGetNodeUuid::new)
+                        .build());
+
     }
 
     private Expression<Node> nodeExpression;

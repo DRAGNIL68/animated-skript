@@ -2,22 +2,32 @@ package net.outmoded.animated_skript.skript.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetActiveModelsLocation extends SimpleExpression<Location> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsLocation.class, Location.class, ExpressionType.COMBINED, "[animated-skript] [get] location of active-model %activemodel%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsLocation.class, Location.class)
+                        .addPatterns(
+                                "[animated-skript] [get] location of active-model %activemodel%"
+                        )
+                        .supplier(ExprGetActiveModelsLocation::new)
+                        .build());
+
     }
+
     private Location location;
     private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models
 

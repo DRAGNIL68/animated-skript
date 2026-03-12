@@ -6,14 +6,26 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.skript.effects.EffTeleportActiveModel;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffResetActiveVariant extends Effect {
     // Persistence
-    static {
-        Skript.registerEffect(EffResetActiveVariant.class, "[animated-skript] reset %activemodel%('s|s) tint colo[u]r");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffResetActiveVariant.class)
+                        .addPatterns(
+                                "[animated-skript] reset %activemodel%('s|s) variant"
+                        )
+                        .supplier(EffResetActiveVariant::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

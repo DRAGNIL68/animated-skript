@@ -6,26 +6,28 @@ import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
+import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EvtOnHitboxInteract extends SkriptEvent {
 
-    static {
-        Skript.registerEvent("Hitbox Interact", EvtOnHitboxInteract.class, ActiveModelHitboxInteract.class, "[animated-skript] hitbox interact");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnHitboxInteract.class, "Hitbox Interact")
+                .supplier(EvtOnHitboxInteract::new)
+                .addEvent(ActiveModelHitboxInteract.class)
+                .addPatterns("[animated-skript] hitbox interact")
+                .build());
 
         EventValues.registerEventValue(ActiveModelHitboxInteract.class, ModelClass.class, ActiveModelHitboxInteract::getActiveModel);
         EventValues.registerEventValue(ActiveModelHitboxInteract.class, Player.class, ActiveModelHitboxInteract::getPlayer);
-
-
-
-
-
     }
 
     @SuppressWarnings("unchecked")

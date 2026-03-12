@@ -1,8 +1,6 @@
 package net.outmoded.animated_skript.skript.expressions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
@@ -10,6 +8,8 @@ import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
@@ -18,11 +18,20 @@ import java.util.UUID;
 import static net.outmoded.animated_skript.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
 
+//SyntaxRegistry syntaxRegistry = addon.registry(SyntaxRegistry.class);
+public class ExprGetActiveModel extends SimpleExpression<ModelClass>{
 
-public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModel.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] active-model %string%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModel.class, ModelClass.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] active-model %string%"
+                        )
+                        .supplier(ExprGetActiveModel::new)
+                        .build());
+
     }
 
     private Expression<String> text; // if true = loaded-models | if false = active-models
@@ -77,5 +86,6 @@ public class ExprGetActiveModel extends SimpleExpression<ModelClass> {
 
         return new ModelClass[] {};
     }
+
 }
 

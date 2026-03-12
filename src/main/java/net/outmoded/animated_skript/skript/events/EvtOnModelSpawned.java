@@ -6,18 +6,26 @@ import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 
 import ch.njol.skript.registrations.EventValues;
+import net.outmoded.animated_skript.events.ModelRemovedEvent;
 import net.outmoded.animated_skript.events.ModelSpawnedEvent;
 import net.outmoded.animated_skript.events.ModelSpawnedEvent;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 
 import javax.annotation.Nullable;
 
 public class EvtOnModelSpawned extends SkriptEvent {
 
-    static {
-        Skript.registerEvent("Model Spawned", EvtOnModelSpawned.class, ModelSpawnedEvent.class, "[animated-skript] model spawned");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnModelSpawned.class, "Model Spawned")
+                .supplier(EvtOnModelSpawned::new)
+                .addEvent(ModelSpawnedEvent.class)
+                .addPatterns("[animated-skript] model spawned")
+                .build());
+
         EventValues.registerEventValue(ModelSpawnedEvent.class, ModelClass.class, ModelSpawnedEvent::getActiveModel);
     }
 

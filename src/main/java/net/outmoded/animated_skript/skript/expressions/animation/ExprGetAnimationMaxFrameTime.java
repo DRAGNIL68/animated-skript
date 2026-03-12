@@ -8,14 +8,25 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetAnimationMaxFrameTime extends SimpleExpression<Integer> {
 
-    static {
-        Skript.registerExpression(ExprGetAnimationMaxFrameTime.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodelanimation%('s|s) (max frame time|maxframetime)");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetAnimationMaxFrameTime.class, Integer.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] %activemodelanimation%('s|s) (max frame time|maxframetime)"
+                        )
+                        .supplier(ExprGetAnimationMaxFrameTime::new)
+                        .build());
+
     }
 
     private Expression<Animation> animationExpression;

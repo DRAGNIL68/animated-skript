@@ -7,14 +7,26 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class ExprEventGetEventFinalDamage extends SimpleExpression<Double> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventFinalDamage.class, Double.class, ExpressionType.COMBINED, "[animated-skript] event-final damage");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventFinalDamage.class, Double.class)
+                        .addPatterns(
+                                "[animated-skript] event-final damage"
+                        )
+                        .supplier(ExprEventGetEventFinalDamage::new)
+                        .build());
+
     }
 
 

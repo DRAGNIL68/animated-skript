@@ -9,6 +9,8 @@ import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
@@ -16,9 +18,18 @@ import static org.bukkit.Bukkit.getServer;
 
 public class EffTeleportActiveModel extends Effect {
 
-    static {
-        Skript.registerEffect(EffTeleportActiveModel.class, "[animated-skript] teleport active-model %activemodel% to %location%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffTeleportActiveModel.class)
+                        .addPatterns(
+                                "[animated-skript] teleport active-model %activemodel% to %location%"
+                        )
+                        .supplier(EffTeleportActiveModel::new)
+                        .build());
+
     }
+
     private Expression<ModelClass> activeModel;
     private Expression<Location> locationExpression;
 

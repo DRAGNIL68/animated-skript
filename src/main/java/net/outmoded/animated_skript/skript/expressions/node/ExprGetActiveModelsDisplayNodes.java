@@ -9,14 +9,24 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.entity.Display;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetActiveModelsDisplayNodes extends SimpleExpression<Display> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsDisplayNodes.class, Display.class, ExpressionType.COMBINED, "[animated-skript] [get] [the||all] display nodes of %activemodel%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsDisplayNodes.class, Display.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the||all] display nodes of %activemodel%"
+                        )
+                        .supplier(ExprGetActiveModelsDisplayNodes::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClass;

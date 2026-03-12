@@ -8,13 +8,23 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffReloadModels extends Effect {
 
-    static {
-        Skript.registerEffect(EffReloadModels.class, "[animated-skript] reload (model-configs|active-models)");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffReloadModels.class)
+                        .addPatterns(
+                                "[animated-skript] reload (model-configs|active-models)"
+                        )
+                        .supplier(EffReloadModels::new)
+                        .build());
+
     }
 
     private boolean isModelConfig = false; // true if model-configs, false if active-models

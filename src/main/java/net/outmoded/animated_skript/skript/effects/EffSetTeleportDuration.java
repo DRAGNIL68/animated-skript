@@ -7,13 +7,23 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffSetTeleportDuration extends Effect {
 
-    static {
-        Skript.registerEffect(EffSetTeleportDuration.class, "[animated-skript] set %activemodel%('s|s) teleport duration [to] %integer%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffSetTeleportDuration.class)
+                        .addPatterns(
+                                "[animated-skript] set %activemodel%('s|s) teleport duration [to] %integer%"
+                        )
+                        .supplier(EffSetTeleportDuration::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

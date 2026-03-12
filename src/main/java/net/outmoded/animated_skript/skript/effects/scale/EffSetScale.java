@@ -7,13 +7,23 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffSetScale extends Effect {
 
-    static {
-        Skript.registerEffect(EffSetScale.class, "[animated-skript] set %activemodel%('s|s) scale to %double%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffSetScale.class)
+                        .addPatterns(
+                                "[animated-skript] set %activemodel%('s|s) scale to %double%"
+                        )
+                        .supplier(EffSetScale::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

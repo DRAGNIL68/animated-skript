@@ -9,8 +9,11 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 /*
 
    Expressions return info
@@ -56,8 +59,16 @@ import javax.annotation.Nullable;
 
 public class ExprGetAllActiveModels extends SimpleExpression<ModelClass> {
 
-    static {
-        Skript.registerExpression(ExprGetAllActiveModels.class, ModelClass.class, ExpressionType.COMBINED, "[animated-skript] [get] all [the] active-models");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetAllActiveModels.class, ModelClass.class)
+                        .addPatterns(
+                                "[animated-skript] [get] all [the] active-models"
+                        )
+                        .supplier(ExprGetAllActiveModels::new)
+                        .build());
+
     }
 
 

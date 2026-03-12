@@ -7,14 +7,25 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class ExprIsPersistent extends SimpleExpression<Boolean> { // TODO: needs moving to a condition, not sure why it's an expression
 
-    static {
-        Skript.registerExpression(ExprIsPersistent.class, Boolean.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) persistence");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprIsPersistent.class, Boolean.class)
+                        .addPatterns(
+                                "[animated-skript] [get] %activemodel%('s|s) persistence"
+                        )
+                        .supplier(ExprIsPersistent::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

@@ -1,6 +1,5 @@
 package net.outmoded.animated_skript.skript.conditions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -9,6 +8,8 @@ import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.ModelManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -18,8 +19,16 @@ import static org.bukkit.Bukkit.getServer;
 
 public class CondActiveModelExists extends Condition {
 
-    static {
-        Skript.registerCondition(CondActiveModelExists.class, "[animated-skript] active-model with uuid %string% exits");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.CONDITION,
+                SyntaxInfo.builder(CondActiveModelExists.class)
+                        .addPatterns(
+                                "[animated-skript] active-model with uuid %string% exits"
+                        )
+                        .supplier(CondActiveModelExists::new)
+                        .build());
+
     }
 
     private Expression<String> text;

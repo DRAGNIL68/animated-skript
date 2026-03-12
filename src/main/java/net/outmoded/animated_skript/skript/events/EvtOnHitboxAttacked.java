@@ -7,23 +7,27 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import net.outmoded.animated_skript.events.ActiveModelHitboxInteract;
+import net.outmoded.animated_skript.events.ModelAnimationStartEvent;
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EvtOnHitboxAttacked extends SkriptEvent {
 
-    static {
-        Skript.registerEvent("Hitbox Attacked", EvtOnHitboxAttacked.class, ActiveModelHitboxAttack.class, "[animated-skript] hitbox attacked");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnHitboxAttacked.class, "Hitbox Attacked")
+                .supplier(EvtOnHitboxAttacked::new)
+                .addEvent(ActiveModelHitboxAttack.class)
+                .addPatterns("[animated-skript] hitbox attacked")
+                .build());
 
         EventValues.registerEventValue(ActiveModelHitboxAttack.class, ModelClass.class, ActiveModelHitboxAttack::getActiveModel);
-
-
-
-
     }
 
     @SuppressWarnings("unchecked")

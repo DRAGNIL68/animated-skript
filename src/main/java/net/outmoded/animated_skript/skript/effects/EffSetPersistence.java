@@ -7,13 +7,23 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EffSetPersistence extends Effect {
-    // Persistence
-    static {
-        Skript.registerEffect(EffSetPersistence.class, "[animated-skript] set %activemodel%('s|s) persistence to %boolean%");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffSetPersistence.class)
+                        .addPatterns(
+                                "[animated-skript] set %activemodel%('s|s) persistence to %boolean%"
+                        )
+                        .supplier(EffSetPersistence::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> activeModel;

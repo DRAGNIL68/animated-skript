@@ -7,14 +7,26 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.ModelAnimationFrameSetEvent;
+import net.outmoded.animated_skript.skript.expressions.node.ExprGetNodeUuid;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class ExprEventGetEventCurrentFrame extends SimpleExpression<Integer> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventCurrentFrame.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] event-current frame");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventCurrentFrame.class, Integer.class)
+                        .addPatterns(
+                                "[animated-skript] event-current frame"
+                        )
+                        .supplier(ExprEventGetEventCurrentFrame::new)
+                        .build());
+
     }
 
 

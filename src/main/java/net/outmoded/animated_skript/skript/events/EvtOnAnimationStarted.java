@@ -6,20 +6,26 @@ import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import net.outmoded.animated_skript.events.ModelAnimationStartEvent;
+import net.outmoded.animated_skript.events.ModelUnpauseAnimationEvent;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EvtOnAnimationStarted extends SkriptEvent {
 
-    static {
-        Skript.registerEvent("Animation Started", EvtOnAnimationStarted.class, ModelAnimationStartEvent.class, "[animated-skript] animation started");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnAnimationStarted.class, "Animation Started")
+                .supplier(EvtOnAnimationStarted::new)
+                .addEvent(ModelAnimationStartEvent.class)
+                .addPatterns("[animated-skript] animation started")
+                .build());
 
         EventValues.registerEventValue(ModelAnimationStartEvent.class, ModelClass.class, ModelAnimationStartEvent::getActiveModel);
         EventValues.registerEventValue(ModelAnimationStartEvent.class, Animation.class, ModelAnimationStartEvent::getAnimation);
-
     }
 
     @SuppressWarnings("unchecked")

@@ -10,8 +10,7 @@ import net.outmoded.animated_skript.models.nodes.Node;
 import javax.annotation.Nullable;
 
 public class ActiveModelNode {
-
-    static {
+    public static void register(){
         Classes.registerClass(new ClassInfo<>(Node.class, "activemodelnode")
                 .user("nodes?")
                 .name("node")
@@ -46,6 +45,7 @@ public class ActiveModelNode {
 
 
                 }));
+
     }
 
 

@@ -1,23 +1,33 @@
 package net.outmoded.animated_skript.skript.expressions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetAnimationFrame extends SimpleExpression<Integer> {
 
-    static {
-        Skript.registerExpression(ExprGetAnimationFrame.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) active animation %string% (:frame|max frame)");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetAnimationFrame.class, Integer.class)
+                        .addPatterns(
+                                "[animated-skript] [get] %activemodel%('s|s) current-animation %string% (:frame|max frame)"
+                        )
+                        .supplier(ExprGetAnimationFrame::new)
+                        .build());
+
     }
+
     private Expression<ModelClass> modelClass;
     private Expression<String> stringExpression;
     private boolean type; // if true = frame, false = max frame

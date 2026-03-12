@@ -1,22 +1,29 @@
 package net.outmoded.animated_skript.skript.expressions.animation;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetCurrentAnimationsCurrentFrameTime extends SimpleExpression<Integer> {
 
-    static {
-        Skript.registerExpression(ExprGetCurrentAnimationsCurrentFrameTime.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] [get] current-animation %activemodelanimation%('s|s) (current frame time|current-frame)");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetCurrentAnimationsCurrentFrameTime.class, Integer.class)
+                        .addPatterns(
+                                "[animated-skript] [get] current-animation %activemodelanimation%('s|s) (current frame time|current-frame)"
+                        )
+                        .supplier(ExprGetCurrentAnimationsCurrentFrameTime::new)
+                        .build());
+
     }
 
     private Expression<Animation> animationExpression;

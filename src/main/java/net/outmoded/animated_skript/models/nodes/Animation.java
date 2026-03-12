@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Animation {
+public class  Animation {
     public final Map<Integer, Frame> frames = new HashMap<>();
 
     public UUID uuid;

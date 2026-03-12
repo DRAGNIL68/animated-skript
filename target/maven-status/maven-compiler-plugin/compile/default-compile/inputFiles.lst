@@ -57,6 +57,8 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffStopAllAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffStopAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\EffTeleportActiveModel.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\rotation\EffResetRotation.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\rotation\EffSetRotation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\scale\EffResetScale.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\scale\EffSetScale.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\effects\tint\EffResetTint.java
@@ -76,6 +78,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetActiveModelsActiveAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetActiveModelsAnimations.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationDuration.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationFromActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationLoopDelay.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationLoopMode.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationMaxFrameTime.java
@@ -93,6 +96,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventUuid.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModel.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsLocation.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsRotation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsScale.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsType.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModelsUuid.java
@@ -120,3 +124,4 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\types\ActiveModelAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\types\ActiveModelNode.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\types\ActiveModelVariant.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\SyntaxRegistration.java

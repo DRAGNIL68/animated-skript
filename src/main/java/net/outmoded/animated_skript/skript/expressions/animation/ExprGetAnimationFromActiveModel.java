@@ -1,35 +1,37 @@
 package net.outmoded.animated_skript.skript.expressions.animation;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 
-public class ExprGetActiveModelsAnimations extends SimpleExpression<Animation> {
+public class ExprGetAnimationFromActiveModel extends SimpleExpression<Animation> {
+
 
     public static void register(SyntaxRegistry registry) {
         registry.register(
                 SyntaxRegistry.EXPRESSION,
-                SyntaxInfo.Expression.builder(ExprGetActiveModelsAnimations.class, Animation.class)
+                SyntaxInfo.Expression.builder(ExprGetAnimationFromActiveModel.class, Animation.class)
                         .addPatterns(
-                                "[animated-skript] [get] [all|the] %activemodel%('s|s) animations"
+                                "[animated-skript] [get] [the] animation %string% from active-model %activemodel%"
                         )
-                        .supplier(ExprGetActiveModelsAnimations::new)
+                        .supplier(ExprGetAnimationFromActiveModel::new)
                         .build());
 
     }
 
-    private Expression<ModelClass> modelClass;
+    private Expression<ModelClass> modelClassExpression;
+    private Expression<String> stringExpression;
 
     @Override
     public Class<? extends Animation> getReturnType() {
@@ -45,7 +47,8 @@ public class ExprGetActiveModelsAnimations extends SimpleExpression<Animation> {
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
-        modelClass = (Expression<ModelClass>) exprs[0];
+        modelClassExpression = (Expression<ModelClass>) exprs[1];
+        stringExpression = (Expression<String>) exprs[0];
 
 
         return true;
@@ -60,14 +63,21 @@ public class ExprGetActiveModelsAnimations extends SimpleExpression<Animation> {
     @Override
     @Nullable
     protected Animation[] get(Event event) {
-        ModelClass modelClass1 = modelClass.getSingle(event);
-        if (modelClass1 != null){
+        ModelClass modelClass = modelClassExpression.getSingle(event);
+        String string = stringExpression.getSingle(event);
 
-            return modelClass1.getAnimations();
+        if (modelClass != null){
+
+
+            if (string == null){
+                return new Animation[] {};
+            }
+            Animation animation = modelClass.getAnimation(string);
+            return new Animation[] {animation};
         }
 
 
-        return null;
+        return new Animation[] {};
     }
 }
 

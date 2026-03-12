@@ -8,13 +8,23 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.ModelAnimationFrameSetEvent;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class ExprEventGetEventNewFrame extends SimpleExpression<Integer> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventNewFrame.class, Integer.class, ExpressionType.COMBINED, "[animated-skript] event-future frame");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventNewFrame.class, Integer.class)
+                        .addPatterns(
+                                "[animated-skript] event-future frame"
+                        )
+                        .supplier(ExprEventGetEventNewFrame::new)
+                        .build());
+
     }
 
 

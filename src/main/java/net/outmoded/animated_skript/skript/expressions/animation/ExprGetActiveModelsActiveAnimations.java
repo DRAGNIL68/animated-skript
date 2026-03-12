@@ -9,16 +9,29 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import net.outmoded.animated_skript.models.nodes.Animation;
+import net.outmoded.animated_skript.skript.expressions.event.hitbox.ExprEventGetEventUuid;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 public class ExprGetActiveModelsActiveAnimations extends SimpleExpression<Animation> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsActiveAnimations.class, Animation.class, ExpressionType.COMBINED, "[animated-skript] [get] [all|the] %activemodel%('s|s) active-animations");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsActiveAnimations.class, Animation.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [all|the] %activemodel%('s|s) active-animations"
+                        )
+                        .supplier(ExprGetActiveModelsActiveAnimations::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClass;

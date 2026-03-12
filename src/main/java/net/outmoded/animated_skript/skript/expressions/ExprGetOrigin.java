@@ -9,14 +9,25 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetOrigin extends SimpleExpression<ItemDisplay> {
 
-    static {
-        Skript.registerExpression(ExprGetOrigin.class, ItemDisplay.class, ExpressionType.COMBINED, "[animated-skript] [get] [the] %activemodel%('s|s) origin");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetOrigin.class, ItemDisplay.class)
+                        .addPatterns(
+                                "[animated-skript] [get] [the] %activemodel%('s|s) origin"
+                        )
+                        .supplier(ExprGetOrigin::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClassExpression;

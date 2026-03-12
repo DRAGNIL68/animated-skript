@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 
 public class ActiveModel {
 
-    static {
+    public static void register(){
         Classes.registerClass(new ClassInfo<>(ModelClass.class, "activemodel")
                 .user("activemodels?")
                 .name("activemodel")
@@ -47,7 +47,9 @@ public class ActiveModel {
 
 
                 }));
+
     }
+
 
 
 }

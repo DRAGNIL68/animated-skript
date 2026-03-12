@@ -1,7 +1,6 @@
 package net.outmoded.animated_skript;
 
-import ch.njol.skript.Skript;
-import ch.njol.skript.SkriptAddon;
+
 import ch.njol.skript.update.UpdateChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -11,10 +10,14 @@ import net.outmoded.animated_skript.listeners.OnEntityDismountEvent;
 import net.outmoded.animated_skript.listeners.OnPlayerInteractEvent;
 import net.outmoded.animated_skript.models.ModelManager;
 import net.outmoded.animated_skript.models.ModelPersistence;
+import net.outmoded.animated_skript.skript.expressions.ExprLastSpawnedActiveModel;
 import net.outmoded.outmodedlib.packer.ResourcePackServer.ResourcePackManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.skriptlang.skript.Skript;
+import org.skriptlang.skript.addon.SkriptAddon;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,7 +26,6 @@ import java.nio.file.Path;
 public final class AnimatedSkript extends JavaPlugin {
 
 
-    SkriptAddon addon;
 
 
     @Override
@@ -73,13 +75,13 @@ public final class AnimatedSkript extends JavaPlugin {
         // Skript stuff
 
         if (Bukkit.getServer().getPluginManager().getPlugin("Skript") != null){
-            addon = Skript.registerAddon(this);
-            try {
-                //This will register all our syntax for us. Explained below
-                addon.loadClasses("net.outmoded.animated_skript", "skript");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            SyntaxRegistration.register();
+//            try {
+//                //This will register all our syntax for us. Explained below
+//                addon.loadClasses("net.outmoded.animated_skript", "skript");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
             getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("skript_syntax_loaded")));
         }
         else {
@@ -143,9 +145,7 @@ public final class AnimatedSkript extends JavaPlugin {
         return getPlugin(AnimatedSkript.class);
     }
 
-    public SkriptAddon getAddonInstance() {
-        return addon;
-    }
+
 }
 
 

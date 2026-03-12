@@ -8,14 +8,24 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetActiveModelsType extends SimpleExpression<String> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsType.class, String.class, ExpressionType.COMBINED, "[animated-skript] [get] %activemodel%('s|s) model type");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsType.class, String.class)
+                        .addPatterns(
+                                "[animated-skript] [get] %activemodel%('s|s) model type"
+                        )
+                        .supplier(ExprGetActiveModelsType::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models

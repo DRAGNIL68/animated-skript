@@ -10,14 +10,25 @@ import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprEventGetEventDamager extends SimpleExpression<DamageSource> {
 
-    static {
-        Skript.registerExpression(ExprEventGetEventDamager.class, DamageSource.class, ExpressionType.COMBINED, "[animated-skript] event-damage source");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprEventGetEventDamager.class, DamageSource.class)
+                        .addPatterns(
+                                "[animated-skript] event-damage source"
+                        )
+                        .supplier(ExprEventGetEventDamager::new)
+                        .build());
+
     }
 
 

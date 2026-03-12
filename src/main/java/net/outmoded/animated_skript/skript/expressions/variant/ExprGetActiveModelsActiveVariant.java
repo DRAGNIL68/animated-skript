@@ -7,15 +7,27 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
+import net.outmoded.animated_skript.skript.expressions.ExprLastSpawnedActiveModel;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class ExprGetActiveModelsActiveVariant extends SimpleExpression<String> {
 
-    static {
-        Skript.registerExpression(ExprGetActiveModelsActiveVariant.class, String.class, ExpressionType.COMBINED, "[animated-skript] get %activemodel%('s|s) active variant");
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprGetActiveModelsActiveVariant.class, String.class)
+                        .addPatterns(
+                                "[animated-skript] get %activemodel%('s|s) active variant"
+                        )
+                        .supplier(ExprGetActiveModelsActiveVariant::new)
+                        .build());
+
     }
 
     private Expression<ModelClass> modelClass; // if true = loaded-models | if false = active-models

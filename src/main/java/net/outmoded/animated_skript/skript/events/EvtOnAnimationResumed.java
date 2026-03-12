@@ -5,20 +5,27 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
+import net.outmoded.animated_skript.events.ModelAnimationPauseEvent;
 import net.outmoded.animated_skript.events.ModelUnpauseAnimationEvent;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 public class EvtOnAnimationResumed extends SkriptEvent {
 
-    static {
-        Skript.registerEvent("Animation Resumed", EvtOnAnimationResumed.class, ModelUnpauseAnimationEvent.class, "[animated-skript] animation (unpaused||resumed)");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnAnimationResumed.class, "Animation Resumed")
+                .supplier(EvtOnAnimationResumed::new)
+                .addEvent(ModelUnpauseAnimationEvent.class)
+                .addPatterns("[animated-skript] animation (unpaused||resumed)")
+                .build());
+
         EventValues.registerEventValue(ModelUnpauseAnimationEvent.class, ModelClass.class, ModelUnpauseAnimationEvent::getActiveModel);
         EventValues.registerEventValue(ModelUnpauseAnimationEvent.class, Animation.class, ModelUnpauseAnimationEvent::getAnimation);
-
     }
 
     @SuppressWarnings("unchecked")

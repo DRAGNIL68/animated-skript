@@ -14,6 +14,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.ApiStatus;
@@ -30,6 +31,8 @@ import static net.outmoded.animated_skript.Config.debugMode;
 import static org.bukkit.Bukkit.getServer;
 
 public class ModelClass {
+    public static final ObjectMapper objectMapper = new ObjectMapper();
+
     public final Map<String, Variant> variants = new HashMap<>();
     public final Map<String, UUID> activeLocators = new HashMap<>(); // stores a reference to a camera by name
     public final Map<UUID, Node> nodeMap = new HashMap<>();
@@ -48,6 +51,12 @@ public class ModelClass {
     public final Map<String, ActiveAnimation> activeAnimations = new HashMap<>();
     // in ticks 1T = 0.05S | 0.05 x 20 = 1S
     boolean isActive = false; // stops all animations
+
+    private static final Pattern hitboxPattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern playerPattern = Pattern.compile("player\\{type:([a-z_]*)}", Pattern.CASE_INSENSITIVE);
+
+
+
 
     protected ModelClass(@NotNull Location location, @NotNull String modelType, @NotNull UUID uuid) {
         this.modelType = modelType;
@@ -84,16 +93,11 @@ public class ModelClass {
         try{
             if (ModelManager.getInstance().loadedModelExists(modelType)) {
                 nodeMap.clear();
-                UUID uuid = UUID.randomUUID();
-
                 JsonNode config = ModelManager.getInstance().getLoadedModel(modelType);
 
 
-                ObjectMapper objectMapper = new ObjectMapper();
+                
                 JsonNode root = config.get("nodes");
-
-                NamespacedKey key = new NamespacedKey(AnimatedSkript.getInstance(), "nodeType");
-                NamespacedKey UuidKey = new NamespacedKey(AnimatedSkript.getInstance(), "modelUuid");
 
                 for (JsonNode node : root) {
                     try {
@@ -145,8 +149,8 @@ public class ModelClass {
 
                         }
                         else if (modelNode.type.equals("locator")) { // hitbox and locator code
-                            Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)}", Pattern.CASE_INSENSITIVE);
-                            Matcher matcher = pattern.matcher(modelNode.name);
+
+                            Matcher matcher = hitboxPattern.matcher(modelNode.name);
                             boolean matchFound = matcher.find();
 
 
@@ -161,7 +165,7 @@ public class ModelClass {
                             }
 
                             else { // locators
-                                modelNode.type ="locator";
+                                modelNode.type = "locator";
 
                             }
 
@@ -220,39 +224,39 @@ public class ModelClass {
                         }
 
                         Quaternionf quaternion = new Quaternionf(modelNode.leftRotation[0], modelNode.leftRotation[1], modelNode.leftRotation[2], modelNode.leftRotation[3]); // fuck math
+
+
                         // TODO: NOTE BlockBench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯ edit: I fixed it
                         // TODO: NOTE Mr Aj has made custom textured models actually face north for some reason, block displays still face south
 
                         if (modelNode.type.equals("bone")){
 
-                            Pattern pattern = Pattern.compile("player\\{type:([a-z]*)}", Pattern.CASE_INSENSITIVE);
-                            Matcher matcher = pattern.matcher(modelNode.name);
-                            boolean matchFound = matcher.find();
 
 
-                            if (matchFound){
-                                modelNode.type = "player_bone";
-                                String part = matcher.group(1);
+                            if (modelNode.typeSpecificProperties.containsKey("custom_name")) {
 
-                                try {
+                                String displayName = (String) modelNode.typeSpecificProperties.get("custom_name"); // this is such a hack but i don't know how to make a custom fork of AJ
 
-                                    StablePlayerDisplayOffset offset = StablePlayerDisplayOffset.valueOf(part.toUpperCase());
+                                Matcher matcher = playerPattern.matcher(displayName);
+                                boolean matchFound = matcher.find();
 
-                                    modelNode.typeSpecificProperties.put("player_part", offset);
+                                if (matchFound){
 
-                                } catch (IllegalArgumentException ignored){
-                                    // this is silly
+                                    modelNode.type = "player_bone";
+                                    String part = matcher.group(1);
 
+                                    try {
+
+                                        StablePlayerDisplayOffset offset = StablePlayerDisplayOffset.valueOf(part.toUpperCase());
+                                        modelNode.typeSpecificProperties.put("player_part", offset);
+
+                                    } catch (IllegalArgumentException ignored){
+                                        AnimatedSkript.getInstance().getLogger().warning("player node "+modelNode.uuid + " has malformed name config and will not be loaded");
+
+                                    }
                                 }
-
-
-
-
                             }
 
-
-                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
-                            quaternion.mul(new Quaternionf(additionalRotation));
                         }
 
 
@@ -268,11 +272,39 @@ public class ModelClass {
 
                             modelNode.transformation = transformation;
                         }
-                        else {
+
+                        else if (modelNode.type.equals("player_bone")){ // this for player bones
+
+
+                            StablePlayerDisplayOffset offset = (StablePlayerDisplayOffset) modelNode.typeSpecificProperties.get("player_part");
+                            AnimatedSkript.getInstance().getLogger().warning(offset.toString());
+
+                            AnimatedSkript.getInstance().getLogger().warning(String.valueOf(modelNode.translation[1]));
+
+                            modelNode.translation[1] = (modelNode.translation[1] - (float) offset.offset);
+
+                            AnimatedSkript.getInstance().getLogger().warning(String.valueOf(modelNode.translation[1]));
+                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                            quaternion.mul(new Quaternionf(additionalRotation));
 
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
-                                    new AxisAngle4f().set(quaternion), // left rot
+                                    new AxisAngle4f(quaternion), // left rot
+                                    new Vector3f(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]), // scale
+                                    new AxisAngle4f() // no right rotation
+                            );
+
+                            modelNode.transformation = transformation;
+                        }
+
+                        else { // this is for nodes, item_displays and everything except structs
+
+                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                            quaternion.mul(new Quaternionf(additionalRotation));
+
+                            Transformation transformation = new Transformation(
+                                    new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
+                                    new AxisAngle4f(quaternion), // left rot
                                     new Vector3f(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]), // scale
                                     new AxisAngle4f() // no right rotation
                             );
@@ -307,7 +339,7 @@ public class ModelClass {
                 JsonNode config = ModelManager.getInstance().getLoadedModel(modelType);
 
 
-                ObjectMapper objectMapper = new ObjectMapper();
+                
                 JsonNode root = config.get("animations");
 
                 for (Iterator<String> it = root.fieldNames(); it.hasNext(); ) {
@@ -678,17 +710,23 @@ public class ModelClass {
                     break;
                 case "player_bone":
 
-                    ItemStack playerBoneItemStack = new ItemStack(Material.PAPER);
+                    ItemStack playerBoneItemStack = new ItemStack(Material.PLAYER_HEAD);
 
 
                     ItemMeta playerBoneMeta = playerBoneItemStack.getItemMeta();
                     playerBoneMeta.setItemModel(modelKey);
+
+                    SkullMeta skull = (SkullMeta) playerBoneMeta;
+                    skull.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString("b10f38ef-b98e-4a4d-9f6a-f06a4e4f6b02")));
+
                     playerBoneItemStack.setItemMeta(playerBoneMeta);
+
 
                     ItemDisplay playerBoneItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
 
                     playerBoneItemDisplay.setItemStack(playerBoneItemStack);
                     playerBoneItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "player_bone");
+                    playerBoneItemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.THIRDPERSON_RIGHTHAND);
 
                     display = playerBoneItemDisplay;
 
@@ -702,7 +740,9 @@ public class ModelClass {
 
             if (display != null){
                 display.setPersistent(false);
-                display.setTransformation(applyScale(node.transformation, modelScale));
+                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
+
+                display.setTransformation(applyRot(transformation));
                 activeNodes.put(node.uuid, display);
                 origin.addPassenger(display);
                 applyTypeSpecificProperties(node);
@@ -899,7 +939,9 @@ public class ModelClass {
                     activeNodes.get(node.uuid).setInterpolationDelay(0);
                     activeNodes.get(node.uuid).setInterpolationDuration(1);
 
-                    activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+                    org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
+
+                    activeNodes.get(node.uuid).setTransformation(applyRot(transformation));
 
 
 
@@ -972,6 +1014,17 @@ public class ModelClass {
 
     }
 
+    public void updateModel(){ // this is a stupid hack
+
+        for (ActiveAnimation activeAnimation : activeAnimations.values()){
+            activeAnimation.currentFrameTime = activeAnimation.currentFrameTime - 1;
+        }
+
+        isActive = true;
+        tickAnimation();
+
+    }
+
     public Location getOriginLocation(){
         return origin.getLocation();
     }
@@ -1020,8 +1073,9 @@ public class ModelClass {
                 activeNodes.get(node.uuid).setInterpolationDelay(0);
                 activeNodes.get(node.uuid).setInterpolationDuration(0);
 
-                activeNodes.get(node.uuid).setTransformation(applyScale(node.transformation, modelScale));
+                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
 
+                activeNodes.get(node.uuid).setTransformation(applyRot(transformation));
             }
             else if (activeHitboxes.containsKey(node.uuid)){
 
@@ -1433,5 +1487,46 @@ public class ModelClass {
         isActive = b;
 
     }
+
+    private Quaternionf rotation = new Quaternionf((float) 0, 0, 0, 1);
+    public void setRotation(Quaternionf rotation){
+
+        if (rotation.equals(new Quaternionf())) { // should stop bad quats
+            return;
+        }
+        this.rotation = rotation;
+        updateModel();
+
+    }
+
+    public void resetRotation(){
+        this.rotation = new Quaternionf((float) 0, 0, 0, 1);
+
+    }
+
+    public Quaternionf getRotation(){
+        return new Quaternionf(rotation);
+    }
+
+
+
+    private Transformation applyRot(Transformation originalTransformation){ // should probably be in a util class
+
+        Vector3f position = new Vector3f(originalTransformation.getTranslation());
+
+        this.rotation.transform(position);
+        Quaternionf orientation = new Quaternionf(originalTransformation.getLeftRotation());
+
+        this.rotation.mul(orientation, orientation); // thanks, ChatGPT I don't know why passing the same thing 2 times makes use its global position
+
+        return new Transformation(
+                position,
+                new AxisAngle4f(orientation),
+                originalTransformation.getScale(),
+                new AxisAngle4f()
+        );
+
+    }
+
 
 }

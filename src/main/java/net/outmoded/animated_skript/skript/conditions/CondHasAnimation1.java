@@ -8,14 +8,24 @@ import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.models.ModelClass;
 import net.outmoded.animated_skript.models.nodes.Animation;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import javax.annotation.Nullable;
 
 
 public class CondHasAnimation1 extends Condition {
 
-    static {
-        Skript.registerCondition(CondHasAnimation1.class, "[animated-skript] %activemodel% has animation %activemodelanimation%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.CONDITION,
+                SyntaxInfo.builder(CondHasAnimation1.class)
+                        .addPatterns(
+                                "[animated-skript] %activemodel% has animation %activemodelanimation%"
+                        )
+                        .supplier(CondHasAnimation1::new)
+                        .build());
+
     }
 
     private Expression<Animation> animationExpression;

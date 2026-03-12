@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
 
 public class EffCameraControl extends Effect {
 
-    static {
-        Skript.registerEffect(EffCameraControl.class, "[animated-skript] make %player% (:start|stop) spectating %activemodel%('s|s) camera %string%");
-    }
+//    static {
+//        Skript.registerEffect(EffCameraControl.class, "[animated-skript] make %player% (:start|stop) spectating %activemodel%('s|s) camera %string%");
+//    }
 
     private Expression<ModelClass> activeModel;
     private Expression<String> string;

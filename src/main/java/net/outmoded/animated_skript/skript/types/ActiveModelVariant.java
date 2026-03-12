@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 
 public class ActiveModelVariant {
 
-    static {
+    public static void register(){
         Classes.registerClass(new ClassInfo<>(Variant.class, "activemodelvariant")
                 .user("variants?")
                 .name("variant")
@@ -47,6 +47,7 @@ public class ActiveModelVariant {
 
 
                 }));
+
     }
 
 
