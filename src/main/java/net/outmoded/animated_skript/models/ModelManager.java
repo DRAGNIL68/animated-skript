@@ -36,7 +36,9 @@ public class ModelManager {
     private final ConcurrentHashMap<UUID, ModelClass> activeModels = new ConcurrentHashMap <>(); // stores all models that are active on the server
     private ResourcePack resourcePack;
     private Namespace animatedSkript;
-    private int errorCount = 0;
+
+    private int errorCount = 0; // TODO: replace this as its terrible
+
     private static ModelManager modelManager;
 
     private ModelManager(){

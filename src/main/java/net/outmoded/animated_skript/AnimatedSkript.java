@@ -55,14 +55,17 @@ public final class AnimatedSkript extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnPlayerInteractEvent(), this); // model saving and loading
         // ###########################
         // commands
+
         getCommand("animated-skript").setExecutor(new Commands());
         getCommand("animated-skript").setTabCompleter(new CommandsTabComplete());
         // ###########################
         // loads plugin config, model config and save data
+
         Config.load();
         Config.loadLang();
+
         ModelManager.getInstance().loadModelConfigs();
-        //ModelPersistence.loadLastConfig();
+
         ModelPersistence.getInstance().load();
         // ###########################
         final Component component = MiniMessage.miniMessage().deserialize(
@@ -76,13 +79,8 @@ public final class AnimatedSkript extends JavaPlugin {
 
         if (Bukkit.getServer().getPluginManager().getPlugin("Skript") != null){
             SyntaxRegistration.register();
-//            try {
-//                //This will register all our syntax for us. Explained below
-//                addon.loadClasses("net.outmoded.animated_skript", "skript");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("skript_syntax_loaded")));
+
         }
         else {
 
@@ -91,12 +89,13 @@ public final class AnimatedSkript extends JavaPlugin {
         }
 
         if (getServer().getPluginManager().getPlugin("outmodedlib") != null){
+
             if (Config.selfHost()){
 
-                Path path1 = Path.of("plugins/Animated-Skript/output/animated-skript.zip");
+                Path path = Path.of("plugins/Animated-Skript/output/animated-skript.zip");
 
-                if (path1.toFile().exists()){
-                    ResourcePackManager.getInstance().registerResourcePack("animated-skript", path1, true);
+                if (path.toFile().exists()){
+                    ResourcePackManager.getInstance().registerResourcePack("animated-skript", path, true);
                 }
 
                 getServer().getConsoleSender().sendMessage( MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("outmodedlib_pack_hosting")));
