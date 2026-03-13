@@ -7,6 +7,8 @@ import net.outmoded.animated_skript.skript.effects.scale.EffResetScale;
 import net.outmoded.animated_skript.skript.effects.scale.EffSetScale;
 import net.outmoded.animated_skript.skript.effects.tint.EffResetTint;
 import net.outmoded.animated_skript.skript.effects.tint.EffSetTint;
+import net.outmoded.animated_skript.skript.effects.variant.EffResetActiveVariant;
+import net.outmoded.animated_skript.skript.effects.variant.EffSetActiveVariant;
 import net.outmoded.animated_skript.skript.events.*;
 import net.outmoded.animated_skript.skript.expressions.*;
 import net.outmoded.animated_skript.skript.expressions.animation.*;
@@ -118,6 +120,9 @@ public class SyntaxRegistration {
         EvtOnModelRemoved.register(syntaxRegistry);
         EvtOnModelSpawned.register(syntaxRegistry);
         EvtOnReload.register(syntaxRegistry);
+
+        EffResetActiveVariant.register(syntaxRegistry);
+        EffSetActiveVariant.register(syntaxRegistry);
 
 
 

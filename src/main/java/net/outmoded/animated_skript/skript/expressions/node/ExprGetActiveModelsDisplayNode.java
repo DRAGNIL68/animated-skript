@@ -49,7 +49,7 @@ public class ExprGetActiveModelsDisplayNode extends SimpleExpression<Display> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         modelClass = (Expression<ModelClass>) exprs[1];
-        stringExpression = (Expression<String>) exprs[1];
+        stringExpression = (Expression<String>) exprs[0];
 
 
 
