@@ -226,8 +226,7 @@ public class ModelClass {
                         Quaternionf quaternion = new Quaternionf(modelNode.leftRotation[0], modelNode.leftRotation[1], modelNode.leftRotation[2], modelNode.leftRotation[3]); // fuck math
 
 
-                        // TODO: NOTE BlockBench's North is Minecraft's South, should fix at some point ¯\_(ツ)_/¯ edit: I fixed it
-                        // TODO: NOTE Mr Aj has made custom textured models actually face north for some reason, block displays still face south
+                        // TODO: NOTE BlockBench's North is Minecraft's South
 
                         if (modelNode.type.equals("bone")){
 
@@ -284,8 +283,6 @@ public class ModelClass {
                             modelNode.translation[1] = (modelNode.translation[1] - (float) offset.offset);
 
                             AnimatedSkript.getInstance().getLogger().warning(String.valueOf(modelNode.translation[1]));
-                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
-                            quaternion.mul(new Quaternionf(additionalRotation));
 
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
@@ -297,10 +294,22 @@ public class ModelClass {
                             modelNode.transformation = transformation;
                         }
 
-                        else { // this is for nodes, item_displays and everything except structs
+                        // this is for bones,
+                        else if (modelNode.type.equals("bone")){
 
-                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
-                            quaternion.mul(new Quaternionf(additionalRotation));
+
+                            Transformation transformation = new Transformation(
+                                    new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
+                                    new AxisAngle4f(quaternion), // left rot
+                                    new Vector3f(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]), // scale
+                                    new AxisAngle4f() // no right rotation
+                            );
+
+                            modelNode.transformation = transformation;
+
+                        }
+
+                        else { // item_displays and everything except structs
 
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
@@ -393,9 +402,6 @@ public class ModelClass {
 
                                 if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("struct") && debugMode()) {
 
-                                    AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
-                                    quaternion.mul(new Quaternionf(additionalRotation));
-
                                     Transformation transformation = new Transformation(
                                             new Vector3f(frameNode.translation[0], frameNode.translation[1], frameNode.translation[2]), // translation
                                             new AxisAngle4f().set(quaternion), // left rot
@@ -408,8 +414,7 @@ public class ModelClass {
                                 else {
 
                                     if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("bone")){
-                                        AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation
-                                        quaternion.mul(new Quaternionf(additionalRotation));
+
                                     }
 
                                     Transformation transformation = new Transformation(
@@ -879,8 +884,19 @@ public class ModelClass {
                 if (animation.currentFrameTime >= animation.animationReference.duration) { // checks info about an animation
 
                     if (animation.animationReference.loopMode.equals("loop")) {
-                        this.deleteModelNodes();
-                        this.spawnModelNodes();
+
+                        for (Node node : nodeMap.values()) {
+                            if (activeNodes.containsKey(node.uuid)) {
+                                activeNodes.get(node.uuid).setInterpolationDelay(0);
+                                activeNodes.get(node.uuid).setInterpolationDuration(0);
+
+                                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
+
+                                activeNodes.get(node.uuid).setTransformation(applyRot(transformation));
+                            }
+
+                        }
+
                         animation.currentFrameTime = 0;
                     }
 
@@ -938,6 +954,8 @@ public class ModelClass {
 
                     activeNodes.get(node.uuid).setInterpolationDelay(0);
                     activeNodes.get(node.uuid).setInterpolationDuration(1);
+
+
 
                     org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
 
