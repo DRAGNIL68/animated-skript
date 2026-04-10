@@ -7,7 +7,7 @@ This project has more features than I can remember, but some notable ones of the
 - multi-animation
 - hitboxes
 
-# yes you an use block and item displasy with no resource pack
+# yes you an use block and item displays with no resource pack
 Under the hood this project is not that complex, it uses Jackson for reading Json, Jimfs for the resource pack generation system and bstats for analitics.
 
 Join the discord if you want help: https://discord.gg/yNYMndDP9N
