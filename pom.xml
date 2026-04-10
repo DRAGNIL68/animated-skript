@@ -6,7 +6,7 @@
 
     <groupId>net.outmoded</groupId>
     <artifactId>animated-skript</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1-test1</version>
     <packaging>jar</packaging>
 
     <name>animated-skript</name>
@@ -33,11 +33,22 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration>
+                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <!-- Replace this with your package! -->
                             <shadedPattern>net.outmoded.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.retrooper.packetevents</pattern>
+                            <!-- Replace this with your package! -->
+                            <shadedPattern>net.outmoded.packetevents.api</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.github.retrooper.packetevents </pattern>
+                            <!-- Replace this with your package! -->
+                            <shadedPattern>net.outmoded.packetevents.impl</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -76,6 +87,14 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
     </repositories>
 
@@ -118,6 +137,12 @@
             <artifactId>outmodedlib</artifactId>
             <version>v1.5.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.retrooper</groupId>
+            <artifactId>packetevents-spigot</artifactId>
+            <version>2.12.0</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

@@ -4,7 +4,7 @@
   <groupId>net.outmoded</groupId>
   <artifactId>animated-skript</artifactId>
   <name>animated-skript</name>
-  <version>1.4.0</version>
+  <version>1.4.1-test1</version>
   <build>
     <defaultGoal>clean package</defaultGoal>
     <resources>
@@ -34,6 +34,7 @@
           </execution>
         </executions>
         <configuration>
+          <minimizeJar>true</minimizeJar>
           <relocations>
             <relocation>
               <pattern>org.bstats</pattern>

@@ -67,7 +67,6 @@ public class OnEntityDismountEvent implements Listener {
                 event.setCancelled(true);
             }
 
-
         }
 
     }

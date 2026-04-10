@@ -298,6 +298,9 @@ public class ModelClass {
                         else if (modelNode.type.equals("bone")){
 
 
+                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                            quaternion.mul(new Quaternionf(additionalRotation));
+
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
                                     new AxisAngle4f(quaternion), // left rot
@@ -414,7 +417,8 @@ public class ModelClass {
                                 else {
 
                                     if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("bone")){
-
+                                        AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                                        quaternion.mul(new Quaternionf(additionalRotation));
                                     }
 
                                     Transformation transformation = new Transformation(
