@@ -2,6 +2,19 @@ package net.outmoded.animated_skript.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.player.Equipment;
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
+import com.github.retrooper.packetevents.protocol.player.User;
+import com.github.retrooper.packetevents.util.Vector3d;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
+import com.google.common.collect.Lists;
+import io.github.retrooper.packetevents.util.SpigotReflectionUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -327,7 +340,7 @@ public class ModelClass {
                         this.nodeMap.put(modelNode.uuid, modelNode);
 
                     }catch(Exception e){
-                        e.printStackTrace();
+                        AnimatedSkript.getInstance().getLogger().severe(e.getMessage());
                     }
                 }
             }
@@ -635,10 +648,38 @@ public class ModelClass {
                     Material itemDisplayMaterial = Material.valueOf(material1.toUpperCase());
                     ItemDisplay itemDisplayItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
 
+
                     itemDisplayItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "item_display");
 
                     itemDisplayItemDisplay.setItemStack(new ItemStack(itemDisplayMaterial));
                     display = itemDisplayItemDisplay;
+
+
+
+                    int id = SpigotReflectionUtil.generateEntityId();
+
+                    for(Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+                        WrapperPlayServerSpawnEntity spawnPacket = new WrapperPlayServerSpawnEntity(
+                                id,
+                                Optional.of(node.uuid),
+                                EntityTypes.ITEM_DISPLAY,
+                                new Vector3d(origin.getLocation().getX(), origin.getLocation().getY(), origin.getLocation().getZ()),
+                                origin.getLocation().getPitch(),
+                                origin.getLocation().getYaw(),
+                                origin.getLocation().getYaw(), // Head yaw
+                                0,
+                                Optional.empty()
+                        );
+                        user.sendPacket(spawnPacket);
+
+                        WrapperPlayServerEntityMetadata playServerEntityMetadata = new WrapperPlayServerEntityMetadata(23,
+                                List.of(
+                                        new EntityData(23, EntityDataTypes.ITEMSTACK, new ItemStack(itemDisplayMaterial))
+                        ));
+
+                        user.sendPacket(playServerEntityMetadata);
+                    }
 
                     break;
                 case "text_display":
@@ -1529,8 +1570,6 @@ public class ModelClass {
     public Quaternionf getRotation(){
         return new Quaternionf(rotation);
     }
-
-
 
     private Transformation applyRot(Transformation originalTransformation){ // should probably be in a util class
 

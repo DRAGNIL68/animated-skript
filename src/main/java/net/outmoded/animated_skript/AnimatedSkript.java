@@ -1,6 +1,5 @@
 package net.outmoded.animated_skript;
 
-
 import ch.njol.skript.update.UpdateChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -22,10 +21,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import java.io.IOException;
 import java.nio.file.Path;
 
-
 public final class AnimatedSkript extends JavaPlugin {
-
-
 
 
     @Override
@@ -42,6 +38,7 @@ public final class AnimatedSkript extends JavaPlugin {
         String version = Bukkit.getMinecraftVersion();
 
         if (version.equals("1.21.7") || version.equals("1.21.8") || version.equals("1.21.10") || version.equals("1.21.11")){
+
         }
         else {
             AnimatedSkript.getInstance().getLogger().warning("you are running a unsupported version: supported versions = 1.21.7/1.21.8/1.21.10/1.21.11");
@@ -118,7 +115,7 @@ public final class AnimatedSkript extends JavaPlugin {
         }, 20, 1L);
         // ###########################
         // updates save data
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){ // replace with modern version
             public void run(){
                 ModelPersistence.getInstance().saveAllModels();
 

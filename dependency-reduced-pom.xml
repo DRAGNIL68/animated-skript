@@ -4,7 +4,7 @@
   <groupId>net.outmoded</groupId>
   <artifactId>animated-skript</artifactId>
   <name>animated-skript</name>
-  <version>1.4.1-test1</version>
+  <version>1.4.1</version>
   <build>
     <defaultGoal>clean package</defaultGoal>
     <resources>
@@ -40,6 +40,14 @@
               <pattern>org.bstats</pattern>
               <shadedPattern>net.outmoded.bstats</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>com.github.retrooper.packetevents</pattern>
+              <shadedPattern>net.outmoded.packetevents.api</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>io.github.retrooper.packetevents</pattern>
+              <shadedPattern>net.outmoded.packetevents.impl</shadedPattern>
+            </relocation>
           </relocations>
         </configuration>
       </plugin>
@@ -62,6 +70,14 @@
     <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
+    </repository>
+    <repository>
+      <id>codemc-releases</id>
+      <url>https://repo.codemc.io/repository/maven-releases/</url>
+    </repository>
+    <repository>
+      <id>codemc-snapshots</id>
+      <url>https://repo.codemc.io/repository/maven-snapshots/</url>
     </repository>
   </repositories>
   <dependencies>
