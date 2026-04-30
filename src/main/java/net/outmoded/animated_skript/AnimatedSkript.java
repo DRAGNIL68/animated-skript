@@ -1,24 +1,18 @@
 package net.outmoded.animated_skript;
 
-import ch.njol.skript.update.UpdateChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.commands.Commands;
 import net.outmoded.animated_skript.commands.CommandsTabComplete;
-import net.outmoded.animated_skript.listeners.OnEntityDismountEvent;
-import net.outmoded.animated_skript.listeners.OnPlayerInteractEvent;
+import net.outmoded.animated_skript.listeners.OnEntityDismountListener;
+import net.outmoded.animated_skript.listeners.OnPlayerInteractListener;
 import net.outmoded.animated_skript.models.ModelManager;
 import net.outmoded.animated_skript.models.ModelPersistence;
-import net.outmoded.animated_skript.skript.expressions.ExprLastSpawnedActiveModel;
 import net.outmoded.outmodedlib.packer.ResourcePackServer.ResourcePackManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.skriptlang.skript.Skript;
-import org.skriptlang.skript.addon.SkriptAddon;
-import org.skriptlang.skript.registration.SyntaxRegistry;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 public final class AnimatedSkript extends JavaPlugin {
@@ -47,9 +41,9 @@ public final class AnimatedSkript extends JavaPlugin {
 
         // ###########################
         // registering event listeners
-        getServer().getPluginManager().registerEvents(new OnEntityDismountEvent(), this); // stops models from braking when they are teleported
+        getServer().getPluginManager().registerEvents(new OnEntityDismountListener(), this); // stops models from braking when they are teleported
         getServer().getPluginManager().registerEvents(ModelPersistence.getInstance(), this); // model saving and loading
-        getServer().getPluginManager().registerEvents(new OnPlayerInteractEvent(), this); // model saving and loading
+        getServer().getPluginManager().registerEvents(new OnPlayerInteractListener(), this); // model saving and loading
         // ###########################
         // commands
 

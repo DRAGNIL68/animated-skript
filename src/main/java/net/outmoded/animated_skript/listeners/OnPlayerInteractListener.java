@@ -16,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
-public class OnPlayerInteractEvent implements Listener {
+public class OnPlayerInteractListener implements Listener {
 
 
     @EventHandler

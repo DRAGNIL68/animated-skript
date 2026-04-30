@@ -6,12 +6,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.nodes.ActiveAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -27,7 +31,7 @@ public final class ModelPersistence implements Listener {
     protected static Map<String, ArrayList<UUID>> chunkMap = new HashMap<>();
 
     private static final ModelPersistence SAVEDATA_DATABASE = new ModelPersistence();
-    protected Connection connection;
+    private Connection connection;
 
 
     @EventHandler
@@ -42,8 +46,9 @@ public final class ModelPersistence implements Listener {
 
                 ModelClass modelClass = ModelManager.getInstance().getActiveModel(uuid);
 
-                if (!modelClass.isPersistent)
+                if (!modelClass.isPersistent){ // if the model is not persistent delete it from existence
                     continue;
+                }
 
                 SAVEDATA_DATABASE.addModel(modelClass);
                 ModelManager.getInstance().removeActiveModelFromWorld(modelClass.uuid);
@@ -65,6 +70,7 @@ public final class ModelPersistence implements Listener {
 
     @EventHandler
     private static void onChunkLoad(ChunkLoadEvent event){
+
         String chunk_id = event.getChunk().getWorld().getName()+"|x-"+event.getChunk().getX()+"|z-"+event.getChunk().getZ(); // world|x-3|z-4
         // get all entries with the corresponding chunk_id
 
@@ -83,31 +89,54 @@ public final class ModelPersistence implements Listener {
             modelClass.setScale(databaseModelClass.scale);
 
             modelClass.loadConfig();
+
+            if (databaseModelClass.databaseAnimations != null){
+                for (DatabaseAnimation databaseAnimation : databaseModelClass.databaseAnimations){
+                    modelClass.playAnimation(databaseAnimation.animationName);
+                    modelClass.setActiveAnimationFrame(databaseAnimation.animationName, (databaseAnimation.currentFrame));
+                    modelClass.pauseActiveAnimation(databaseAnimation.animationName, databaseAnimation.isPaused);
+
+                }
+                modelClass.updateModel();
+            }
+
             Bukkit.getScheduler().runTaskLater(AnimatedSkript.getInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    if (databaseModelClass.databaseAnimations != null){
-                        for (DatabaseAnimation databaseAnimation : databaseModelClass.databaseAnimations){
-                            modelClass.playAnimation(databaseAnimation.animationName);
-                            modelClass.setActiveAnimationFrame(databaseAnimation.animationName, (databaseAnimation.currentFrame));
-                            modelClass.pauseActiveAnimation(databaseAnimation.animationName, databaseAnimation.isPaused);
 
-
-                        }
-
-                        modelClass.deleteModelNodes();
-                        modelClass.spawnModelNodes();
-
-
-                    }
                 }
             }, 1L);
-
 
 
             if (debugMode())
                 getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "animated-skript: model loaded from save data");
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerChunkLoad(PlayerChunkLoadEvent event){
+        Player player = event.getPlayer();
+        Chunk chunk = event.getChunk();
+
+        String chunk_id = event.getChunk().getWorld().getName()+"|x-"+event.getChunk().getX()+"|z-"+event.getChunk().getZ(); // world|x-3|z-4
+        // get all entries with the corresponding chunk_id
+
+        if (!chunkMap.containsKey(chunk_id))
+            return;
+
+        ArrayList<UUID> modelUuidList = chunkMap.get(chunk_id);
+
+        for (UUID uuid : modelUuidList){
+
+            if (!ModelManager.getInstance().activeModelExists(uuid)){ // checks if it still exists
+                continue;
+            }
+
+            // send model to player
+
+        }
+
+
     }
 
 

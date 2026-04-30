@@ -40,16 +40,6 @@
                             <!-- Replace this with your package! -->
                             <shadedPattern>net.outmoded.bstats</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>com.github.retrooper.packetevents</pattern>
-                            <!-- Replace this with your package! -->
-                            <shadedPattern>net.outmoded.packetevents.api</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>io.github.retrooper.packetevents </pattern>
-                            <!-- Replace this with your package! -->
-                            <shadedPattern>net.outmoded.packetevents.impl</shadedPattern>
-                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -142,7 +132,7 @@
             <groupId>com.github.retrooper</groupId>
             <artifactId>packetevents-spigot</artifactId>
             <version>2.12.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

@@ -3,6 +3,7 @@ package net.outmoded.animated_skript.models;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.AnimatedSkript;
@@ -18,6 +19,7 @@ import net.outmoded.animated_skript.skript.SkriptManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.nio.file.DirectoryStream;
@@ -94,7 +96,6 @@ public class ModelManager {
                 }
                 else{
                     ModelPersistence.chunkMap.get(chunk_id).add(newModel.uuid);
-
                 }
 
                 ModelPersistence.getInstance().addModel(newModel);
@@ -120,13 +121,10 @@ public class ModelManager {
 
     public void tickAllAnimations() {
 
-
         Iterator<ModelClass> iter = activeModels.values().iterator();
 
         while (iter.hasNext()){
-
             iter.next().tickAnimation();
-
         }
 
 
@@ -201,6 +199,10 @@ public class ModelManager {
 
     }
 
+    /**
+     * deletes a model from the world taking a ModelClass as input
+     * @param modelClass
+     */
     public void removeActiveModel(ModelClass modelClass) {
         if (modelClass == null)
             return;
@@ -208,7 +210,11 @@ public class ModelManager {
         removeActiveModel(modelClass.uuid);
     }
 
-    public void removeActiveModel(UUID uuid) { // DON'T TOUCH this is part of save data system and is really sketchy
+    /**
+     * deletes a model from the world taking an uuid as input
+     * @param uuid
+     */
+    public void removeActiveModel(UUID uuid) {
         if (!activeModels.containsKey(uuid)){
             return;
         }
@@ -234,10 +240,10 @@ public class ModelManager {
 
     } // deletes an active model
 
-    /*
-    deletes the model only from the world not the savedata.
-    this exists because I am retarded
-     */
+    /**
+    don't use this its internal and will break things
+     **/
+    @ApiStatus.Internal
     public void removeActiveModelFromWorld(UUID uuid) {
         if (!activeModels.containsKey(uuid)){
             return;

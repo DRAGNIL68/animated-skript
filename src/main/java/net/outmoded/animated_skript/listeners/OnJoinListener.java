@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-public class OnJoin implements Listener {
+public class OnJoinListener implements Listener {
 
 
     @EventHandler

@@ -42,6 +42,7 @@ net\outmoded\animated_skript\skript\events\EvtOnAnimationPaused.class
 net\outmoded\animated_skript\pack\jsonObjects\TestNonWritableClass.class
 net\outmoded\animated_skript\skript\effects\EffSetTeleportDuration.class
 net\outmoded\animated_skript\skript\effects\scale\EffSetScale.class
+net\outmoded\animated_skript\models\PacketUtils.class
 net\outmoded\animated_skript\models\nodes\Frame.class
 net\outmoded\animated_skript\skript\effects\EffSpawnLoadedModel.class
 net\outmoded\animated_skript\skript\effects\variant\EffSetActiveVariant.class

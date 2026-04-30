@@ -1,7 +1,7 @@
 package net.outmoded.animated_skript.listeners;
 
+import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import net.outmoded.animated_skript.AnimatedSkript;
-import net.outmoded.animated_skript.Config;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Display;
@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 
-public class OnEntityDismountEvent implements Listener {
+public class OnEntityDismountListener implements Listener {
 
     @EventHandler()
     public void onEntityDismountEvent(EntityDismountEvent event) { // this code may or may not actually work

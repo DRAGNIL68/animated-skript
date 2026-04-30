@@ -6,14 +6,11 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.player.Equipment;
-import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.player.User;
+import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3d;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
-import com.google.common.collect.Lists;
 import io.github.retrooper.packetevents.util.SpigotReflectionUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
@@ -46,12 +43,20 @@ import static org.bukkit.Bukkit.getServer;
 public class ModelClass {
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public final Map<String, Variant> variants = new HashMap<>();
-    public final Map<String, UUID> activeLocators = new HashMap<>(); // stores a reference to a camera by name
-    public final Map<UUID, Node> nodeMap = new HashMap<>();
+    public final Map<String, Variant> variants = new HashMap<>(); // texture variants
+
+    public final Map<UUID, Node> nodeMap = new HashMap<>(); // node info
     public final Map<String, Animation> animationMap = new HashMap<>();
+
+    @Deprecated
     public final Map<UUID, Display> activeNodes = new HashMap<>();
+    @Deprecated
     public final Map<UUID, Interaction> activeHitboxes = new HashMap<>();
+
+    public final Map<String, UUID> activeLocatorLookUp = new HashMap<>();
+
+    public final Map<UUID, Integer> displayIds = new HashMap<>(); // uuid of node : entity id
+
     public boolean isPersistent = true; //
 
     public final String modelType;
@@ -524,35 +529,11 @@ public class ModelClass {
     public void setPersistence(Boolean persistence) {
         isPersistent = persistence;
 
-        String chunk_id = getOriginLocation().getWorld().getName()+"|x-"+getOriginLocation().getChunk().getX()+"|z-"+getOriginLocation().getChunk().getZ(); // world|x-3|z-4
         if (!persistence){
-
             ModelPersistence.getInstance().removeModel(this.uuid);
-            if ( ModelPersistence.chunkMap.containsKey(chunk_id)){
-                ModelPersistence.chunkMap.get(chunk_id).remove(this);
-
-            }
-
-
-
         }
-        else if (persistence){
-
+        else {
             ModelPersistence.getInstance().addModel(this);
-
-            if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
-                ArrayList<UUID> arrayList = new ArrayList<UUID>();
-                arrayList.add(this.uuid);
-
-                ModelPersistence.chunkMap.put(chunk_id, arrayList);
-            }
-            else{
-                ModelPersistence.chunkMap.get(chunk_id).add(this.uuid);
-
-            }
-
-
-
         }
 
     }
@@ -565,7 +546,7 @@ public class ModelClass {
     public void spawnModelNodes(){
 
         deleteModelNodes();
-        activeLocators.clear();
+        activeLocatorLookUp.clear();
         activeNodes.clear();
         activeHitboxes.clear();
 
@@ -584,20 +565,18 @@ public class ModelClass {
                 case "struct":
                     if (debugMode()) {
                         ItemStack structItemStack = new ItemStack(Material.SKELETON_SKULL);
-                        ItemDisplay structItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
-                        structItemDisplay.setVisibleByDefault(false);
-                        structItemDisplay.setItemStack(structItemStack);
+                        PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()), structItemStack);
 
-
-                        structItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
-
-
-                        structItemDisplay.setGlowing(true);
-                        structItemDisplay.setVisibleByDefault(true);
-
-
-
-                        display = structItemDisplay;
+//                        ItemDisplay structItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+//
+//                        structItemDisplay.setVisibleByDefault(false);
+//                        structItemDisplay.setItemStack(structItemStack);
+//                        structItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
+//
+//                        structItemDisplay.setGlowing(true);
+//                        structItemDisplay.setVisibleByDefault(true);
+//
+//                        display = structItemDisplay;
 
                     }
                     break;
@@ -609,13 +588,12 @@ public class ModelClass {
                     meta.setItemModel(modelKey);
                     boneItemStack.setItemMeta(meta);
 
-                    ItemDisplay boneItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                    PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()), boneItemStack);
 
-                    boneItemDisplay.setItemStack(boneItemStack);
-                    boneItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "bone");
-
-                    display = boneItemDisplay;
-
+                    //ItemDisplay boneItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                    //boneItemDisplay.setItemStack(boneItemStack);
+                    //boneItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "bone");
+                    //display = boneItemDisplay;
 
                     break;
 
@@ -623,8 +601,6 @@ public class ModelClass {
                 case "block_display":
 
                     String material = (String) node.typeSpecificProperties.get("block");
-                    String name = node.name;
-
 
 
                     Material blockDisplayMaterial = Material.valueOf(material.toUpperCase());
@@ -646,40 +622,13 @@ public class ModelClass {
 
                     String material1 = (String) node.typeSpecificProperties.get("item");
                     Material itemDisplayMaterial = Material.valueOf(material1.toUpperCase());
-                    ItemDisplay itemDisplayItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                    PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()), new ItemStack(itemDisplayMaterial));
 
 
-                    itemDisplayItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "item_display");
-
-                    itemDisplayItemDisplay.setItemStack(new ItemStack(itemDisplayMaterial));
-                    display = itemDisplayItemDisplay;
-
-
-
-                    int id = SpigotReflectionUtil.generateEntityId();
-
-                    for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-                        WrapperPlayServerSpawnEntity spawnPacket = new WrapperPlayServerSpawnEntity(
-                                id,
-                                Optional.of(node.uuid),
-                                EntityTypes.ITEM_DISPLAY,
-                                new Vector3d(origin.getLocation().getX(), origin.getLocation().getY(), origin.getLocation().getZ()),
-                                origin.getLocation().getPitch(),
-                                origin.getLocation().getYaw(),
-                                origin.getLocation().getYaw(), // Head yaw
-                                0,
-                                Optional.empty()
-                        );
-                        user.sendPacket(spawnPacket);
-
-                        WrapperPlayServerEntityMetadata playServerEntityMetadata = new WrapperPlayServerEntityMetadata(23,
-                                List.of(
-                                        new EntityData(23, EntityDataTypes.ITEMSTACK, new ItemStack(itemDisplayMaterial))
-                        ));
-
-                        user.sendPacket(playServerEntityMetadata);
-                    }
+                    //ItemDisplay itemDisplayItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                    //itemDisplayItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "item_display");
+                    //itemDisplayItemDisplay.setItemStack(new ItemStack(itemDisplayMaterial));
+                    //display = itemDisplayItemDisplay;
 
                     break;
                 case "text_display":
@@ -718,7 +667,7 @@ public class ModelClass {
                     Display.Brightness brightness = new Display.Brightness(15, 15);
                     display.setBrightness(brightness);
 
-                    activeLocators.put(node.name, node.uuid);
+                    activeLocatorLookUp.put(node.name, node.uuid);
 
                     break;
                 case "hitbox":
@@ -729,7 +678,6 @@ public class ModelClass {
 
 
                     if (matchFound){
-
 
 
                         float width = Float.parseFloat(matcher.group(1));
@@ -787,9 +735,8 @@ public class ModelClass {
                     throw new RuntimeException("Corrupted node in json file: " + modelType + ".json node: " + node.uuid);
             }
 
-
             if (display != null){
-                display.setPersistent(false);
+                display.setPersistent(false); // if they are packets that will be irrelevant
                 org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
 
                 display.setTransformation(applyRot(transformation));
@@ -797,12 +744,6 @@ public class ModelClass {
                 origin.addPassenger(display);
                 applyTypeSpecificProperties(node);
             }
-
-
-
-
-
-
         }
 
         setTint(Color.WHITE); // this stops tinted parts of the model from not having a texture for some strange reason
@@ -1077,6 +1018,9 @@ public class ModelClass {
 
     }
 
+    /*
+    updates the models current state without proceeding to the next frame of any animations
+     */
     public void updateModel(){ // this is a stupid hack
 
         for (ActiveAnimation activeAnimation : activeAnimations.values()){
@@ -1158,12 +1102,7 @@ public class ModelClass {
 
             }
         }
-
-
         this.isActive = false;
-
-
-
     };
 
     public void stopActiveAnimation(String animationName){
@@ -1231,9 +1170,6 @@ public class ModelClass {
         if (name == null) {
             return;
         }
-
-
-
 
         if (animationMap.containsKey(name)){
 
@@ -1421,21 +1357,21 @@ public class ModelClass {
 
     @ApiStatus.Experimental
     public Display getActiveCamera(String name){
-        if (activeLocators.containsKey(name))
-            return activeNodes.get(activeLocators.get(name));
+        if (activeLocatorLookUp.containsKey(name))
+            return activeNodes.get(activeLocatorLookUp.get(name));
         return null;
 
     }
 
     @ApiStatus.Experimental
     public boolean hasActiveCamera(String name){
-        return activeLocators.containsKey(name);
+        return activeLocatorLookUp.containsKey(name);
     }
 
     @ApiStatus.Experimental
     public UUID getUuidFromActiveCamera(String name){
-        if (activeLocators.containsKey(name)){
-            return activeLocators.get(name);
+        if (activeLocatorLookUp.containsKey(name)){
+            return activeLocatorLookUp.get(name);
         }
         return null;
     }
@@ -1466,34 +1402,29 @@ public class ModelClass {
     public void setVisibilityForPlayer(Player player, boolean visibility){ // sets visibility for the entire model for a player
         player.showEntity(AnimatedSkript.getInstance(), origin);
         if (visibility){
+
             for (Display display : activeNodes.values()){
                 player.showEntity(AnimatedSkript.getInstance(), display);
 
             }
-        }else {
-            for (Display display : activeNodes.values()){
-                player.hideEntity(AnimatedSkript.getInstance(), display);
 
-            }
-
-        }
-
-        if (visibility){
             for (Interaction interaction : activeHitboxes.values()){
                 player.showEntity(AnimatedSkript.getInstance(), interaction);
 
             }
         }else {
+
+            for (Display display : activeNodes.values()){
+                player.hideEntity(AnimatedSkript.getInstance(), display);
+
+            }
+
             for (Interaction interaction : activeHitboxes.values()){
                 player.hideEntity(AnimatedSkript.getInstance(), interaction);
 
             }
 
         }
-
-
-        Location location = player.getLocation(); // or any Location
-        World world = location.getWorld();
 
 
     }
