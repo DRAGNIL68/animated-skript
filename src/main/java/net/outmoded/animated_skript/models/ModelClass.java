@@ -2,19 +2,6 @@ package net.outmoded.animated_skript.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
-import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.player.Equipment;
-import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
-import com.github.retrooper.packetevents.protocol.player.User;
-import com.github.retrooper.packetevents.util.Vector3d;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
-import com.google.common.collect.Lists;
-import io.github.retrooper.packetevents.util.SpigotReflectionUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -655,32 +642,6 @@ public class ModelClass {
                     display = itemDisplayItemDisplay;
 
 
-
-                    int id = SpigotReflectionUtil.generateEntityId();
-
-                    for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-                        WrapperPlayServerSpawnEntity spawnPacket = new WrapperPlayServerSpawnEntity(
-                                id,
-                                Optional.of(node.uuid),
-                                EntityTypes.ITEM_DISPLAY,
-                                new Vector3d(origin.getLocation().getX(), origin.getLocation().getY(), origin.getLocation().getZ()),
-                                origin.getLocation().getPitch(),
-                                origin.getLocation().getYaw(),
-                                origin.getLocation().getYaw(), // Head yaw
-                                0,
-                                Optional.empty()
-                        );
-                        user.sendPacket(spawnPacket);
-
-                        WrapperPlayServerEntityMetadata playServerEntityMetadata = new WrapperPlayServerEntityMetadata(23,
-                                List.of(
-                                        new EntityData(23, EntityDataTypes.ITEMSTACK, new ItemStack(itemDisplayMaterial))
-                        ));
-
-                        user.sendPacket(playServerEntityMetadata);
-                    }
-
                     break;
                 case "text_display":
 
@@ -897,10 +858,11 @@ public class ModelClass {
 
     }
 
+
+    Map<UUID, Node> nodes = new HashMap<>();
+    List<Runnable> deferredEvents = new ArrayList<>();
     @ApiStatus.Internal
     public void tickAnimation(){
-
-
 
         if (!isActive){
             return;
@@ -910,15 +872,10 @@ public class ModelClass {
             resetResetAllAnimations();
         }
 
-
         else {
 
-            Map<UUID, Node> nodes = new HashMap<>();
-            Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator();
 
-            ArrayList<ActiveAnimation> animationsThatEnded = new ArrayList<>();
-            List<Runnable> deferredActions = new ArrayList<>();
-            List<Runnable> deferredEvents = new ArrayList<>();
+            Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator(); // create an iterator for all active animations
 
 
 
@@ -931,22 +888,23 @@ public class ModelClass {
                     if (animation.animationReference.loopMode.equals("loop")) {
 
                         for (Node node : nodeMap.values()) {
-                            if (activeNodes.containsKey(node.uuid)) {
-                                activeNodes.get(node.uuid).setInterpolationDelay(0);
-                                activeNodes.get(node.uuid).setInterpolationDuration(0);
+                            Display activeNode = activeNodes.get(node.uuid);
+                            if (activeNode != null) {
+
+                                activeNode.setInterpolationDelay(0);
+                                activeNode.setInterpolationDuration(0);
 
                                 org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
 
-                                activeNodes.get(node.uuid).setTransformation(applyRot(transformation));
+                                activeNode.setTransformation(applyRot(transformation));
                             }
-
                         }
 
                         animation.currentFrameTime = 0;
                     }
 
                     else if (animation.animationReference.loopMode.equals("hold")){
-                        deferredActions.add(() -> pauseActiveAnimation(animation.animationReference.name, true));
+                        pauseActiveAnimation(animation.animationReference.name, true);
 
                     } else {
                         iter.remove();
@@ -959,8 +917,6 @@ public class ModelClass {
                         Bukkit.getPluginManager().callEvent(event);
                     });
 
-                    animationsThatEnded.add(animation);
-
                 }
 
                 else if (animation.animationReference.frames.containsKey(animation.currentFrameTime)){ // compiles the transforms for this frame
@@ -969,10 +925,11 @@ public class ModelClass {
 
                         if (!nodes.containsKey(node.uuid)){
                             nodes.put(node.uuid, node.lightClone());
-
                         }
+
                         else{
 
+                            // makes the animations work properly
                             Node animationNode = nodes.get(node.uuid);
                             animationNode.transformation.getTranslation().add(node.transformation.getTranslation());
                             animationNode.transformation.getLeftRotation().mul(node.transformation.getLeftRotation());
@@ -990,25 +947,19 @@ public class ModelClass {
                 if (!animation.isPaused) {
                     animation.currentFrameTime += 1;
                 }
-
             }
 
             for (Node node : nodes.values()){ // applies the transforms for this frame
 
-                if (activeNodes.containsKey(node.uuid)){
+                Display activeNode = activeNodes.get(node.uuid);
+                if (activeNode != null){
 
-                    activeNodes.get(node.uuid).setInterpolationDelay(0);
-                    activeNodes.get(node.uuid).setInterpolationDuration(1);
-
-
+                    activeNode.setInterpolationDelay(0);
+                    activeNode.setInterpolationDuration(1);
 
                     org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
 
-                    activeNodes.get(node.uuid).setTransformation(applyRot(transformation));
-
-
-
-
+                    activeNode.setTransformation(applyRot(transformation));
 
                 }
                 else if (activeHitboxes.containsKey(node.uuid)){
@@ -1026,19 +977,13 @@ public class ModelClass {
                     activeHitboxes.get(node.uuid).setInteractionHeight(height);
                     activeHitboxes.get(node.uuid).teleport(location);
                 }
-
-
             }
 
-
-            deferredActions.forEach(Runnable::run); // this is a neat trick I found via Google
             deferredEvents.forEach(Runnable::run);
 
+            nodes.clear();
+            deferredEvents.clear();
         }
-
-
-
-
     }
 
     public void teleport(Location location){ // really don't like this code, It's way too hacky
