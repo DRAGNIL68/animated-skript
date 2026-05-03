@@ -1,6 +1,6 @@
 package net.outmoded.animated_skript.models;
 
-public enum StablePlayerDisplayOffset {
+public enum  StablePlayerDisplayOffset {
     HEAD(0),
 
     RIGHT_ARM(1024),

@@ -12,9 +12,10 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\events\ModelRemovedEvent.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\events\ModelSpawnedEvent.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\events\ModelUnpauseAnimationEvent.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\listeners\OnEntityDismountEvent.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\listeners\OnJoin.java
-C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\listeners\OnPlayerInteractEvent.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\listeners\OnEntityDismountListener.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\listeners\OnJoinListener.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\listeners\OnPlayerInteractListener.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\listeners\PlayerChunkLoadListener.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\jsonObjects\ChunkJsonObject.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\jsonObjects\FileJsonObject.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\jsonObjects\ModelJsonObject.java
@@ -24,6 +25,8 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\ModelPersistence.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\ActiveAnimation.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Animation.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\display_nodes\DisplayNode.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\display_nodes\ItemDisplayNode.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Frame.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Node.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\models\nodes\Variant.java

@@ -4,6 +4,7 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3d;
@@ -13,10 +14,11 @@ import io.github.retrooper.packetevents.util.SpigotReflectionUtil;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.Config;
 import net.outmoded.animated_skript.models.nodes.Node;
+import net.outmoded.animated_skript.models.nodes.display_nodes.DisplayNode;
+import net.outmoded.animated_skript.models.nodes.display_nodes.ItemDisplayNode;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -31,7 +33,6 @@ public class PacketUtils {
         for (Node node : modelClass.nodeMap.values()){
 
             if (node.type.equals("item_display")){
-                //sendItemDisplayToPlayers(modelClass, node, players,)
 
             }
             else if (node.type.equals("bone")){
@@ -43,17 +44,8 @@ public class PacketUtils {
 
     }
 
-    public static void sendItemDisplayToPlayers(ModelClass modelClass, Node node, ArrayList<Player> players, ItemStack itemStack){
-        int id;
-        if (modelClass.displayIds.containsKey(node.uuid)){
-            id = modelClass.displayIds.get(node.uuid);
-            AnimatedSkript.getInstance().getLogger().warning("node already exists");
-        }
-        else {
-            id = SpigotReflectionUtil.generateEntityId();
-            modelClass.displayIds.put(node.uuid, id);
-            AnimatedSkript.getInstance().getLogger().warning("node dose not exist");
-        }
+    public static void sendItemDisplayToPlayers(ModelClass modelClass, Node node, ItemDisplayNode displayNode, ArrayList<Player> players){
+        int id = modelClass.displayNodes.get(node.uuid).getId();
 
         if (Config.debugMode())
             AnimatedSkript.getInstance().getLogger().warning("sending fake node with id:"+id+" to "+players);
@@ -83,7 +75,7 @@ public class PacketUtils {
 
         WrapperPlayServerEntityMetadata playServerEntityMetadata = new WrapperPlayServerEntityMetadata(id,
                 List.of(
-                        new EntityData(23, EntityDataTypes.ITEMSTACK, SpigotReflectionUtil.decodeBukkitItemStack(itemStack)),
+                        new EntityData(23, EntityDataTypes.ITEMSTACK, displayNode.getDecodedItemStack()),
                         new EntityData(11, EntityDataTypes.VECTOR3F, vector3f1),
                         new EntityData(12, EntityDataTypes.VECTOR3F, vector3f1Scale),
                         new EntityData(13, EntityDataTypes.QUATERNION, quaternion4f)
