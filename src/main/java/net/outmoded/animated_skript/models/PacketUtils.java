@@ -90,4 +90,23 @@ public class PacketUtils {
         }
 
     }
+
+    public static void update (ModelClass modelClass, Node node, ItemDisplayNode displayNode, ArrayList<Player> players){
+        int id = modelClass.displayNodes.get(node.uuid).getId();
+
+        WrapperPlayServerEntityMetadata playServerEntityMetadata = new WrapperPlayServerEntityMetadata(id,
+                List.of(
+                        new EntityData(23, EntityDataTypes.ITEMSTACK, displayNode.getDecodedItemStack()),
+
+                ));
+
+
+        for (Player player : players){
+            User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+
+            user.sendPacket(spawnPacket);
+            user.sendPacket(playServerEntityMetadata);
+        }
+
+    }
 }

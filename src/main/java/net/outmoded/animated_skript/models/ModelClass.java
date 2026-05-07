@@ -674,8 +674,7 @@ public class ModelClass {
                     break;
                 case "hitbox":
 
-                    Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)\\}", Pattern.CASE_INSENSITIVE);
-                    Matcher matcher = pattern.matcher(node.name);
+                    Matcher matcher = hitboxPattern.matcher(node.name);
                     boolean matchFound = matcher.find();
 
 
