@@ -72,6 +72,7 @@ net\outmoded\animated_skript\skript\expressions\node\ExprGetActiveModelsDisplayN
 net\outmoded\animated_skript\skript\expressions\node\ExprGetNodeName.class
 net\outmoded\animated_skript\skript\expressions\node\ExprGetActiveModelsNode.class
 net\outmoded\animated_skript\pack\jsonObjects\Model.class
+net\outmoded\animated_skript\models\nodes\display_nodes\BlockDisplayNode.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationLoopDelay.class
 net\outmoded\animated_skript\skript\expressions\animation\ExprGetAnimationUuid.class
 net\outmoded\animated_skript\models\nodes\display_nodes\ItemDisplayNode.class

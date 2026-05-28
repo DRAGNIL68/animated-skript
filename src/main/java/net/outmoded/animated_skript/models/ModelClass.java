@@ -9,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.*;
 import net.outmoded.animated_skript.models.nodes.*;
+import net.outmoded.animated_skript.models.nodes.display_nodes.BlockDisplayNode;
 import net.outmoded.animated_skript.models.nodes.display_nodes.DisplayNode;
 import net.outmoded.animated_skript.models.nodes.display_nodes.ItemDisplayNode;
 import org.apache.commons.lang3.StringUtils;
@@ -577,7 +578,8 @@ public class ModelClass {
 
                         displayNodes.put(node.uuid, itemDisplayNode);
 
-                        PacketUtils.sendItemDisplayToPlayers(this, node, itemDisplayNode, new ArrayList<>(Bukkit.getOnlinePlayers()));
+                        PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()));
+                        PacketUtils.updateItemModelStats(this, node, itemDisplayNode, new ArrayList<>(Bukkit.getOnlinePlayers()), 1);
                     }
 
 
@@ -623,7 +625,8 @@ public class ModelClass {
 
                         displayNodes.put(node.uuid, itemDisplayNode);
 
-                        PacketUtils.sendItemDisplayToPlayers(this, node, itemDisplayNode, new ArrayList<>(Bukkit.getOnlinePlayers()));
+                        PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()));
+                        PacketUtils.updateItemModelStats(this, node, itemDisplayNode, new ArrayList<>(Bukkit.getOnlinePlayers()), 1);
                     }
 
 
@@ -853,15 +856,23 @@ public class ModelClass {
                 if (animation.animationReference.loopMode.equals("loop")) {
 
                     for (Node node : nodeMap.values()) {
-                        Display activeNode = activeNodes.get(node.uuid);
-                        if (activeNode != null) {
+                        DisplayNode displayNode = displayNodes.get(node.uuid);
 
-                            activeNode.setInterpolationDelay(0);
-                            activeNode.setInterpolationDuration(0);
+                        if (displayNode != null){
 
-                            org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
-                            activeNode.setTransformation(applyRot(transformation));
+                            if (displayNode instanceof ItemDisplayNode){
+                                PacketUtils.updateItemModelStats(this, node, (ItemDisplayNode) displayNode, new ArrayList<>(Bukkit.getOnlinePlayers()), 0);
+                                AnimatedSkript.getInstance().getLogger().warning("0");
+                            }
+                            else if (displayNode instanceof BlockDisplayNode){
+
+
+                            }
+
                         }
+
+
+
                     }
 
                     animation.currentFrameTime = 0;
@@ -937,7 +948,9 @@ public class ModelClass {
                 org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
                 displayNode.setTransformation(applyRot(transformation));
 
-                PacketUtils.sendItemDisplayToPlayers(this, node, ((ItemDisplayNode) displayNode), new ArrayList<>(Bukkit.getOnlinePlayers()));
+
+                PacketUtils.updateItemModelStats(this, node, ((ItemDisplayNode) displayNode), new ArrayList<>(Bukkit.getOnlinePlayers()), 1);
+                AnimatedSkript.getInstance().getLogger().warning("1");
             }
 
             else if (activeHitboxes.containsKey(node.uuid)){

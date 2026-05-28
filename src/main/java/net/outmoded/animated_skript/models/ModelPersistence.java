@@ -482,12 +482,7 @@ public final class ModelPersistence implements Listener {
                     String.valueOf(location.z()),
                     String.valueOf(location.getPitch()),
                     String.valueOf(location.getYaw()));
-
-
         }
-
-
-
     }
 
     public final static class DatabaseAnimation{
