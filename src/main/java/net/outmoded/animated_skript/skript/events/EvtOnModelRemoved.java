@@ -22,7 +22,7 @@ public class EvtOnModelRemoved extends SkriptEvent {
         registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnModelRemoved.class, "Model Removed")
                 .supplier(EvtOnModelRemoved::new)
                 .addEvent(ModelRemovedEvent.class)
-                .addPatterns("[animated-skript] model spawned")
+                .addPatterns("[animated-skript] model removed")
                 .build());
 
         EventValues.registerEventValue(ModelRemovedEvent.class, ModelClass.class, ModelRemovedEvent::getActiveModel);

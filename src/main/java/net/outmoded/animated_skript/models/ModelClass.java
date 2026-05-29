@@ -891,12 +891,11 @@ public class ModelClass {
                             Display activeNode = activeNodes.get(node.uuid);
                             if (activeNode != null) {
 
-                                activeNode.setInterpolationDelay(0);
-                                activeNode.setInterpolationDuration(0);
-
-                                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
-
-                                activeNode.setTransformation(applyRot(transformation));
+//                                activeNode.setInterpolationDelay(0);
+//                                activeNode.setInterpolationDuration(0);
+//
+//                                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
+//                                activeNode.setTransformation(applyRot(transformation));
                             }
                         }
 
@@ -949,33 +948,45 @@ public class ModelClass {
                 }
             }
 
-            for (Node node : nodes.values()){ // applies the transforms for this frame
+            for (Node nodeM : nodeMap.values()){ // applies the transforms for this frame
+                Display activeNode = activeNodes.get(nodeM.uuid);
 
-                Display activeNode = activeNodes.get(node.uuid);
-                if (activeNode != null){
+                if (activeNode != null && nodes.containsKey(nodeM.uuid)){
+                    Node node = nodes.get(nodeM.uuid);
 
                     activeNode.setInterpolationDelay(0);
                     activeNode.setInterpolationDuration(1);
 
                     org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
-
                     activeNode.setTransformation(applyRot(transformation));
 
                 }
-                else if (activeHitboxes.containsKey(node.uuid)){
-                    Location originLocation = origin.getLocation().clone();
-                    Location location = originLocation.add(node.pos[0]*modelScale, node.pos[1]*modelScale, node.pos[2]*modelScale);
+                else {
+                    if (activeNode != null){
 
-                    Node originalNode = nodeMap.get(node.uuid);
+                        activeNode.setInterpolationDelay(0);
+                        activeNode.setInterpolationDuration(1);
+
+                        org.bukkit.util.Transformation transformation = applyScale(nodeM.transformation, modelScale);
+
+                        activeNode.setTransformation(applyRot(transformation));
+                    }
+                }
+
+                if (activeHitboxes.containsKey(nodeM.uuid)){
+                    Location originLocation = origin.getLocation().clone();
+                    Location location = originLocation.add(nodeM.pos[0]*modelScale, nodeM.pos[1]*modelScale, nodeM.pos[2]*modelScale);
+
+                    Node originalNode = nodeMap.get(nodeM.uuid);
                     Float width = (Float) originalNode.typeSpecificProperties.get("hitbox_width");
                     Float height = (Float) originalNode.typeSpecificProperties.get("hitbox_height");
 
                     width = width*modelScale;
                     height = height*modelScale;
 
-                    activeHitboxes.get(node.uuid).setInteractionWidth(width);
-                    activeHitboxes.get(node.uuid).setInteractionHeight(height);
-                    activeHitboxes.get(node.uuid).teleport(location);
+                    activeHitboxes.get(nodeM.uuid).setInteractionWidth(width);
+                    activeHitboxes.get(nodeM.uuid).setInteractionHeight(height);
+                    activeHitboxes.get(nodeM.uuid).teleport(location);
                 }
             }
 
@@ -1503,7 +1514,9 @@ public class ModelClass {
             return;
         }
         this.rotation = rotation;
-        updateModel();
+
+        if (!isActive)
+            updateModel();
 
     }
 
