@@ -868,11 +868,7 @@ public class ModelClass {
 
 
                             }
-
                         }
-
-
-
                     }
 
                     animation.currentFrameTime = 0;

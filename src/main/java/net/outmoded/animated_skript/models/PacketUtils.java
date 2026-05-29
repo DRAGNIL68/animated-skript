@@ -91,12 +91,13 @@ public class PacketUtils {
 
         WrapperPlayServerEntityMetadata playServerEntityMetadata = new WrapperPlayServerEntityMetadata(id,
                 List.of(
+                        new EntityData<>(8, EntityDataTypes.INT, 0),
+                        new EntityData<>(9, EntityDataTypes.INT, interpolation),
                         new EntityData(23, EntityDataTypes.ITEMSTACK, displayNode.getDecodedItemStack()),
                         new EntityData(11, EntityDataTypes.VECTOR3F, vector3f1),
                         new EntityData(12, EntityDataTypes.VECTOR3F, vector3f1Scale),
-                        new EntityData(13, EntityDataTypes.QUATERNION, quaternion4f),
-                        new EntityData<>(8, EntityDataTypes.INT, 0),
-                        new EntityData<>(9, EntityDataTypes.INT, interpolation)
+                        new EntityData(13, EntityDataTypes.QUATERNION, quaternion4f)
+
                 ));
 
 

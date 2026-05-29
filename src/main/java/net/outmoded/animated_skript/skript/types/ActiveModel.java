@@ -37,14 +37,10 @@ public class ActiveModel {
                         return modelClass.getUuid().toString();
                     }
 
-
                     @Override
                     public String toString(ModelClass modelClass, int flags) {
                         return toVariableNameString(modelClass);
                     }
-
-
-
 
                 }));
 
