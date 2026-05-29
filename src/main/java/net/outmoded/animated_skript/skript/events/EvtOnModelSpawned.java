@@ -18,7 +18,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import javax.annotation.Nullable;
 
 public class EvtOnModelSpawned extends SkriptEvent {
-
+    // test
     public static void register(SyntaxRegistry registry) {
         registry.register(BukkitSyntaxInfos.Event.KEY, BukkitSyntaxInfos.Event.builder(EvtOnModelSpawned.class, "Model Spawned")
                 .supplier(EvtOnModelSpawned::new)
