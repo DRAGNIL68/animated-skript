@@ -1,11 +1,10 @@
 package net.outmoded.animated_skript.skript.expressions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.models.ModelClass;
 import org.bukkit.event.Event;
 import org.skriptlang.skript.registration.SyntaxInfo;
@@ -46,15 +45,17 @@ public class ExprGetActiveModelsUuid extends SimpleExpression<UUID> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parser) {
         modelClass = (Expression<ModelClass>) exprs[0];
-
-
         return true;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        //4
-        return "";
+        ModelClass modelClass1 = modelClass.getSingle(event);
+        if (modelClass1 != null){
+            return modelClass1.getUuid().toString();
+
+        }
+        return null;
     }
 
     @Override
@@ -63,8 +64,8 @@ public class ExprGetActiveModelsUuid extends SimpleExpression<UUID> {
         ModelClass modelClass1 = modelClass.getSingle(event);
         if (modelClass1 != null){
             return new UUID[] {modelClass1.getUuid()};
-        }
 
+        }
 
         return null;
     }

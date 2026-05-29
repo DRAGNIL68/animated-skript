@@ -87,6 +87,7 @@ public class SyntaxRegistration {
         ExprGetOrigin.register(syntaxRegistry);
         ExprIsPersistent.register(syntaxRegistry);
         ExprLastSpawnedActiveModel.register(syntaxRegistry);
+        ExprGetActiveModelsUuid.register(syntaxRegistry);
 
         EffResetRotation.register(syntaxRegistry);
         EffSetRotation.register(syntaxRegistry);
