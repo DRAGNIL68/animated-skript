@@ -12,10 +12,10 @@ public class Node {
     public String name;
     public UUID uuid;
     public String parent;
-    public Float[] translation = new Float[2];
-    public Float[] leftRotation = new Float[2];
-    public Float[] scale = new Float[2];
-    public Float[] pos = new Float[2];
+    public Float[] translation;
+    public Float[] leftRotation;
+    public Float[] scale;
+    public Float[] pos;
     public Transformation transformation;
 
     public Node(){
@@ -36,6 +36,7 @@ public class Node {
 
         return node;
     }
+
 
 
 

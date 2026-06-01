@@ -50,6 +50,13 @@ public class EffTeleportActiveModel extends Effect {
     protected void execute(Event event) {
         ModelClass modelClass = activeModel.getSingle(event);
         Location location = locationExpression.getSingle(event);
+        if (modelClass == null)
+            getServer().getConsoleSender().sendMessage("model is null");
+
+        if (location == null)
+            getServer().getConsoleSender().sendMessage("loc is null");
+
+
         if (modelClass != null && location != null){
             modelClass.teleport(location);
         }

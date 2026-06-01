@@ -57,7 +57,6 @@ public class ModelClass {
 
 
 
-
     protected ModelClass(@NotNull Location location, @NotNull String modelType, @NotNull UUID uuid) {
         this.modelType = modelType;
         this.uuid = uuid;
@@ -344,14 +343,13 @@ public class ModelClass {
 
     @ApiStatus.Internal
     public void loadAnimations(){
+
         try{
             animationMap.clear();
             if (ModelManager.getInstance().loadedModelExists(modelType)) {
 
                 JsonNode config = ModelManager.getInstance().getLoadedModel(modelType);
 
-
-                
                 JsonNode root = config.get("animations");
 
                 for (Iterator<String> it = root.fieldNames(); it.hasNext(); ) {
@@ -394,13 +392,8 @@ public class ModelClass {
                                 frameNode.leftRotation = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
                                 frameNode.pos = objectMapper.treeToValue(nodeTransform.get("pos"), Float[].class);
 
-                                Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)}", Pattern.CASE_INSENSITIVE);
-                                Matcher matcher = pattern.matcher(frameNode.name);
-                                boolean matchFound = matcher.find();
 
                                 Quaternionf quaternion = new Quaternionf(frameNode.leftRotation[0], frameNode.leftRotation[1], frameNode.leftRotation[2], frameNode.leftRotation[3]); // fuck math
-
-
 
 
                                 if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("struct") && debugMode()) {
@@ -462,14 +455,9 @@ public class ModelClass {
 
                         }
 
-
-
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                 }
             }
         }catch (Exception e){
@@ -758,12 +746,6 @@ public class ModelClass {
                 origin.addPassenger(display);
                 applyTypeSpecificProperties(node);
             }
-
-
-
-
-
-
         }
 
         setTint(Color.WHITE); // this stops tinted parts of the model from not having a texture for some strange reason
@@ -858,7 +840,6 @@ public class ModelClass {
 
     }
 
-
     Map<UUID, Node> nodes = new HashMap<>();
     List<Runnable> deferredEvents = new ArrayList<>();
     @ApiStatus.Internal
@@ -891,11 +872,11 @@ public class ModelClass {
                             Display activeNode = activeNodes.get(node.uuid);
                             if (activeNode != null) {
 
-//                                activeNode.setInterpolationDelay(0);
-//                                activeNode.setInterpolationDuration(0);
-//
-//                                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
-//                                activeNode.setTransformation(applyRot(transformation));
+                                activeNode.setInterpolationDelay(0);
+                                activeNode.setInterpolationDuration(0);
+
+                                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
+                                activeNode.setTransformation(applyRot(transformation));
                             }
                         }
 
@@ -962,15 +943,15 @@ public class ModelClass {
 
                 }
                 else {
-                    if (activeNode != null){
-
-                        activeNode.setInterpolationDelay(0);
-                        activeNode.setInterpolationDuration(1);
-
-                        org.bukkit.util.Transformation transformation = applyScale(nodeM.transformation, modelScale);
-
-                        activeNode.setTransformation(applyRot(transformation));
-                    }
+//                    if (activeNode != null){
+//
+//                        activeNode.setInterpolationDelay(0);
+//                        activeNode.setInterpolationDuration(0);
+//
+//                        org.bukkit.util.Transformation transformation = applyScale(nodeM.transformation, modelScale);
+//
+//                        activeNode.setTransformation(applyRot(transformation));
+//                    }
                 }
 
                 if (activeHitboxes.containsKey(nodeM.uuid)){
@@ -996,6 +977,9 @@ public class ModelClass {
             deferredEvents.clear();
         }
     }
+
+
+
 
     public void teleport(Location location){ // really don't like this code, It's way too hacky
         NamespacedKey key1 = new NamespacedKey(AnimatedSkript.getInstance(), "isTeleporting");
@@ -1536,7 +1520,7 @@ public class ModelClass {
         this.rotation.transform(position);
         Quaternionf orientation = new Quaternionf(originalTransformation.getLeftRotation());
 
-        this.rotation.mul(orientation, orientation); // thanks, ChatGPT I don't know why passing the same thing 2 times makes use its global position
+        //this.rotation.mul(orientation, orientation); // thanks, ChatGPT I don't know why passing the same thing 2 times makes use its global position
 
         return new Transformation(
                 position,

@@ -51,11 +51,13 @@ public class ExprGetActiveModelsUuid extends SimpleExpression<UUID> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         ModelClass modelClass1 = modelClass.getSingle(event);
+
         if (modelClass1 != null){
             return modelClass1.getUuid().toString();
 
         }
-        return null;
+
+        return "";
     }
 
     @Override
@@ -67,7 +69,7 @@ public class ExprGetActiveModelsUuid extends SimpleExpression<UUID> {
 
         }
 
-        return null;
+        return new UUID[] {};
     }
 }
 
