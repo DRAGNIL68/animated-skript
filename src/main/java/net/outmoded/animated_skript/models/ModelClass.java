@@ -312,6 +312,8 @@ public class ModelClass {
                         }
 
                         else { // item_displays and everything except structs
+                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                            quaternion.mul(new Quaternionf(additionalRotation));
 
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
@@ -410,9 +412,10 @@ public class ModelClass {
                                 else {
 
                                     if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("bone")){
-                                        AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
-                                        quaternion.mul(new Quaternionf(additionalRotation));
+
                                     }
+                                    AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                                    quaternion.mul(new Quaternionf(additionalRotation));
 
                                     Transformation transformation = new Transformation(
                                             new Vector3f(frameNode.translation[0], frameNode.translation[1], frameNode.translation[2]), // translation
@@ -911,9 +914,31 @@ public class ModelClass {
 
                             // makes the animations work properly
                             Node animationNode = nodes.get(node.uuid);
-                            animationNode.transformation.getTranslation().add(node.transformation.getTranslation());
-                            animationNode.transformation.getLeftRotation().mul(node.transformation.getLeftRotation());
+
+                            float blendWeight = 0.5f;
+
+                            // i really dont understand this
+                            Vector3f posA = animationNode.transformation.getTranslation();
+                            Vector3f posB = node.transformation.getTranslation();
+
+                            Vector3f blendedTranslation = new Vector3f();
+                            posA.lerp(posB, blendWeight, blendedTranslation);
+                            animationNode.transformation.getTranslation().set(blendedTranslation);
+
+
+                            Quaternionf baseRot = node.transformation.getLeftRotation();
+                            Quaternionf overlayRot = animationNode.transformation.getLeftRotation();
+
+                            Quaternionf finalResult = new Quaternionf(baseRot).mul(overlayRot);
+
+                            if (baseRot.dot(finalResult) < 0.0f) {
+                                finalResult.conjugate();
+                            }
+
+                            animationNode.transformation.getLeftRotation().set(finalResult);
+
                             animationNode.transformation.getScale().mul(node.transformation.getScale());
+
 
                             // I think that I should be using a location instead of a list
                             animationNode.pos[0] += node.pos[0];
