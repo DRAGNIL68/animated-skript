@@ -939,6 +939,7 @@ public class ModelClass {
 
                             animationNode.transformation.getScale().mul(node.transformation.getScale());
 
+                            animationNode.transformation = applyScale(applyRot(animationNode.transformation), modelScale);
 
                             // I think that I should be using a location instead of a list
                             animationNode.pos[0] += node.pos[0];
@@ -966,17 +967,6 @@ public class ModelClass {
                     org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
                     activeNode.setTransformation(applyRot(transformation));
 
-                }
-                else {
-//                    if (activeNode != null){
-//
-//                        activeNode.setInterpolationDelay(0);
-//                        activeNode.setInterpolationDuration(0);
-//
-//                        org.bukkit.util.Transformation transformation = applyScale(nodeM.transformation, modelScale);
-//
-//                        activeNode.setTransformation(applyRot(transformation));
-//                    }
                 }
 
                 if (activeHitboxes.containsKey(nodeM.uuid)){
@@ -1545,7 +1535,7 @@ public class ModelClass {
         this.rotation.transform(position);
         Quaternionf orientation = new Quaternionf(originalTransformation.getLeftRotation());
 
-        //this.rotation.mul(orientation, orientation); // thanks, ChatGPT I don't know why passing the same thing 2 times makes use its global position
+        this.rotation.mul(orientation, orientation); // thanks, ChatGPT I don't know why passing the same thing 2 times makes use its global position
 
         return new Transformation(
                 position,
