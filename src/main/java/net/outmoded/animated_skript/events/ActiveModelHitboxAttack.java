@@ -59,7 +59,6 @@ public final class ActiveModelHitboxAttack extends Event implements Cancellable 
     }
 
 
-
     public ActiveModelHitboxAttack(ModelClass modelClass, UUID hitboxUuid, Entity damager, boolean isCritical, DamageSource damageSource, EntityDamageEvent.DamageCause damageCause,Double damage ,Double finalDamage) {
         this.modelClass = modelClass;
         this.hitboxUuid = hitboxUuid;

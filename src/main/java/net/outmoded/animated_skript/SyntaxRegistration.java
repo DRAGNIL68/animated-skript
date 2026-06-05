@@ -56,6 +56,7 @@ public class SyntaxRegistration {
         ExprEventGetEventCritical.register(syntaxRegistry);
         ExprEventGetEventDamage.register(syntaxRegistry);
         ExprEventGetEventDamageCause.register(syntaxRegistry);
+        ExprEventGetEventDamageSource.register(syntaxRegistry);
         ExprEventGetEventDamager.register(syntaxRegistry);
         ExprEventGetEventFinalDamage.register(syntaxRegistry);
         ExprEventGetEventUuid.register(syntaxRegistry);

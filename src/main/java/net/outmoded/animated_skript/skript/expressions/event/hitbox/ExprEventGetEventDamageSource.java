@@ -7,7 +7,6 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import net.outmoded.animated_skript.events.ActiveModelHitboxAttack;
 import org.bukkit.damage.DamageSource;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
@@ -15,16 +14,16 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import javax.annotation.Nullable;
 
 
-public class ExprEventGetEventDamager extends SimpleExpression<Entity> {
+public class ExprEventGetEventDamageSource extends SimpleExpression<DamageSource> {
 
     public static void register(SyntaxRegistry registry) {
         registry.register(
                 SyntaxRegistry.EXPRESSION,
-                SyntaxInfo.Expression.builder(ExprEventGetEventDamager.class, Entity.class)
+                SyntaxInfo.Expression.builder(ExprEventGetEventDamageSource.class, DamageSource.class)
                         .addPatterns(
-                                "[animated-skript] event-damager"
+                                "[animated-skript] event-damage source"
                         )
-                        .supplier(ExprEventGetEventDamager::new)
+                        .supplier(ExprEventGetEventDamageSource::new)
                         .build());
 
     }
@@ -32,9 +31,9 @@ public class ExprEventGetEventDamager extends SimpleExpression<Entity> {
 
 
     @Override
-    public Class<? extends Entity> getReturnType() {
+    public Class<? extends DamageSource> getReturnType() {
         //1
-        return Entity.class;
+        return DamageSource.class;
     }
 
     @Override
@@ -61,16 +60,16 @@ public class ExprEventGetEventDamager extends SimpleExpression<Entity> {
 
     @Override
     @Nullable
-    protected Entity[] get(Event event) {
+    protected DamageSource[] get(Event event) {
 
         // there is a better way to do this, but I don't care.
         if (event instanceof ActiveModelHitboxAttack event1){
 
-            return new Entity[] {event1.getDamager()};
+            return new DamageSource[] {event1.getDamageSource()};
 
         }
         else {
-            return new Entity[] {};
+            return new DamageSource[] {};
         }
 
 
