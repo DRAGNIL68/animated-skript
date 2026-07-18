@@ -97,6 +97,7 @@ C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamage.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamageCause.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamager.java
+C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventDamageSource.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventFinalDamage.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\event\hitbox\ExprEventGetEventUuid.java
 C:\Users\linga\IdeaProjects\animated-skript\src\main\java\net\outmoded\animated_skript\skript\expressions\ExprGetActiveModel.java

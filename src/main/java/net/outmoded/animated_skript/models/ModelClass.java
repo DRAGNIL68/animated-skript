@@ -2,16 +2,12 @@ package net.outmoded.animated_skript.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.retrooper.packetevents.util.SpigotReflectionUtil;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.AnimatedSkript;
 import net.outmoded.animated_skript.events.*;
 import net.outmoded.animated_skript.models.nodes.*;
-import net.outmoded.animated_skript.models.nodes.display_nodes.BlockDisplayNode;
-import net.outmoded.animated_skript.models.nodes.display_nodes.DisplayNode;
-import net.outmoded.animated_skript.models.nodes.display_nodes.ItemDisplayNode;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -37,21 +33,12 @@ import static org.bukkit.Bukkit.getServer;
 public class ModelClass {
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public final Map<String, Variant> variants = new HashMap<>(); // texture variants
-
-    public final Map<UUID, Node> nodeMap = new HashMap<>(); // node info
+    public final Map<String, Variant> variants = new HashMap<>();
+    public final Map<String, UUID> activeLocators = new HashMap<>(); // stores a reference to a camera by name
+    public final Map<UUID, Node> nodeMap = new HashMap<>();
     public final Map<String, Animation> animationMap = new HashMap<>();
-
-    public final Map<UUID, DisplayNode> displayNodes = new HashMap<>(); // display info
-
-    @Deprecated
     public final Map<UUID, Display> activeNodes = new HashMap<>();
-    @Deprecated
     public final Map<UUID, Interaction> activeHitboxes = new HashMap<>();
-
-    public final Map<String, UUID> activeLocatorLookUp = new HashMap<>();
-
-
     public boolean isPersistent = true; //
 
     public final String modelType;
@@ -67,6 +54,8 @@ public class ModelClass {
 
     private static final Pattern hitboxPattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)}", Pattern.CASE_INSENSITIVE);
     private static final Pattern playerPattern = Pattern.compile("player\\{type:([a-z_]*)}", Pattern.CASE_INSENSITIVE);
+
+
 
     protected ModelClass(@NotNull Location location, @NotNull String modelType, @NotNull UUID uuid) {
         this.modelType = modelType;
@@ -105,8 +94,6 @@ public class ModelClass {
                 nodeMap.clear();
                 JsonNode config = ModelManager.getInstance().getLoadedModel(modelType);
 
-
-                
                 JsonNode root = config.get("nodes");
 
                 for (JsonNode node : root) {
@@ -323,6 +310,8 @@ public class ModelClass {
                         }
 
                         else { // item_displays and everything except structs
+                            AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                            quaternion.mul(new Quaternionf(additionalRotation));
 
                             Transformation transformation = new Transformation(
                                     new Vector3f(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]), // translation
@@ -354,14 +343,13 @@ public class ModelClass {
 
     @ApiStatus.Internal
     public void loadAnimations(){
+
         try{
             animationMap.clear();
             if (ModelManager.getInstance().loadedModelExists(modelType)) {
 
                 JsonNode config = ModelManager.getInstance().getLoadedModel(modelType);
 
-
-                
                 JsonNode root = config.get("animations");
 
                 for (Iterator<String> it = root.fieldNames(); it.hasNext(); ) {
@@ -404,13 +392,8 @@ public class ModelClass {
                                 frameNode.leftRotation = objectMapper.treeToValue(decomposed.get("left_rotation"), Float[].class); // "left_rotation": [0, 1, 0, 0]
                                 frameNode.pos = objectMapper.treeToValue(nodeTransform.get("pos"), Float[].class);
 
-                                Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)}", Pattern.CASE_INSENSITIVE);
-                                Matcher matcher = pattern.matcher(frameNode.name);
-                                boolean matchFound = matcher.find();
 
                                 Quaternionf quaternion = new Quaternionf(frameNode.leftRotation[0], frameNode.leftRotation[1], frameNode.leftRotation[2], frameNode.leftRotation[3]); // fuck math
-
-
 
 
                                 if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("struct") && debugMode()) {
@@ -427,9 +410,10 @@ public class ModelClass {
                                 else {
 
                                     if (nodeMap.get(UUID.fromString(nodeTransformUuid)).type.equals("bone")){
-                                        AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
-                                        quaternion.mul(new Quaternionf(additionalRotation));
+
                                     }
+                                    AxisAngle4f additionalRotation = new AxisAngle4f((float) Math.toRadians(180), 0, 1, 0); // 90-degree Y-axis rotation that I don't use for some reason
+                                    quaternion.mul(new Quaternionf(additionalRotation));
 
                                     Transformation transformation = new Transformation(
                                             new Vector3f(frameNode.translation[0], frameNode.translation[1], frameNode.translation[2]), // translation
@@ -468,7 +452,10 @@ public class ModelClass {
 
                                 }
                             }
+
+
                         }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -497,7 +484,7 @@ public class ModelClass {
 
             JsonNode textureMap = variant.get("texture_map");
 
-            // what the actual fuck dose this do?
+
             Iterator<String> itr = textureMap.fieldNames();
             while (itr.hasNext()) {
                 String key = itr.next();
@@ -513,11 +500,35 @@ public class ModelClass {
     public void setPersistence(Boolean persistence) {
         isPersistent = persistence;
 
+        String chunk_id = getOriginLocation().getWorld().getName()+"|x-"+getOriginLocation().getChunk().getX()+"|z-"+getOriginLocation().getChunk().getZ(); // world|x-3|z-4
         if (!persistence){
+
             ModelPersistence.getInstance().removeModel(this.uuid);
+            if ( ModelPersistence.chunkMap.containsKey(chunk_id)){
+                ModelPersistence.chunkMap.get(chunk_id).remove(this);
+
+            }
+
+
+
         }
-        else {
+        else if (persistence){
+
             ModelPersistence.getInstance().addModel(this);
+
+            if (!ModelPersistence.chunkMap.containsKey(chunk_id)){
+                ArrayList<UUID> arrayList = new ArrayList<UUID>();
+                arrayList.add(this.uuid);
+
+                ModelPersistence.chunkMap.put(chunk_id, arrayList);
+            }
+            else{
+                ModelPersistence.chunkMap.get(chunk_id).add(this.uuid);
+
+            }
+
+
+
         }
 
     }
@@ -530,7 +541,7 @@ public class ModelClass {
     public void spawnModelNodes(){
 
         deleteModelNodes();
-        activeLocatorLookUp.clear();
+        activeLocators.clear();
         activeNodes.clear();
         activeHitboxes.clear();
 
@@ -549,46 +560,38 @@ public class ModelClass {
                 case "struct":
                     if (debugMode()) {
                         ItemStack structItemStack = new ItemStack(Material.SKELETON_SKULL);
-                        //PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()), structItemStack);
+                        ItemDisplay structItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
+                        structItemDisplay.setVisibleByDefault(false);
+                        structItemDisplay.setItemStack(structItemStack);
 
-//                        ItemDisplay structItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
-//
-//                        structItemDisplay.setVisibleByDefault(false);
-//                        structItemDisplay.setItemStack(structItemStack);
-//                        structItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
-//
-//                        structItemDisplay.setGlowing(true);
-//                        structItemDisplay.setVisibleByDefault(true);
-//
-//                        display = structItemDisplay;
+
+                        structItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "struct");
+
+
+                        structItemDisplay.setGlowing(true);
+                        structItemDisplay.setVisibleByDefault(true);
+
+
+
+                        display = structItemDisplay;
 
                     }
                     break;
                 case "bone":
 
-                    {
-                        ItemStack boneItemStack = new ItemStack(Material.PAPER);
+                    ItemStack boneItemStack = new ItemStack(Material.PAPER);
 
-                        ItemMeta meta = boneItemStack.getItemMeta();
-                        meta.setItemModel(modelKey);
-                        boneItemStack.setItemMeta(meta);
+                    ItemMeta meta = boneItemStack.getItemMeta();
+                    meta.setItemModel(modelKey);
+                    boneItemStack.setItemMeta(meta);
 
-                        int id = SpigotReflectionUtil.generateEntityId();
-                        ItemDisplayNode itemDisplayNode = new ItemDisplayNode(id, boneItemStack);
+                    ItemDisplay boneItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
 
-                        displayNodes.put(node.uuid, itemDisplayNode);
+                    boneItemDisplay.setItemStack(boneItemStack);
+                    boneItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "bone");
 
-                        PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()));
-                        PacketUtils.updateItemModelStats(this, node, itemDisplayNode, new ArrayList<>(Bukkit.getOnlinePlayers()), 1);
-                    }
+                    display = boneItemDisplay;
 
-
-
-
-                    //ItemDisplay boneItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
-                    //boneItemDisplay.setItemStack(boneItemStack);
-                    //boneItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "bone");
-                    //display = boneItemDisplay;
 
                     break;
 
@@ -596,6 +599,8 @@ public class ModelClass {
                 case "block_display":
 
                     String material = (String) node.typeSpecificProperties.get("block");
+                    String name = node.name;
+
 
 
                     Material blockDisplayMaterial = Material.valueOf(material.toUpperCase());
@@ -615,25 +620,16 @@ public class ModelClass {
                     break;
                 case "item_display":
 
-
-                    {
-                        String material1 = (String) node.typeSpecificProperties.get("item");
-                        Material itemDisplayMaterial = Material.valueOf(material1.toUpperCase());
-
-                        int id = SpigotReflectionUtil.generateEntityId();
-                        ItemDisplayNode itemDisplayNode = new ItemDisplayNode(id, new ItemStack(itemDisplayMaterial));
-
-                        displayNodes.put(node.uuid, itemDisplayNode);
-
-                        PacketUtils.sendItemDisplayToPlayers(this, node, new ArrayList<>(Bukkit.getOnlinePlayers()));
-                        PacketUtils.updateItemModelStats(this, node, itemDisplayNode, new ArrayList<>(Bukkit.getOnlinePlayers()), 1);
-                    }
+                    String material1 = (String) node.typeSpecificProperties.get("item");
+                    Material itemDisplayMaterial = Material.valueOf(material1.toUpperCase());
+                    ItemDisplay itemDisplayItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
 
 
-                    //ItemDisplay itemDisplayItemDisplay = origin.getWorld().spawn(origin.getLocation(), ItemDisplay.class);
-                    //itemDisplayItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "item_display");
-                    //itemDisplayItemDisplay.setItemStack(new ItemStack(itemDisplayMaterial));
-                    //display = itemDisplayItemDisplay;
+                    itemDisplayItemDisplay.getPersistentDataContainer().set(key, PersistentDataType.STRING, "item_display");
+
+                    itemDisplayItemDisplay.setItemStack(new ItemStack(itemDisplayMaterial));
+                    display = itemDisplayItemDisplay;
+
 
                     break;
                 case "text_display":
@@ -672,16 +668,18 @@ public class ModelClass {
                     Display.Brightness brightness = new Display.Brightness(15, 15);
                     display.setBrightness(brightness);
 
-                    activeLocatorLookUp.put(node.name, node.uuid);
+                    activeLocators.put(node.name, node.uuid);
 
                     break;
                 case "hitbox":
 
-                    Matcher matcher = hitboxPattern.matcher(node.name);
+                    Pattern pattern = Pattern.compile("hitbox\\{w:([-+]?\\d*\\.?\\d+),h:([-+]?\\d*\\.?\\d+)\\}", Pattern.CASE_INSENSITIVE);
+                    Matcher matcher = pattern.matcher(node.name);
                     boolean matchFound = matcher.find();
 
 
                     if (matchFound){
+
 
 
                         float width = Float.parseFloat(matcher.group(1));
@@ -739,8 +737,9 @@ public class ModelClass {
                     throw new RuntimeException("Corrupted node in json file: " + modelType + ".json node: " + node.uuid);
             }
 
+
             if (display != null){
-                display.setPersistent(false); // if they are packets that will be irrelevant
+                display.setPersistent(false);
                 org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
 
                 display.setTransformation(applyRot(transformation));
@@ -823,7 +822,10 @@ public class ModelClass {
                 display.setInvisible(invisible);
 
             }
+
+
         }
+
     }
 
     @ApiStatus.Internal
@@ -839,137 +841,8 @@ public class ModelClass {
 
     }
 
-    //############################################################
-
-    Map<UUID, Node> lastCompiledTransformTick = new HashMap<>();
-    List<Runnable> deferredEvents = new ArrayList<>(); // list of animation ended events tp be fired
-    public void checkAnimations(){
-        deferredEvents.clear();
-        Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator(); // create an iterator for all active animations
-
-        while (iter.hasNext()) {
-            Map.Entry<String, ActiveAnimation> entry = iter.next();
-            ActiveAnimation animation = entry.getValue();
-
-            if (animation.currentFrameTime >= animation.animationReference.duration) { // checks info about an animation
-
-                if (animation.animationReference.loopMode.equals("loop")) {
-
-                    for (Node node : nodeMap.values()) {
-                        DisplayNode displayNode = displayNodes.get(node.uuid);
-
-                        if (displayNode != null){
-
-                            if (displayNode instanceof ItemDisplayNode){
-                                PacketUtils.updateItemModelStats(this, node, (ItemDisplayNode) displayNode, new ArrayList<>(Bukkit.getOnlinePlayers()), 0);
-                                AnimatedSkript.getInstance().getLogger().warning("0");
-                            }
-                            else if (displayNode instanceof BlockDisplayNode){
-
-
-                            }
-                        }
-                    }
-
-                    animation.currentFrameTime = 0;
-                } else if (animation.animationReference.loopMode.equals("hold")) {
-                    pauseActiveAnimation(animation.animationReference.name, true);
-
-                } else {
-                    iter.remove();
-
-                }
-
-                deferredEvents.add(() -> { // dispatch events after the fact
-                    ModelAnimationEndEvent event;
-                    event = new ModelAnimationEndEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
-                    Bukkit.getPluginManager().callEvent(event);
-                });
-            }
-
-        }
-    } // checks for animation state changes: looping, ended, holding etc
-
-    public void compileAnimationsTick(boolean advanceAnimation){
-        lastCompiledTransformTick.clear();
-        Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator(); // create an iterator for all active animations
-
-        while (iter.hasNext()) {
-            Map.Entry<String, ActiveAnimation> entry = iter.next();
-            ActiveAnimation animation = entry.getValue();
-
-            if (animation.animationReference.frames.containsKey(animation.currentFrameTime)){ // compiles the transforms for this frame
-
-                for (Node node : animation.animationReference.frames.get(animation.currentFrameTime).nodeTransforms){
-
-                    if (!lastCompiledTransformTick.containsKey(node.uuid)){
-                        lastCompiledTransformTick.put(node.uuid, node.lightClone());
-                    }
-
-                    else{
-
-                        // makes the animations work properly
-                        Node animationNode = lastCompiledTransformTick.get(node.uuid);
-                        animationNode.transformation.getTranslation().add(node.transformation.getTranslation());
-                        animationNode.transformation.getLeftRotation().mul(node.transformation.getLeftRotation());
-                        animationNode.transformation.getScale().mul(node.transformation.getScale());
-
-                        // I think that I should be using a location instead of a list
-                        animationNode.pos[0] += node.pos[0];
-                        animationNode.pos[1] += node.pos[1];
-                        animationNode.pos[2] += node.pos[2];
-
-                    }
-                }
-            }
-
-            if (!animation.isPaused && advanceAnimation) {
-                animation.currentFrameTime += 1;
-            }
-        }
-    } // creates a new frame to apply
-
-    public void applyAnimationsTick(){
-        for (Node node : lastCompiledTransformTick.values()){ // applies the transforms for this frame
-
-            DisplayNode displayNode = displayNodes.get(node.uuid);
-
-
-
-            if (displayNode != null){
-
-                //activeNode.setInterpolationDelay(0);
-                //activeNode.setInterpolationDuration(1);
-
-                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
-                displayNode.setTransformation(applyRot(transformation));
-
-
-                PacketUtils.updateItemModelStats(this, node, ((ItemDisplayNode) displayNode), new ArrayList<>(Bukkit.getOnlinePlayers()), 1);
-                AnimatedSkript.getInstance().getLogger().warning("1");
-            }
-
-            else if (activeHitboxes.containsKey(node.uuid)){
-                Location originLocation = origin.getLocation().clone();
-                Location location = originLocation.add(node.pos[0]*modelScale, node.pos[1]*modelScale, node.pos[2]*modelScale);
-
-                Node originalNode = nodeMap.get(node.uuid);
-                Float width = (Float) originalNode.typeSpecificProperties.get("hitbox_width");
-                Float height = (Float) originalNode.typeSpecificProperties.get("hitbox_height");
-
-                width = width*modelScale;
-                height = height*modelScale;
-
-                activeHitboxes.get(node.uuid).setInteractionWidth(width);
-                activeHitboxes.get(node.uuid).setInteractionHeight(height);
-                activeHitboxes.get(node.uuid).teleport(location);
-            }
-        }
-
-    } // applies the new frame
-
-     // this is written to by compileAniamtionTicks()
-
+    Map<UUID, Node> nodes = new HashMap<>();
+    List<Runnable> deferredEvents = new ArrayList<>();
     @ApiStatus.Internal
     public void tickAnimation(){
 
@@ -980,15 +853,146 @@ public class ModelClass {
         if (activeAnimations.isEmpty()){
             resetResetAllAnimations();
         }
-        checkAnimations();
-        compileAnimationsTick(true);
-        applyAnimationsTick();
+
+        else {
 
 
-        deferredEvents.forEach(Runnable::run);
+            Iterator<Map.Entry<String, ActiveAnimation>> iter = activeAnimations.entrySet().iterator(); // create an iterator for all active animations
+
+
+
+            while (iter.hasNext()){
+                Map.Entry<String, ActiveAnimation> entry = iter.next();
+                ActiveAnimation animation = entry.getValue();
+
+                if (animation.currentFrameTime >= animation.animationReference.duration) { // checks info about an animation
+
+                    if (animation.animationReference.loopMode.equals("loop")) {
+
+                        for (Node node : nodeMap.values()) {
+                            Display activeNode = activeNodes.get(node.uuid);
+                            if (activeNode != null) {
+
+                                activeNode.setInterpolationDelay(0);
+                                activeNode.setInterpolationDuration(0);
+
+                                org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
+                                activeNode.setTransformation(applyRot(transformation));
+                            }
+                        }
+
+                        animation.currentFrameTime = 0;
+                    }
+
+                    else if (animation.animationReference.loopMode.equals("hold")){
+                        pauseActiveAnimation(animation.animationReference.name, true);
+
+                    } else {
+                        iter.remove();
+
+                    }
+
+                    deferredEvents.add(() -> {
+                        ModelAnimationEndEvent event;
+                        event = new ModelAnimationEndEvent(uuid, modelType, animation.animationReference.name, animation.animationReference.loopMode);
+                        Bukkit.getPluginManager().callEvent(event);
+                    });
+
+                }
+
+                else if (animation.animationReference.frames.containsKey(animation.currentFrameTime)){ // compiles the transforms for this frame
+
+                    for (Node node : animation.animationReference.frames.get(animation.currentFrameTime).nodeTransforms){
+
+                        if (!nodes.containsKey(node.uuid)){
+                            nodes.put(node.uuid, node.lightClone());
+                        }
+
+                        else{
+
+                            // makes the animations work properly
+                            Node animationNode = nodes.get(node.uuid);
+
+                            float blendWeight = 0.5f;
+
+                            // i really dont understand this
+                            Vector3f posA = animationNode.transformation.getTranslation();
+                            Vector3f posB = node.transformation.getTranslation();
+
+                            Vector3f blendedTranslation = new Vector3f();
+                            posA.lerp(posB, blendWeight, blendedTranslation);
+                            animationNode.transformation.getTranslation().set(blendedTranslation);
+
+
+                            Quaternionf baseRot = node.transformation.getLeftRotation();
+                            Quaternionf overlayRot = animationNode.transformation.getLeftRotation();
+
+                            Quaternionf finalResult = new Quaternionf(baseRot).mul(overlayRot);
+
+                            if (baseRot.dot(finalResult) < 0.0f) {
+                                finalResult.conjugate();
+                            }
+
+                            animationNode.transformation.getLeftRotation().set(finalResult);
+
+                            animationNode.transformation.getScale().mul(node.transformation.getScale());
+
+                            animationNode.transformation = applyScale(applyRot(animationNode.transformation), modelScale);
+
+                            // I think that I should be using a location instead of a list
+                            animationNode.pos[0] += node.pos[0];
+                            animationNode.pos[1] += node.pos[1];
+                            animationNode.pos[2] += node.pos[2];
+
+                        }
+                    }
+                }
+
+                if (!animation.isPaused) {
+                    animation.currentFrameTime += 1;
+                }
+            }
+
+            for (Node nodeM : nodeMap.values()){ // applies the transforms for this frame
+                Display activeNode = activeNodes.get(nodeM.uuid);
+
+                if (activeNode != null && nodes.containsKey(nodeM.uuid)){
+                    Node node = nodes.get(nodeM.uuid);
+
+                    activeNode.setInterpolationDelay(0);
+                    activeNode.setInterpolationDuration(1);
+
+                    org.bukkit.util.Transformation transformation = applyScale(node.transformation, modelScale);
+                    activeNode.setTransformation(applyRot(transformation));
+
+                }
+
+                if (activeHitboxes.containsKey(nodeM.uuid)){
+                    Location originLocation = origin.getLocation().clone();
+                    Location location = originLocation.add(nodeM.pos[0]*modelScale, nodeM.pos[1]*modelScale, nodeM.pos[2]*modelScale);
+
+                    Node originalNode = nodeMap.get(nodeM.uuid);
+                    Float width = (Float) originalNode.typeSpecificProperties.get("hitbox_width");
+                    Float height = (Float) originalNode.typeSpecificProperties.get("hitbox_height");
+
+                    width = width*modelScale;
+                    height = height*modelScale;
+
+                    activeHitboxes.get(nodeM.uuid).setInteractionWidth(width);
+                    activeHitboxes.get(nodeM.uuid).setInteractionHeight(height);
+                    activeHitboxes.get(nodeM.uuid).teleport(location);
+                }
+            }
+
+            deferredEvents.forEach(Runnable::run);
+
+            nodes.clear();
+            deferredEvents.clear();
+        }
     }
 
-    //############################################################
+
+
 
     public void teleport(Location location){ // really don't like this code, It's way too hacky
         NamespacedKey key1 = new NamespacedKey(AnimatedSkript.getInstance(), "isTeleporting");
@@ -1026,9 +1030,6 @@ public class ModelClass {
 
     }
 
-    /*
-    updates the models current state without proceeding to the next frame of any animations
-     */
     public void updateModel(){ // this is a stupid hack
 
         for (ActiveAnimation activeAnimation : activeAnimations.values()){
@@ -1110,7 +1111,12 @@ public class ModelClass {
 
             }
         }
+
+
         this.isActive = false;
+
+
+
     };
 
     public void stopActiveAnimation(String animationName){
@@ -1179,6 +1185,9 @@ public class ModelClass {
             return;
         }
 
+
+
+
         if (animationMap.containsKey(name)){
 
             ModelAnimationStartEvent event = new ModelAnimationStartEvent(uuid, modelType, name);
@@ -1237,10 +1246,8 @@ public class ModelClass {
             return;
         }
         activeVariant = variant;
-        for (Map.Entry<UUID, Display> nodeKey : activeNodes.entrySet()){
-
-            UUID nodeUuid = nodeKey.getKey();
-            Display node = nodeKey.getValue();
+        for (UUID nodeKey : activeNodes.keySet()){
+            Display node = activeNodes.get(nodeKey);
 
             NamespacedKey key = new NamespacedKey(AnimatedSkript.getInstance(), "nodeType");
 
@@ -1248,7 +1255,7 @@ public class ModelClass {
             if (node.getPersistentDataContainer().has(key) && node.getPersistentDataContainer().get(key, PersistentDataType.STRING).equals("bone")){
 
                 ItemStack boneItemStack = new ItemStack(Material.PAPER);
-                NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + variant + "/" + nodeUuid);
+                NamespacedKey modelKey = new NamespacedKey("animated-skript", modelType + "/" + variant + "/" + nodeKey.toString());
                 ItemMeta meta = boneItemStack.getItemMeta();
                 meta.setItemModel(modelKey);
                 boneItemStack.setItemMeta(meta);
@@ -1367,21 +1374,21 @@ public class ModelClass {
 
     @ApiStatus.Experimental
     public Display getActiveCamera(String name){
-        if (activeLocatorLookUp.containsKey(name))
-            return activeNodes.get(activeLocatorLookUp.get(name));
+        if (activeLocators.containsKey(name))
+            return activeNodes.get(activeLocators.get(name));
         return null;
 
     }
 
     @ApiStatus.Experimental
     public boolean hasActiveCamera(String name){
-        return activeLocatorLookUp.containsKey(name);
+        return activeLocators.containsKey(name);
     }
 
     @ApiStatus.Experimental
     public UUID getUuidFromActiveCamera(String name){
-        if (activeLocatorLookUp.containsKey(name)){
-            return activeLocatorLookUp.get(name);
+        if (activeLocators.containsKey(name)){
+            return activeLocators.get(name);
         }
         return null;
     }
@@ -1412,29 +1419,34 @@ public class ModelClass {
     public void setVisibilityForPlayer(Player player, boolean visibility){ // sets visibility for the entire model for a player
         player.showEntity(AnimatedSkript.getInstance(), origin);
         if (visibility){
-
             for (Display display : activeNodes.values()){
                 player.showEntity(AnimatedSkript.getInstance(), display);
 
             }
-
-            for (Interaction interaction : activeHitboxes.values()){
-                player.showEntity(AnimatedSkript.getInstance(), interaction);
-
-            }
         }else {
-
             for (Display display : activeNodes.values()){
                 player.hideEntity(AnimatedSkript.getInstance(), display);
 
             }
 
+        }
+
+        if (visibility){
+            for (Interaction interaction : activeHitboxes.values()){
+                player.showEntity(AnimatedSkript.getInstance(), interaction);
+
+            }
+        }else {
             for (Interaction interaction : activeHitboxes.values()){
                 player.hideEntity(AnimatedSkript.getInstance(), interaction);
 
             }
 
         }
+
+
+        Location location = player.getLocation(); // or any Location
+        World world = location.getWorld();
 
 
     }
@@ -1499,7 +1511,9 @@ public class ModelClass {
             return;
         }
         this.rotation = rotation;
-        updateModel();
+
+        if (!isActive)
+            updateModel();
 
     }
 

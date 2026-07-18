@@ -1,6 +1,7 @@
 package net.outmoded.animated_skript;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.outmoded.animated_skript.commands.Commands;
 import net.outmoded.animated_skript.commands.CommandsTabComplete;
@@ -64,7 +65,6 @@ public final class AnimatedSkript extends JavaPlugin {
         );
 
 
-
         // ###########################
         // Skript stuff
 
@@ -90,7 +90,6 @@ public final class AnimatedSkript extends JavaPlugin {
                 }
 
                 getServer().getConsoleSender().sendMessage( MiniMessage.miniMessage().deserialize(Config.getLang("prefix")+Config.getLang("outmodedlib_pack_hosting")));
-
 
             }
 
@@ -126,10 +125,8 @@ public final class AnimatedSkript extends JavaPlugin {
         // Plugin shutdown logic
         ModelPersistence.getInstance().saveAllModels();
         ModelPersistence.getInstance().close();
-
-
+        
     }
-
 
     public static AnimatedSkript getInstance() {
         return getPlugin(AnimatedSkript.class);

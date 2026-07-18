@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Frame {
     public ArrayList<Node> nodeTransforms;
-    public int time;
 
     public Frame(){}
 }

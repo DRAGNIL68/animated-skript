@@ -11,14 +11,16 @@ public class Node {
     public String type;
     public String name;
     public UUID uuid;
-    public Float[] translation = new Float[2];
-    public Float[] leftRotation = new Float[2];
-    public Float[] scale = new Float[2];
-    public Float[] pos = new Float[2];
+    public String parent;
+    public Float[] translation;
+    public Float[] leftRotation;
+    public Float[] scale;
+    public Float[] pos;
     public Transformation transformation;
 
-    public Node(){}
+    public Node(){
 
+    }
     public Node lightClone(){
         Node node = new Node();
         node.type = this.type;
@@ -31,8 +33,10 @@ public class Node {
 
         node.transformation = new Transformation(this.transformation.getTranslation(), this.transformation.getLeftRotation(), this.transformation.getScale(), this.transformation.getRightRotation());
 
+
         return node;
     }
+
 
 
 
