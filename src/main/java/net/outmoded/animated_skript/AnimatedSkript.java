@@ -30,6 +30,8 @@ public final class AnimatedSkript extends JavaPlugin {
 
         // ###########################
         // checks version
+
+        AnimatedSkript.getInstance().getLogger().severe("animated-skript 1.x is deprecated please update to a new version if possible");
         String version = Bukkit.getMinecraftVersion();
 
         if (version.equals("1.21.7") || version.equals("1.21.8") || version.equals("1.21.10") || version.equals("1.21.11")){
